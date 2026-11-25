@@ -1,35 +1,66 @@
-<!DOCTYPE html>
+html_code = """<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>เตรียมสอบ ก.พ. (OCSC Exam Prep)</title>
+  <title>เตรียมสอบ ก.พ. - OCSC Learning Path</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     body { font-family: 'Prompt', sans-serif; background-color: #f8fafc; color: #1e293b; }
-    .fade-in { animation: fadeIn 0.25s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.25s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .duo-btn { box-shadow: 0 4px 0 #4338ca; transition: all 0.1s; }
+    .duo-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #4338ca; }
+    .duo-btn-green { box-shadow: 0 4px 0 #15803d; transition: all 0.1s; }
+    .duo-btn-green:active { transform: translateY(3px); box-shadow: 0 1px 0 #15803d; }
+    .duo-btn-amber { box-shadow: 0 4px 0 #b45309; transition: all 0.1s; }
+    .duo-btn-amber:active { transform: translateY(3px); box-shadow: 0 1px 0 #b45309; }
+    .node-shadow { box-shadow: 0 6px 0 rgba(0,0,0,0.12); }
+    .node-shadow:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.12); }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col pb-20 sm:pb-0">
 
-  <!-- Navbar -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
-    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+  <!-- Top Navbar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2.5 cursor-pointer" id="nav-logo">
-        <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+        <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-extrabold text-base shadow-sm">
           ก.พ.
         </div>
-        <div>
-          <h1 class="font-bold text-slate-800 text-base leading-tight">OCSC Exam Prep</h1>
-          <p class="text-xs text-slate-500">คลังข้อสอบและระบบฝึกทำโจทย์ฟรี</p>
+        <div class="hidden sm:block">
+          <h1 class="font-bold text-slate-800 text-sm leading-tight">OCSC Learning</h1>
+          <p class="text-[11px] text-slate-500">ระบบติวสอบ ก.พ. ภาค ก.</p>
         </div>
       </div>
 
-      <!-- Auth Status -->
-      <div id="auth-bar" class="flex items-center gap-3">
-        <span class="text-xs text-slate-400">กำลังโหลด...</span>
+      <!-- Desktop Navigation Tabs -->
+      <nav id="desktop-nav" class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+        <button data-tab="learn" class="nav-tab px-4 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer bg-white text-indigo-600 shadow-sm">
+          เส้นทางเรียนรู้
+        </button>
+        <button data-tab="practice" class="nav-tab px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer">
+          ฝึกทำแยกวิชา
+        </button>
+        <button data-tab="mock" class="nav-tab px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer">
+          สอบเสมือนจริง
+        </button>
+      </nav>
+
+      <!-- Stats & Auth -->
+      <div class="flex items-center gap-3">
+        <div id="header-stats" class="hidden flex items-center gap-3 text-xs font-bold">
+          <span class="flex items-center gap-1 text-amber-500 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/60" title="วันต่อเนื่อง">
+            🔥 <span id="hdr-streak">0</span>
+          </span>
+          <span class="flex items-center gap-1 text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200/60" title="คะแนน XP">
+            ⚡ <span id="hdr-xp">0</span>
+          </span>
+        </div>
+        <div id="auth-bar" class="flex items-center gap-2">
+          <span class="text-xs text-slate-400">...</span>
+        </div>
       </div>
     </div>
   </header>
@@ -39,154 +70,338 @@
 
     <!-- Login View -->
     <section id="view-login" class="hidden py-12 text-center fade-in">
-      <div class="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-        <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-5 text-2xl font-bold">
+      <div class="max-w-md mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
+        <div class="w-16 h-16 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-5 text-2xl font-extrabold shadow-md">
           ก.พ.
         </div>
-        <h2 class="text-2xl font-bold text-slate-800 mb-2">พร้อมพิชิตข้อสอบ ก.พ. หรือยัง?</h2>
+        <h2 class="text-2xl font-bold text-slate-800 mb-2">พิชิตข้อสอบ ก.พ. ทีละด่าน</h2>
         <p class="text-sm text-slate-500 mb-8 leading-relaxed">
-          ฝึกทำข้อสอบครบทั้ง 5 วิชา สะสมแต้ม XP พร้อมบันทึกสถิติและทบทวนข้อที่เคยทำผิดอัตโนมัติ
+          เรียนรู้เป็นลำดับขั้น ด่านละ 5 รอบ สะสมดาวและ XP พร้อมโหมดฝึกแยกวิชาและสนามสอบเสมือนจริงจับเวลา 3 ชั่วโมง
         </p>
-        <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-medium py-3 px-4 rounded-xl border border-slate-300 shadow-sm transition cursor-pointer">
+        <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3.5 px-4 rounded-2xl border-2 border-slate-200 shadow-sm transition cursor-pointer">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5" />
           <span>เข้าสู่ระบบด้วย Google</span>
         </button>
       </div>
     </section>
 
-    <!-- Dashboard View -->
-    <section id="view-dashboard" class="hidden space-y-6 fade-in">
+    <!-- Loading Bank -->
+    <div id="global-loader" class="hidden bg-white rounded-2xl border border-slate-200 p-10 text-center my-6">
+      <div class="inline-block w-7 h-7 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+      <p class="text-sm font-medium text-slate-600">กำลังโหลดคลังข้อสอบทั้ง 5 วิชา...</p>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: DUOLINGO LEARNING PATH              -->
+    <!-- ========================================== -->
+    <section id="tab-learn" class="hidden space-y-6 fade-in">
       
-      <!-- Stats Cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs text-slate-500 mb-1">คะแนนสะสม</p>
-          <p class="text-2xl font-bold text-indigo-600"><span id="stat-xp">0</span> <span class="text-xs font-normal text-slate-400">XP</span></p>
+      <!-- Subject Selector Pills -->
+      <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-2 px-1">
+          <span class="text-xs font-semibold text-slate-500">เลือกวิชาที่ต้องการเรียน</span>
+          <button id="btn-refresh-bank" class="text-[11px] text-indigo-600 hover:underline cursor-pointer">อัปเดตคลังข้อสอบ</button>
         </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs text-slate-500 mb-1">ทำข้อสอบไปแล้ว</p>
-          <p class="text-2xl font-bold text-slate-800"><span id="stat-total">0</span> <span class="text-xs font-normal text-slate-400">ข้อ</span></p>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs text-slate-500 mb-1">ความแม่นยำ</p>
-          <p class="text-2xl font-bold text-emerald-600"><span id="stat-accuracy">0</span><span class="text-sm font-normal">%</span></p>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs text-slate-500 mb-1">ต่อเนื่อง (Streak)</p>
-          <p class="text-2xl font-bold text-amber-500"><span id="stat-streak">0</span> <span class="text-xs font-normal text-slate-400">วัน</span></p>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-2 sm:col-span-1">
-          <p class="text-xs text-slate-500 mb-1">ข้อผิดรอทบทวน</p>
-          <p class="text-2xl font-bold text-rose-600"><span id="stat-wrong">0</span> <span class="text-xs font-normal text-slate-400">ข้อ</span></p>
+        <div id="learn-subject-tabs" class="grid grid-cols-5 gap-1.5">
+          <!-- Subject buttons injected via JS -->
         </div>
       </div>
 
-      <!-- Review Wrong Questions Banner -->
-      <div id="review-banner" class="hidden bg-rose-50 border border-rose-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <!-- Review Wrong Banner -->
+      <div id="review-banner" class="hidden bg-rose-50 border-2 border-rose-200 rounded-2xl p-4 flex items-center justify-between gap-3">
         <div>
-          <h3 class="font-semibold text-rose-900 text-sm">โหมดทบทวนข้อที่เคยตอบผิด</h3>
-          <p class="text-xs text-rose-700 mt-0.5">ฝึกทำซ้ำเฉพาะข้อที่พลาด เพื่ออุดรอยรั่วก่อนวันสอบจริง</p>
+          <h3 class="font-bold text-rose-900 text-sm">ทบทวนจุดอ่อน (<span id="review-count">0</span> ข้อ)</h3>
+          <p class="text-xs text-rose-700">เก็บกวาดข้อที่เคยตอบผิดเพื่อรับ XP พิเศษ</p>
         </div>
-        <button id="btn-start-review" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-medium px-4 py-2.5 rounded-xl transition shrink-0 cursor-pointer">
-          เริ่มทบทวน (<span id="review-count">0</span> ข้อ)
+        <button id="btn-start-review" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shrink-0 cursor-pointer">
+          ทบทวนเลย
         </button>
       </div>
 
-      <!-- Subjects -->
-      <div>
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="font-bold text-slate-800 text-base">เลือกวิชาที่ต้องการฝึกทำ (5 วิชาหลัก)</h3>
-          <button id="btn-refresh-bank" class="text-xs text-indigo-600 hover:underline cursor-pointer">รีเฟรชคลังข้อสอบ</button>
-        </div>
-        
-        <div id="loading-questions" class="bg-white rounded-2xl border border-slate-200 p-8 text-center">
-          <div class="inline-block w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mb-2"></div>
-          <p class="text-sm text-slate-500">กำลังโหลดคลังข้อสอบจาก Google Sheets...</p>
-        </div>
+      <!-- Path Container (Sections & Levels) -->
+      <div id="learning-path-container" class="space-y-8 pb-8">
+        <!-- Sections & Nodes injected via JS -->
+      </div>
+    </section>
 
-        <div id="subject-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 hidden">
-          <!-- Subjects injected via JS -->
+    <!-- ========================================== -->
+    <!-- TAB 2: PRACTICE BY SUBJECT (แยกวิชา)        -->
+    <!-- ========================================== -->
+    <section id="tab-practice" class="hidden space-y-5 fade-in">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <h2 class="text-lg font-bold text-slate-800">ฝึกทำข้อสอบแบบแยกวิชา</h2>
+        <p class="text-xs text-slate-500 mt-1">เลือกวิชาและจำนวนข้อที่ต้องการฝึกทำ พร้อมเฉลยละเอียดทันทีหลังตอบแต่ละข้อ</p>
+
+        <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4" id="practice-subject-cards">
+          <!-- Practice cards injected via JS -->
         </div>
       </div>
     </section>
 
-    <!-- Quiz View -->
-    <section id="view-quiz" class="hidden fade-in">
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        
-        <!-- Quiz Header -->
-        <div class="bg-slate-50 px-5 py-3.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
-          <div class="flex items-center gap-2 flex-wrap">
-            <span id="quiz-subject-badge" class="text-xs font-semibold text-indigo-700 bg-indigo-100 px-2.5 py-1 rounded-lg">วิชา</span>
-            <span id="quiz-section-badge" class="text-xs font-medium text-slate-600 bg-slate-200/70 px-2.5 py-1 rounded-lg">เนื้อหา</span>
-            <span id="quiz-level-badge" class="text-xs font-medium text-amber-700 bg-amber-100 px-2 py-1 rounded-lg">ระดับ</span>
-            <span id="quiz-xp-badge" class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-lg">+10 XP</span>
+    <!-- ========================================== -->
+    <!-- TAB 3: MOCK EXAM (สอบเสมือนจริง)             -->
+    <!-- ========================================== -->
+    <section id="tab-mock" class="hidden space-y-5 fade-in">
+      <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+          <div>
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">สนามสอบจำลอง ก.พ. ภาค ก.</span>
+            <h2 class="text-xl font-bold text-slate-800 mt-2">ทำข้อสอบเสมือนจริง (จับเวลา 3 ชั่วโมง)</h2>
+            <p class="text-xs text-slate-500 mt-1">โครงสร้างจำนวนข้อและเกณฑ์ผ่าน 60% ตามมาตรฐานสำนักงาน ก.พ. (ระดับ ป.ตรี)</p>
           </div>
-          <div class="flex items-center gap-4">
-            <span class="text-xs text-slate-500">ข้อที่ <strong id="quiz-current">1</strong> / <span id="quiz-total">10</span></span>
-            <button id="btn-exit-quiz" class="text-xs text-rose-600 hover:underline cursor-pointer">ออก</button>
-          </div>
-        </div>
-
-        <!-- Question Body -->
-        <div class="p-6">
-          <p id="quiz-question-text" class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-6 whitespace-pre-line">
-            คำถาม...
-          </p>
-
-          <!-- Choices -->
-          <div id="quiz-choices" class="space-y-3">
-            <!-- Choices injected via JS -->
-          </div>
-
-          <!-- Explanation Box -->
-          <div id="quiz-explanation" class="hidden mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200">
-            <p id="quiz-result-label" class="font-bold text-sm mb-1.5"></p>
-            <p class="text-xs font-semibold text-slate-500 mb-1">คำอธิบายหลักการคิดและเหตุผล:</p>
-            <p id="quiz-explanation-text" class="text-sm text-slate-700 leading-relaxed whitespace-pre-line"></p>
+          <div class="bg-slate-50 px-4 py-3 rounded-2xl border border-slate-200 text-center shrink-0">
+            <p class="text-[11px] text-slate-500">เวลาสอบมาตรฐาน</p>
+            <p class="text-xl font-extrabold text-slate-800">180 นาที</p>
           </div>
         </div>
 
-        <!-- Quiz Footer -->
-        <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex justify-end">
-          <button id="btn-next-question" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition cursor-pointer">
-            ข้อถัดไป →
+        <!-- Exam Blueprint Table -->
+        <div class="my-6 overflow-hidden rounded-2xl border border-slate-200">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+              <tr>
+                <th class="p-3">หมวดวิชาสอบ</th>
+                <th class="p-3 text-center">สัดส่วนข้อสอบจริง</th>
+                <th class="p-3 text-center">คลังข้อสอบที่มี</th>
+                <th class="p-3 text-right">เกณฑ์ผ่าน</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100" id="mock-blueprint-body">
+              <!-- Rows injected via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 text-xs text-amber-800 space-y-1">
+          <p class="font-bold">กติกาโหมดสอบเสมือนจริง:</p>
+          <p>• ระบบจะสุ่มข้อสอบตามสัดส่วนจริงของแต่ละวิชา (หากวิชาใดในคลังมีไม่ครบ ระบบจะดึงสูงสุดเท่าที่มี)</p>
+          <p>• ระหว่างทำข้อสอบจะยังไม่แสดงเฉลย สามารถกดข้ามไป-กลับระหว่างข้อได้ และส่งกระดาษคำตอบเมื่อทำเสร็จ</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button id="btn-start-full-mock" class="flex-1 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-6 rounded-2xl text-sm cursor-pointer">
+            เริ่มสอบเสมือนจริงเต็มรูปแบบ (100 ข้อ / 180 นาที)
+          </button>
+          <button id="btn-start-mini-mock" class="duo-btn-amber bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 px-5 rounded-2xl text-sm cursor-pointer">
+            Mini Mock (50 ข้อ / 90 นาที)
           </button>
         </div>
       </div>
     </section>
 
-    <!-- Summary View -->
-    <section id="view-summary" class="hidden fade-in">
-      <div class="max-w-md mx-auto bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center">
-        <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-          ✓
+    <!-- ========================================== -->
+    <!-- QUIZ VIEW (LEARN & PRACTICE MODE)          -->
+    <!-- ========================================== -->
+    <section id="view-quiz" class="hidden fade-in">
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        
+        <!-- Top Progress Bar -->
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-4">
+          <button id="btn-exit-quiz" class="text-slate-400 hover:text-slate-700 font-bold text-lg cursor-pointer">✕</button>
+          <div class="flex-1 bg-slate-100 h-3 rounded-full overflow-hidden">
+            <div id="quiz-progress-bar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <span class="text-xs font-bold text-slate-600"><span id="quiz-current">1</span>/<span id="quiz-total">5</span></span>
         </div>
-        <h2 class="text-xl font-bold text-slate-800 mb-1">ทำข้อสอบเสร็จสิ้น!</h2>
-        <p id="summary-subtitle" class="text-sm text-slate-500 mb-6">สรุปผลคะแนนรอบนี้</p>
 
-        <div class="bg-slate-50 rounded-xl p-4 mb-6 grid grid-cols-3 gap-2 border border-slate-100">
+        <!-- Meta Badges -->
+        <div class="px-6 pt-4 flex flex-wrap items-center gap-2">
+          <span id="quiz-badge-1" class="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg">วิชา</span>
+          <span id="quiz-badge-2" class="text-[11px] font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">เนื้อหา</span>
+          <span id="quiz-badge-3" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg">+10 XP</span>
+        </div>
+
+        <!-- Question & Choices -->
+        <div class="p-6">
+          <p id="quiz-question-text" class="text-base sm:text-lg font-semibold text-slate-800 leading-relaxed mb-6 whitespace-pre-line">
+            คำถาม...
+          </p>
+
+          <div id="quiz-choices" class="space-y-3">
+            <!-- Choices injected via JS -->
+          </div>
+        </div>
+
+        <!-- Bottom Feedback Drawer -->
+        <div id="quiz-footer" class="p-5 border-t border-slate-200 bg-slate-50 transition-colors">
+          <div id="quiz-explanation" class="hidden mb-4">
+            <div class="flex items-center gap-2 mb-1">
+              <span id="quiz-result-icon" class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"></span>
+              <p id="quiz-result-label" class="font-bold text-base"></p>
+            </div>
+            <p id="quiz-explanation-text" class="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line pl-8"></p>
+          </div>
+
+          <div class="flex justify-end">
+            <button id="btn-next-question" class="hidden w-full sm:w-auto duo-btn-green bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-8 py-3 rounded-2xl cursor-pointer">
+              ข้อถัดไป
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- MOCK EXAM RUNNER VIEW                      -->
+    <!-- ========================================== -->
+    <section id="view-mock-runner" class="hidden fade-in space-y-4">
+      <!-- Sticky Exam Header -->
+      <div class="bg-slate-900 text-white px-5 py-3.5 rounded-2xl flex items-center justify-between shadow-md sticky top-18 z-30">
+        <div class="flex items-center gap-3">
+          <span class="text-xs bg-indigo-500/30 border border-indigo-400/40 px-2.5 py-1 rounded-lg font-semibold" id="mock-q-subject">วิชา</span>
+          <span class="text-sm font-bold">ข้อที่ <span id="mock-q-num">1</span> / <span id="mock-q-total">100</span></span>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
+            <span class="text-xs">⏱️</span>
+            <span id="mock-timer" class="font-mono font-bold text-amber-400 text-sm">03:00:00</span>
+          </div>
+          <button id="btn-submit-mock" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl transition cursor-pointer">
+            ส่งข้อสอบ
+          </button>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <span id="mock-q-section" class="text-xs text-slate-500 font-medium">หมวดย่อย</span>
+          <button id="btn-flag-mock" class="text-xs text-amber-600 hover:underline cursor-pointer">🚩 ทำเครื่องหมายทบทวน</button>
+        </div>
+        <p id="mock-q-text" class="text-base font-medium text-slate-800 leading-relaxed mb-6 whitespace-pre-line"></p>
+        <div id="mock-q-choices" class="space-y-3"></div>
+
+        <!-- Prev / Next Navigation -->
+        <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+          <button id="btn-mock-prev" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer">
+            ← ข้อก่อนหน้า
+          </button>
+          <button id="btn-mock-next" class="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 cursor-pointer">
+            ข้อถัดไป →
+          </button>
+        </div>
+      </div>
+
+      <!-- Question Palette Grid -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs font-bold text-slate-700">กระดาษคำตอบ (คลิกเพื่อข้ามข้อ)</p>
+          <div class="flex items-center gap-3 text-[11px] text-slate-500">
+            <span class="flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-sm bg-indigo-600 inline-block"></i> ตอบแล้ว</span>
+            <span class="flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-sm bg-amber-400 inline-block"></i> ติดธง</span>
+            <span class="flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-sm bg-slate-100 border border-slate-300 inline-block"></i> ยังไม่ตอบ</span>
+          </div>
+        </div>
+        <div id="mock-palette" class="grid grid-cols-10 sm:grid-cols-15 gap-1.5"></div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SUMMARY VIEW (LESSON / PRACTICE / MOCK)    -->
+    <!-- ========================================== -->
+    <section id="view-summary" class="hidden fade-in">
+      <div class="max-w-xl mx-auto bg-white rounded-3xl border border-slate-200 shadow-sm p-8 text-center">
+        
+        <!-- Stars Display (For Duolingo Level Mode) -->
+        <div id="summary-stars-box" class="hidden flex justify-center gap-3 mb-4 text-4xl">
+          <span id="star-1" class="text-slate-200">★</span>
+          <span id="star-2" class="text-slate-200">★</span>
+          <span id="star-3" class="text-slate-200">★</span>
+        </div>
+
+        <h2 id="summary-title" class="text-2xl font-extrabold text-slate-800 mb-1">ยอดเยี่ยมมาก!</h2>
+        <p id="summary-subtitle" class="text-sm text-slate-500 mb-6">สรุปผลการทำแบบทดสอบ</p>
+
+        <div class="bg-slate-50 rounded-2xl p-4 mb-6 grid grid-cols-3 gap-2 border border-slate-100">
           <div>
-            <p class="text-xs text-slate-500">ตอบถูก</p>
-            <p class="text-xl font-bold text-indigo-600"><span id="summary-score">0</span>/<span id="summary-total">0</span></p>
+            <p class="text-xs text-slate-500">คะแนนที่ได้</p>
+            <p class="text-xl font-extrabold text-indigo-600"><span id="summary-score">0</span>/<span id="summary-total">0</span></p>
           </div>
           <div class="border-x border-slate-200">
             <p class="text-xs text-slate-500">ความแม่นยำ</p>
-            <p class="text-xl font-bold text-emerald-600"><span id="summary-percent">0</span>%</p>
+            <p class="text-xl font-extrabold text-emerald-600"><span id="summary-percent">0</span>%</p>
           </div>
           <div>
             <p class="text-xs text-slate-500">ได้รับ XP</p>
-            <p class="text-xl font-bold text-amber-500">+<span id="summary-xp">0</span></p>
+            <p class="text-xl font-extrabold text-amber-500">+<span id="summary-xp">0</span></p>
           </div>
         </div>
 
-        <button id="btn-back-home" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition cursor-pointer">
-          กลับหน้าหลัก
-        </button>
+        <!-- Mock Exam Breakdown (Only shown after Mock Exam) -->
+        <div id="mock-result-breakdown" class="hidden text-left mb-6 space-y-3">
+          <div id="mock-pass-badge" class="p-3 rounded-xl text-center font-bold text-sm"></div>
+          <div class="border border-slate-200 rounded-xl overflow-hidden text-xs">
+            <table class="w-full">
+              <thead class="bg-slate-50 border-b border-slate-200">
+                <tr>
+                  <th class="p-2.5 text-left">หมวดวิชา</th>
+                  <th class="p-2.5 text-center">คะแนน</th>
+                  <th class="p-2.5 text-right">เกณฑ์ 60%</th>
+                </tr>
+              </thead>
+              <tbody id="mock-breakdown-rows" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button id="btn-summary-next-round" class="hidden flex-1 duo-btn-green bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl cursor-pointer">
+            เล่นรอบถัดไป →
+          </button>
+          <button id="btn-back-home" class="flex-1 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl cursor-pointer">
+            กลับหน้าหลัก
+          </button>
+        </div>
       </div>
     </section>
 
   </main>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav id="mobile-nav" class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 flex justify-around py-2 z-40">
+    <button data-tab="learn" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-bold text-indigo-600 cursor-pointer">
+      <span class="text-lg">🗺️</span>
+      <span>เส้นทางเรียน</span>
+    </button>
+    <button data-tab="practice" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 cursor-pointer">
+      <span class="text-lg">📝</span>
+      <span>ฝึกแยกวิชา</span>
+    </button>
+    <button data-tab="mock" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 cursor-pointer">
+      <span class="text-lg">⏱️</span>
+      <span>สอบเสมือนจริง</span>
+    </button>
+  </nav>
+
+  <!-- Level Node Modal (Before starting a Duolingo round) -->
+  <div id="node-modal" class="hidden fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 fade-in">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-xl">
+      <span id="modal-section-name" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Section</span>
+      <h3 id="modal-level-title" class="text-xl font-extrabold text-slate-800 mt-3">ระดับที่ 1</h3>
+      <p id="modal-round-info" class="text-xs text-slate-500 mt-1">ความคืบหน้า: รอบที่ 1 / 5 (รอบละ 5 ข้อ)</p>
+
+      <!-- Stars Earned in this Level -->
+      <div class="flex justify-center gap-2 my-4 text-3xl">
+        <span id="modal-star-1" class="text-slate-200">★</span>
+        <span id="modal-star-2" class="text-slate-200">★</span>
+        <span id="modal-star-3" class="text-slate-200">★</span>
+      </div>
+
+      <!-- 5 Rounds Progress Dots -->
+      <div id="modal-rounds-dots" class="flex justify-center gap-2 mb-6">
+        <!-- 5 dots injected via JS -->
+      </div>
+
+      <div class="flex gap-2">
+        <button id="btn-close-modal" class="flex-1 py-3 rounded-2xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer">
+          ปิด
+        </button>
+        <button id="btn-start-node-round" class="flex-2 w-2/3 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-3 px-4 rounded-2xl cursor-pointer">
+          เริ่มรอบที่ 1 (+XP)
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Firebase & App Logic -->
   <script type="module">
@@ -209,21 +424,22 @@
       measurementId: "G-3E76DXDBV0"
     };
 
-    const SUBJECT_META = {
-      Math: { title: "คณิตศาสตร์ (Math)", desc: "อนุกรม โจทย์คณิตศาสตร์ เงื่อนไขสัญลักษณ์ ตารางข้อมูล" },
-      Thai: { title: "ภาษาไทย (Thai)", desc: "การอ่านจับใจความ เรียงประโยค บทความ หลักภาษา" },
-      English: { title: "ภาษาอังกฤษ (English)", desc: "Grammar, Vocabulary, Conversation, Reading" },
-      General: { title: "ความรู้ทั่วไป (General)", desc: "เหตุการณ์ปัจจุบัน สังคม เศรษฐกิจ และความรู้รอบตัว" },
-      Law: { title: "กฎหมาย (Law)", desc: "พ.ร.บ. ระเบียบบริหารราชการแผ่นดิน วิธีปฏิบัติราชการฯ" }
-    };
+    const SUBJECTS = [
+      { key: 'Math', short: 'คณิตฯ', title: 'คณิตศาสตร์ (Math)', icon: '📐', mockCount: 35 },
+      { key: 'Thai', short: 'ไทย', title: 'ภาษาไทย (Thai)', icon: '📖', mockCount: 15 },
+      { key: 'English', short: 'อังกฤษ', title: 'ภาษาอังกฤษ (English)', icon: '🔤', mockCount: 25 },
+      { key: 'General', short: 'ทั่วไป', title: 'ความรู้ทั่วไป (General)', icon: '🌐', mockCount: 0 },
+      { key: 'Law', short: 'กฎหมาย', title: 'กฎหมาย (Law)', icon: '⚖️', mockCount: 25 }
+    ];
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    // App State
+    // ==========================================
+    // 2. STATE MANAGEMENT
+    // ==========================================
     let currentUser = null;
     let userStats = {
       xp: 0,
@@ -232,28 +448,31 @@
       streakDays: 0,
       lastStudyDate: "",
       wrongQuestions: [],
-      completedLessons: []
+      levelProgress: {} // { "Math||อนุกรม||ระดับ 1": { roundsCompleted: 2, stars: 3 } }
     };
+
     let allQuestions = [];
+    let selectedLearnSubject = 'Math';
+    let currentTab = 'learn';
+
+    // Quiz Session State (Learn / Practice / Review)
+    let quizMode = 'learn'; // 'learn' | 'practice' | 'review'
     let activeQuiz = [];
     let currentIndex = 0;
     let sessionScore = 0;
     let sessionXp = 0;
+    let currentLevelKey = null;
+    let currentLevelQuestions = [];
 
-    // DOM Elements
-    const views = {
-      login: document.getElementById('view-login'),
-      dashboard: document.getElementById('view-dashboard'),
-      quiz: document.getElementById('view-quiz'),
-      summary: document.getElementById('view-summary')
-    };
+    // Mock Exam State
+    let mockQuestions = [];
+    let mockAnswers = {}; // { index: choiceText }
+    let mockFlags = new Set();
+    let mockCurrentIdx = 0;
+    let mockTimerInterval = null;
+    let mockSecondsLeft = 10800; // 180 mins
 
-    function showView(name) {
-      Object.values(views).forEach(el => el.classList.add('hidden'));
-      views[name].classList.remove('hidden');
-    }
-
-    // Shuffle Helper (Fisher-Yates)
+    // Helpers
     function shuffleArray(arr) {
       const copy = [...arr];
       for (let i = copy.length - 1; i > 0; i--) {
@@ -263,8 +482,43 @@
       return copy;
     }
 
+    function hideAllMainSections() {
+      ['view-login', 'tab-learn', 'tab-practice', 'tab-mock', 'view-quiz', 'view-mock-runner', 'view-summary'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+    }
+
+    function switchTab(tabName) {
+      if (!currentUser) return;
+      currentTab = tabName;
+      hideAllMainSections();
+      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        const isMatch = btn.dataset.tab === tabName;
+        if (btn.closest('#desktop-nav')) {
+          btn.className = isMatch
+            ? "nav-tab px-4 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer bg-white text-indigo-600 shadow-sm"
+            : "nav-tab px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer";
+        } else {
+          btn.className = isMatch
+            ? "nav-tab flex flex-col items-center gap-0.5 text-[11px] font-bold text-indigo-600 cursor-pointer"
+            : "nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 cursor-pointer";
+        }
+      });
+
+      if (tabName === 'learn') renderLearningPath();
+      if (tabName === 'practice') renderPracticeTab();
+      if (tabName === 'mock') renderMockTab();
+    }
+
+    document.querySelectorAll('.nav-tab').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+    document.getElementById('nav-logo').addEventListener('click', () => switchTab('learn'));
+
     // ==========================================
-    // 2. AUTHENTICATION & USER PROFILE
+    // 3. AUTHENTICATION & FIRESTORE
     // ==========================================
     document.getElementById('btn-google-login').addEventListener('click', () => {
       signInWithPopup(auth, provider).catch(err => alert("เข้าสู่ระบบไม่สำเร็จ: " + err.message));
@@ -272,168 +526,327 @@
 
     onAuthStateChanged(auth, async (user) => {
       const authBar = document.getElementById('auth-bar');
+      const headerStats = document.getElementById('header-stats');
       if (user) {
         currentUser = user;
+        headerStats.classList.remove('hidden');
         authBar.innerHTML = `
-          <div class="flex items-center gap-2">
-            <img src="${user.photoURL || ''}" class="w-7 h-7 rounded-full border border-slate-200" />
-            <span class="text-xs font-medium text-slate-700 hidden sm:inline">${user.displayName}</span>
-          </div>
-          <button id="btn-logout" class="text-xs text-rose-600 hover:underline ml-2 cursor-pointer">ออก</button>
+          <img src="${user.photoURL || ''}" class="w-7 h-7 rounded-full border border-slate-200" />
+          <button id="btn-logout" class="text-xs text-rose-600 hover:underline cursor-pointer">ออก</button>
         `;
         document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
 
         await loadUserStats(user.uid);
-        showView('dashboard');
-        if (allQuestions.length === 0) await fetchQuestions();
+        if (allQuestions.length === 0) {
+          await fetchQuestions();
+        }
+        switchTab('learn');
       } else {
         currentUser = null;
-        authBar.innerHTML = `<span class="text-xs text-slate-500">ยังไม่เข้าสู่ระบบ</span>`;
-        showView('login');
+        headerStats.classList.add('hidden');
+        authBar.innerHTML = `<span class="text-xs text-slate-400">ยังไม่เข้าสู่ระบบ</span>`;
+        hideAllMainSections();
+        document.getElementById('view-login').classList.remove('hidden');
       }
     });
 
     async function loadUserStats(uid) {
       const userRef = doc(db, "users", uid);
       const snap = await getDoc(userRef);
-
       if (snap.exists()) {
         userStats = { ...userStats, ...snap.data() };
+        if (!userStats.levelProgress) userStats.levelProgress = {};
       } else {
-        userStats = {
-          xp: 0,
-          totalAnswered: 0,
-          correctCount: 0,
-          streakDays: 0,
-          lastStudyDate: "",
-          wrongQuestions: [],
-          completedLessons: []
-        };
         await setDoc(userRef, userStats);
       }
-      renderDashboardStats();
+      updateHeaderStats();
     }
 
-    function renderDashboardStats() {
-      document.getElementById('stat-xp').textContent = (userStats.xp || 0).toLocaleString();
-      document.getElementById('stat-total').textContent = userStats.totalAnswered || 0;
-      const acc = userStats.totalAnswered > 0 
-        ? Math.round((userStats.correctCount / userStats.totalAnswered) * 100) 
-        : 0;
-      document.getElementById('stat-accuracy').textContent = acc;
-      document.getElementById('stat-streak').textContent = userStats.streakDays || 0;
+    function updateHeaderStats() {
+      document.getElementById('hdr-xp').textContent = (userStats.xp || 0).toLocaleString();
+      document.getElementById('hdr-streak').textContent = userStats.streakDays || 0;
 
       const wrongList = userStats.wrongQuestions || [];
-      document.getElementById('stat-wrong').textContent = wrongList.length;
-
-      const reviewBanner = document.getElementById('review-banner');
+      const banner = document.getElementById('review-banner');
       if (wrongList.length > 0 && allQuestions.length > 0) {
-        reviewBanner.classList.remove('hidden');
+        banner.classList.remove('hidden');
         document.getElementById('review-count').textContent = wrongList.length;
       } else {
-        reviewBanner.classList.add('hidden');
+        banner.classList.add('hidden');
       }
     }
 
-    // ==========================================
-    // 3. FETCH QUESTIONS FROM GOOGLE SHEETS
-    // ==========================================
     async function fetchQuestions() {
-      const loader = document.getElementById('loading-questions');
-      const subList = document.getElementById('subject-list');
+      const loader = document.getElementById('global-loader');
       loader.classList.remove('hidden');
-      subList.classList.add('hidden');
-
       try {
         const res = await fetch(APPS_SCRIPT_URL);
         const data = await res.json();
         allQuestions = Array.isArray(data) ? data : [];
-        renderSubjects();
-        renderDashboardStats();
       } catch (err) {
-        loader.innerHTML = `<p class="text-sm text-rose-600">โหลดข้อสอบไม่สำเร็จ: ${err.message}</p>`;
+        alert("โหลดข้อสอบไม่สำเร็จ: " + err.message);
+      } finally {
+        loader.classList.add('hidden');
+        updateHeaderStats();
       }
     }
 
-    document.getElementById('btn-refresh-bank').addEventListener('click', fetchQuestions);
+    document.getElementById('btn-refresh-bank').addEventListener('click', async () => {
+      await fetchQuestions();
+      renderLearningPath();
+    });
 
-    function renderSubjects() {
-      const loader = document.getElementById('loading-questions');
-      const subList = document.getElementById('subject-list');
-      loader.classList.add('hidden');
-      subList.classList.remove('hidden');
-
-      const subjectOrder = ['Math', 'Thai', 'English', 'General', 'Law'];
-      const groups = {};
-      subjectOrder.forEach(s => groups[s] = []);
-
-      allQuestions.forEach(q => {
-        const sub = q.subject || "General";
-        if (!groups[sub]) groups[sub] = [];
-        groups[sub].push(q);
+    // ==========================================
+    // 4. DUOLINGO LEARNING PATH RENDERER
+    // ==========================================
+    function renderLearningPath() {
+      // 1. Render Subject Tabs
+      const subTabsEl = document.getElementById('learn-subject-tabs');
+      subTabsEl.innerHTML = "";
+      SUBJECTS.forEach(sub => {
+        const active = sub.key === selectedLearnSubject;
+        const btn = document.createElement('button');
+        btn.className = active
+          ? "py-2 px-1 rounded-xl bg-indigo-600 text-white font-bold text-xs flex flex-col items-center gap-0.5 shadow-sm cursor-pointer"
+          : "py-2 px-1 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 font-medium text-xs flex flex-col items-center gap-0.5 cursor-pointer";
+        btn.innerHTML = `<span class="text-base">${sub.icon}</span><span>${sub.short}</span>`;
+        btn.addEventListener('click', () => {
+          selectedLearnSubject = sub.key;
+          renderLearningPath();
+        });
+        subTabsEl.appendChild(btn);
       });
 
-      subList.innerHTML = "";
-      Object.keys(groups).forEach(subKey => {
-        const qs = groups[subKey];
-        const meta = SUBJECT_META[subKey] || { title: subKey, desc: "คลังข้อสอบ" };
-        const card = document.createElement('div');
-        card.className = "bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-400 shadow-sm transition flex items-center justify-between gap-4 cursor-pointer";
-        card.innerHTML = `
-          <div>
-            <h4 class="font-bold text-slate-800 text-sm">${meta.title}</h4>
-            <p class="text-xs text-slate-500 mt-1 line-clamp-1">${meta.desc}</p>
-            <p class="text-xs font-medium text-indigo-600 mt-2">จำนวน ${qs.length} ข้อ</p>
+      // 2. Group Questions by Section -> Level
+      const subQuestions = allQuestions.filter(q => q.subject === selectedLearnSubject);
+      const container = document.getElementById('learning-path-container');
+      container.innerHTML = "";
+
+      if (subQuestions.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">
+            ยังไม่มีข้อสอบในวิชานี้
+          </div>`;
+        return;
+      }
+
+      // Preserve insertion order of Sections and Levels from Google Sheet
+      const sectionsMap = new Map();
+      subQuestions.forEach(q => {
+        const sec = q.section || "เนื้อหาทั่วไป";
+        const lvl = q.level || "ระดับ 1";
+        if (!sectionsMap.has(sec)) sectionsMap.set(sec, new Map());
+        const lvlMap = sectionsMap.get(sec);
+        if (!lvlMap.has(lvl)) lvlMap.set(lvl, []);
+        lvlMap.get(lvl).push(q);
+      });
+
+      let secIdx = 0;
+      sectionsMap.forEach((lvlMap, sectionName) => {
+        secIdx++;
+        const secWrapper = document.createElement('div');
+        secWrapper.className = "space-y-6";
+
+        // Section Banner (Duolingo Unit Header)
+        secWrapper.innerHTML = `
+          <div class="bg-indigo-600 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-[11px] uppercase tracking-wider text-indigo-200 font-bold">บทที่ ${secIdx}</p>
+              <h3 class="text-base sm:text-lg font-extrabold">${sectionName}</h3>
+            </div>
+            <span class="text-xs bg-white/15 px-3 py-1 rounded-xl font-semibold">${lvlMap.size} ระดับ</span>
           </div>
-          <span class="bg-indigo-50 text-indigo-600 text-xs font-semibold px-3.5 py-2 rounded-xl shrink-0">
-            ${qs.length > 0 ? 'เริ่มทำ →' : 'ยังไม่มีข้อสอบ'}
-          </span>
         `;
-        if (qs.length > 0) {
-          card.addEventListener('click', () => startQuiz(qs, meta.title));
-        } else {
-          card.classList.add('opacity-60', 'cursor-not-allowed');
-        }
-        subList.appendChild(card);
+
+        // Zig-zag Path of Level Nodes
+        const pathDiv = document.createElement('div');
+        pathDiv.className = "flex flex-col items-center gap-6 py-2";
+
+        let nodeIndex = 0;
+        lvlMap.forEach((qs, levelName) => {
+          const levelKey = `${selectedLearnSubject}||${sectionName}||${levelName}`;
+          const prog = userStats.levelProgress?.[levelKey] || { roundsCompleted: 0, stars: 0 };
+          const roundsDone = Math.min(prog.roundsCompleted || 0, 5);
+          const stars = prog.stars || 0;
+          const isCompleted = roundsDone >= 5;
+
+          // Zig-zag horizontal offset
+          const offsets = ['translate-x-0', '-translate-x-10', 'translate-x-0', 'translate-x-10'];
+          const offsetClass = offsets[nodeIndex % offsets.length];
+          nodeIndex++;
+
+          const nodeWrap = document.createElement('div');
+          nodeWrap.className = `flex flex-col items-center ${offsetClass}`;
+
+          const circleBg = isCompleted
+            ? 'bg-amber-400 text-amber-950 border-4 border-amber-200'
+            : (roundsDone > 0 ? 'bg-emerald-500 text-white border-4 border-emerald-200' : 'bg-indigo-600 text-white border-4 border-indigo-200');
+
+          nodeWrap.innerHTML = `
+            <div class="flex gap-0.5 text-sm mb-1">
+              <span class="${stars >= 1 ? 'text-amber-400' : 'text-slate-300'}">★</span>
+              <span class="${stars >= 2 ? 'text-amber-400' : 'text-slate-300'}">★</span>
+              <span class="${stars >= 3 ? 'text-amber-400' : 'text-slate-300'}">★</span>
+            </div>
+            <button class="w-18 h-18 w-[72px] h-[72px] rounded-full ${circleBg} node-shadow flex flex-col items-center justify-center cursor-pointer transition">
+              <span class="text-lg font-extrabold leading-none">${isCompleted ? '👑' : `${roundsDone}/5`}</span>
+              <span class="text-[10px] font-bold mt-1 opacity-90">รอบ</span>
+            </button>
+            <span class="mt-2 text-xs font-bold text-slate-700 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-xs">
+              ${levelName} (${qs.length} ข้อ)
+            </span>
+          `;
+
+          nodeWrap.querySelector('button').addEventListener('click', () => {
+            openNodeModal(sectionName, levelName, levelKey, qs);
+          });
+
+          pathDiv.appendChild(nodeWrap);
+        });
+
+        secWrapper.appendChild(pathDiv);
+        container.appendChild(secWrapper);
+      });
+    }
+
+    // Modal for Level Node
+    function openNodeModal(sectionName, levelName, levelKey, qs) {
+      currentLevelKey = levelKey;
+      currentLevelQuestions = qs;
+      const prog = userStats.levelProgress?.[levelKey] || { roundsCompleted: 0, stars: 0 };
+      const roundsDone = Math.min(prog.roundsCompleted || 0, 5);
+      const nextRound = roundsDone < 5 ? roundsDone + 1 : 5;
+      const stars = prog.stars || 0;
+
+      document.getElementById('modal-section-name').textContent = sectionName;
+      document.getElementById('modal-level-title').textContent = levelName;
+      document.getElementById('modal-round-info').textContent = roundsDone >= 5
+        ? `พิชิตครบ 5 รอบแล้ว! (เล่นซ้ำเพื่อเก็บ 3 ดาวได้)`
+        : `ความคืบหน้า: รอบที่ ${nextRound} จาก 5 (รอบละ 5 ข้อ)`;
+
+      [1, 2, 3].forEach(s => {
+        document.getElementById(`modal-star-${s}`).className = stars >= s ? 'text-amber-400' : 'text-slate-200';
+      });
+
+      const dotsEl = document.getElementById('modal-rounds-dots');
+      dotsEl.innerHTML = "";
+      for (let r = 1; r <= 5; r++) {
+        const dot = document.createElement('div');
+        dot.className = r <= roundsDone
+          ? "w-7 h-2.5 rounded-full bg-emerald-500"
+          : (r === nextRound ? "w-7 h-2.5 rounded-full bg-indigo-600 animate-pulse" : "w-7 h-2.5 rounded-full bg-slate-200");
+        dotsEl.appendChild(dot);
+      }
+
+      document.getElementById('btn-start-node-round').textContent = roundsDone >= 5
+        ? `ฝึกซ้ำระดับนี้ (5 ข้อ)`
+        : `เริ่มรอบที่ ${nextRound} / 5`;
+
+      document.getElementById('node-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('btn-close-modal').addEventListener('click', () => {
+      document.getElementById('node-modal').classList.add('hidden');
+    });
+
+    document.getElementById('btn-start-node-round').addEventListener('click', () => {
+      document.getElementById('node-modal').classList.add('hidden');
+      startLevelRound();
+    });
+
+    function startLevelRound() {
+      // Pick 5 random questions (or all if fewer than 5) from this level
+      const pool = shuffleArray(currentLevelQuestions);
+      const roundQs = pool.slice(0, Math.min(5, pool.length));
+      startQuizSession(roundQs, 'learn');
+    }
+
+    // ==========================================
+    // 5. PRACTICE BY SUBJECT TAB
+    // ==========================================
+    function renderPracticeTab() {
+      const container = document.getElementById('practice-subject-cards');
+      container.innerHTML = "";
+
+      SUBJECTS.forEach(sub => {
+        const qs = allQuestions.filter(q => q.subject === sub.key);
+        const card = document.createElement('div');
+        card.className = "p-4 rounded-2xl border border-slate-200 bg-slate-50/60 flex flex-col justify-between gap-4";
+        card.innerHTML = `
+          <div class="flex items-start gap-3">
+            <span class="text-2xl bg-white w-11 h-11 rounded-xl border border-slate-200 flex items-center justify-center shrink-0">${sub.icon}</span>
+            <div>
+              <h4 class="font-bold text-slate-800 text-sm">${sub.title}</h4>
+              <p class="text-xs text-slate-500 mt-0.5">คลังข้อสอบทั้งหมด ${qs.length} ข้อ</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <select class="practice-count-select flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium text-slate-700">
+              <option value="10">10 ข้อ</option>
+              <option value="20">20 ข้อ</option>
+              <option value="30">30 ข้อ</option>
+              <option value="all">ทั้งหมด (${qs.length} ข้อ)</option>
+            </select>
+            <button class="btn-run-practice bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer ${qs.length === 0 ? 'opacity-50 pointer-events-none' : ''}">
+              เริ่มฝึกทำ
+            </button>
+          </div>
+        `;
+
+        card.querySelector('.btn-run-practice').addEventListener('click', () => {
+          const val = card.querySelector('.practice-count-select').value;
+          const shuffled = shuffleArray(qs);
+          const picked = val === 'all' ? shuffled : shuffled.slice(0, Number(val));
+          startQuizSession(picked, 'practice');
+        });
+
+        container.appendChild(card);
       });
     }
 
     // ==========================================
-    // 4. QUIZ ENGINE (RANDOMIZED CHOICES) & SYNC
+    // 6. QUIZ RUNNER (LEARN / PRACTICE / REVIEW)
     // ==========================================
     document.getElementById('btn-start-review').addEventListener('click', () => {
       const wrongSet = new Set(userStats.wrongQuestions || []);
       const reviewQs = allQuestions.filter(q => wrongSet.has(String(q.id)));
-      if (reviewQs.length === 0) return alert("ไม่มีข้อที่ทำผิดค้างอยู่ครับ");
-      startQuiz(reviewQs, "ทบทวนข้อที่ผิด");
+      if (reviewQs.length === 0) return;
+      startQuizSession(shuffleArray(reviewQs).slice(0, 10), 'review');
     });
 
-    function startQuiz(questions, title) {
-      activeQuiz = shuffleArray(questions); // สุ่มลำดับข้อสอบ
+    function startQuizSession(questions, mode) {
+      quizMode = mode;
+      activeQuiz = questions;
       currentIndex = 0;
       sessionScore = 0;
       sessionXp = 0;
-      document.getElementById('quiz-subject-badge').textContent = title;
-      document.getElementById('quiz-total').textContent = activeQuiz.length;
-      showView('quiz');
-      renderQuestion();
+
+      hideAllMainSections();
+      document.getElementById('view-quiz').classList.remove('hidden');
+      renderQuizQuestion();
     }
 
-    function renderQuestion() {
+    function renderQuizQuestion() {
       const q = activeQuiz[currentIndex];
+      const pct = Math.round((currentIndex / activeQuiz.length) * 100);
+      document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
       document.getElementById('quiz-current').textContent = currentIndex + 1;
-      document.getElementById('quiz-section-badge').textContent = q.section || "ทั่วไป";
-      document.getElementById('quiz-level-badge').textContent = `ระดับ: ${q.level || "ทั่วไป"}`;
-      document.getElementById('quiz-xp-badge').textContent = `+${q.xp || 10} XP`;
+      document.getElementById('quiz-total').textContent = activeQuiz.length;
+
+      document.getElementById('quiz-badge-1').textContent = q.subject;
+      document.getElementById('quiz-badge-2').textContent = `${q.section} • ${q.level}`;
+      document.getElementById('quiz-badge-3').textContent = `+${q.xp || 10} XP`;
       document.getElementById('quiz-question-text').textContent = q.question;
 
+      // Reset Footer
+      const footer = document.getElementById('quiz-footer');
+      footer.className = "p-5 border-t border-slate-200 bg-slate-50 transition-colors";
       document.getElementById('quiz-explanation').classList.add('hidden');
       document.getElementById('btn-next-question').classList.add('hidden');
 
       const choicesEl = document.getElementById('quiz-choices');
       choicesEl.innerHTML = "";
 
-      // นำช้อยส์ที่ถูก (คอลัมน์ E) มารวมกับช้อยส์ที่ผิด (F, G, H) แล้วสุ่มตำแหน่ง
       const rawOptions = [
         { text: q.correctChoice, isCorrect: true },
         ...(q.wrongChoices || []).map(txt => ({ text: txt, isCorrect: false }))
@@ -443,115 +856,430 @@
 
       shuffledOptions.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-slate-50 text-sm text-slate-700 transition flex items-start gap-3 cursor-pointer";
+        btn.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-indigo-300 hover:bg-slate-50 text-sm text-slate-700 font-medium transition flex items-start gap-3 cursor-pointer";
         btn.dataset.correct = opt.isCorrect ? "1" : "0";
         btn.innerHTML = `
-          <span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-600 font-semibold text-xs flex items-center justify-center shrink-0 mt-0.5">${labels[idx] || (idx + 1)}</span>
-          <span>${opt.text}</span>
+          <span class="w-7 h-7 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center shrink-0">${labels[idx] || (idx + 1)}</span>
+          <span class="pt-0.5">${opt.text}</span>
         `;
-        btn.addEventListener('click', () => handleAnswer(opt.isCorrect, btn, choicesEl, q));
+        btn.addEventListener('click', () => handleQuizAnswer(opt.isCorrect, btn, choicesEl, q));
         choicesEl.appendChild(btn);
       });
     }
 
-    async function handleAnswer(isCorrect, clickedBtn, choicesEl, q) {
+    async function handleQuizAnswer(isCorrect, clickedBtn, choicesEl, q) {
       const buttons = choicesEl.querySelectorAll('button');
       buttons.forEach(b => {
         b.disabled = true;
-        // ไฮไลต์ข้อที่ถูกต้องให้เห็นเสมอหลังตอบ
         if (b.dataset.correct === "1") {
-          b.classList.replace('border-slate-200', 'border-emerald-500');
-          b.classList.add('bg-emerald-50', 'text-emerald-900', 'font-medium');
+          b.className = "w-full text-left p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-sm text-emerald-950 font-bold flex items-start gap-3";
         }
       });
 
       const earnedXp = isCorrect ? (Number(q.xp) || 10) : 0;
+      const footer = document.getElementById('quiz-footer');
+      const icon = document.getElementById('quiz-result-icon');
+      const label = document.getElementById('quiz-result-label');
 
       if (isCorrect) {
         sessionScore++;
         sessionXp += earnedXp;
+        footer.className = "p-5 border-t border-emerald-200 bg-emerald-50/80 transition-colors";
+        icon.className = "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white bg-emerald-600";
+        icon.textContent = "✓";
+        label.className = "font-extrabold text-base text-emerald-800";
+        label.textContent = `ถูกต้อง! (+${earnedXp} XP)`;
       } else {
-        clickedBtn.classList.replace('border-slate-200', 'border-rose-500');
-        clickedBtn.classList.add('bg-rose-50', 'text-rose-900');
+        clickedBtn.className = "w-full text-left p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 text-sm text-rose-950 font-bold flex items-start gap-3";
+        footer.className = "p-5 border-t border-rose-200 bg-rose-50/80 transition-colors";
+        icon.className = "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white bg-rose-600";
+        icon.textContent = "✕";
+        label.className = "font-extrabold text-base text-rose-800";
+        label.textContent = `ยังไม่ถูก (คำตอบคือ: ${q.correctChoice})`;
       }
 
-      // Show Explanation
-      const expBox = document.getElementById('quiz-explanation');
-      const resLabel = document.getElementById('quiz-result-label');
-      expBox.classList.remove('hidden');
-      resLabel.textContent = isCorrect 
-        ? `✓ ถูกต้อง! (+${earnedXp} XP)` 
-        : `✕ ไม่ถูกต้อง (คำตอบที่ถูกคือ: ${q.correctChoice})`;
-      resLabel.className = isCorrect ? "font-bold text-sm mb-1.5 text-emerald-700" : "font-bold text-sm mb-1.5 text-rose-700";
+      document.getElementById('quiz-explanation').classList.remove('hidden');
       document.getElementById('quiz-explanation-text').textContent = q.explanation || "ไม่มีคำอธิบายเพิ่มเติม";
-
       document.getElementById('btn-next-question').classList.remove('hidden');
 
-      // Update Firestore Stats
+      // Sync single question answer to Firestore
       if (currentUser) {
-        const userRef = doc(db, "users", currentUser.uid);
-        const today = new Date().toISOString().split('T')[0];
-        let newStreak = userStats.streakDays || 0;
-
-        if (userStats.lastStudyDate !== today) {
-          const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-          newStreak = (userStats.lastStudyDate === yesterday) ? newStreak + 1 : 1;
-        }
-
-        const qId = String(q.id);
-        const updates = {
-          xp: increment(earnedXp),
-          totalAnswered: increment(1),
-          correctCount: increment(isCorrect ? 1 : 0),
-          streakDays: newStreak,
-          lastStudyDate: today
-        };
-
-        if (isCorrect) {
-          updates.wrongQuestions = arrayRemove(qId);
-          userStats.wrongQuestions = (userStats.wrongQuestions || []).filter(id => id !== qId);
-        } else {
-          updates.wrongQuestions = arrayUnion(qId);
-          if (!userStats.wrongQuestions.includes(qId)) userStats.wrongQuestions.push(qId);
-        }
-
-        userStats.xp = (userStats.xp || 0) + earnedXp;
-        userStats.totalAnswered = (userStats.totalAnswered || 0) + 1;
-        if (isCorrect) userStats.correctCount = (userStats.correctCount || 0) + 1;
-        userStats.streakDays = newStreak;
-        userStats.lastStudyDate = today;
-
-        await updateDoc(userRef, updates).catch(console.error);
+        await recordQuestionStat(q.id, isCorrect, earnedXp);
       }
+    }
+
+    async function recordQuestionStat(rawId, isCorrect, earnedXp) {
+      const userRef = doc(db, "users", currentUser.uid);
+      const today = new Date().toISOString().split('T')[0];
+      let newStreak = userStats.streakDays || 0;
+
+      if (userStats.lastStudyDate !== today) {
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        newStreak = (userStats.lastStudyDate === yesterday) ? newStreak + 1 : 1;
+      }
+
+      const qId = String(rawId);
+      const updates = {
+        xp: increment(earnedXp),
+        totalAnswered: increment(1),
+        correctCount: increment(isCorrect ? 1 : 0),
+        streakDays: newStreak,
+        lastStudyDate: today
+      };
+
+      if (isCorrect) {
+        updates.wrongQuestions = arrayRemove(qId);
+        userStats.wrongQuestions = (userStats.wrongQuestions || []).filter(id => id !== qId);
+      } else {
+        updates.wrongQuestions = arrayUnion(qId);
+        if (!userStats.wrongQuestions.includes(qId)) userStats.wrongQuestions.push(qId);
+      }
+
+      userStats.xp = (userStats.xp || 0) + earnedXp;
+      userStats.totalAnswered = (userStats.totalAnswered || 0) + 1;
+      if (isCorrect) userStats.correctCount = (userStats.correctCount || 0) + 1;
+      userStats.streakDays = newStreak;
+      userStats.lastStudyDate = today;
+      updateHeaderStats();
+
+      await updateDoc(userRef, updates).catch(console.error);
     }
 
     document.getElementById('btn-next-question').addEventListener('click', () => {
       currentIndex++;
       if (currentIndex < activeQuiz.length) {
-        renderQuestion();
+        renderQuizQuestion();
       } else {
-        showSummary();
+        finishQuizSession();
       }
     });
 
-    function showSummary() {
-      document.getElementById('summary-score').textContent = sessionScore;
-      document.getElementById('summary-total').textContent = activeQuiz.length;
-      const pct = Math.round((sessionScore / activeQuiz.length) * 100);
-      document.getElementById('summary-percent').textContent = pct;
-      document.getElementById('summary-xp').textContent = sessionXp;
-      showView('summary');
-    }
-
     document.getElementById('btn-exit-quiz').addEventListener('click', () => {
-      renderDashboardStats();
-      showView('dashboard');
+      switchTab(currentTab);
     });
 
+    async function finishQuizSession() {
+      hideAllMainSections();
+      document.getElementById('view-summary').classList.remove('hidden');
+      document.getElementById('mock-result-breakdown').classList.add('hidden');
+
+      const total = activeQuiz.length;
+      const pct = total > 0 ? Math.round((sessionScore / total) * 100) : 0;
+
+      document.getElementById('summary-score').textContent = sessionScore;
+      document.getElementById('summary-total').textContent = total;
+      document.getElementById('summary-percent').textContent = pct;
+      document.getElementById('summary-xp').textContent = sessionXp;
+
+      const starsBox = document.getElementById('summary-stars-box');
+      const nextRoundBtn = document.getElementById('btn-summary-next-round');
+
+      if (quizMode === 'learn' && currentLevelKey) {
+        // Calculate 1 - 3 stars based on accuracy
+        let earnedStars = 1;
+        if (pct >= 80) earnedStars = 3;
+        else if (pct >= 60) earnedStars = 2;
+
+        starsBox.classList.remove('hidden');
+        [1, 2, 3].forEach(s => {
+          document.getElementById(`star-${s}`).className = earnedStars >= s ? 'text-amber-400' : 'text-slate-200';
+        });
+
+        // Update Level Progress in Firestore
+        const prev = userStats.levelProgress?.[currentLevelKey] || { roundsCompleted: 0, stars: 0 };
+        const newRounds = Math.min((prev.roundsCompleted || 0) + 1, 5);
+        const bestStars = Math.max(prev.stars || 0, earnedStars);
+
+        userStats.levelProgress[currentLevelKey] = { roundsCompleted: newRounds, stars: bestStars };
+
+        document.getElementById('summary-title').textContent = newRounds >= 5 ? "พิชิตระดับนี้สำเร็จ!" : `ผ่านรอบที่ ${newRounds} / 5!`;
+        document.getElementById('summary-subtitle').textContent = `คุณได้รับ ${earnedStars} ดาว ในรอบนี้`;
+
+        if (newRounds < 5) {
+          nextRoundBtn.classList.remove('hidden');
+          nextRoundBtn.textContent = `เล่นรอบที่ ${newRounds + 1} ต่อเลย →`;
+        } else {
+          nextRoundBtn.classList.add('hidden');
+        }
+
+        if (currentUser) {
+          const userRef = doc(db, "users", currentUser.uid);
+          await updateDoc(userRef, {
+            [`levelProgress.${currentLevelKey}`]: { roundsCompleted: newRounds, stars: bestStars }
+          }).catch(console.error);
+        }
+      } else {
+        starsBox.classList.add('hidden');
+        nextRoundBtn.classList.add('hidden');
+        document.getElementById('summary-title').textContent = "ฝึกทำข้อสอบเสร็จสิ้น!";
+        document.getElementById('summary-subtitle').textContent = "สถิติถูกบันทึกเข้าสู่ระบบเรียบร้อยแล้ว";
+      }
+    }
+
+    document.getElementById('btn-summary-next-round').addEventListener('click', () => {
+      startLevelRound();
+    });
+
+    // ==========================================
+    // 7. MOCK EXAM (สอบเสมือนจริง)
+    // ==========================================
+    function renderMockTab() {
+      const tbody = document.getElementById('mock-blueprint-body');
+      tbody.innerHTML = "";
+
+      // OCSC Standard Blueprint: Math 35, Thai 15, English 25, Law 25 (+ General mixed into Math/General if needed)
+      const blueprint = [
+        { name: 'ความสามารถในการคิดวิเคราะห์ (Math)', key: 'Math', target: 35, pass: '60% (รวมไทย)' },
+        { name: 'ความสามารถในการคิดวิเคราะห์ (Thai)', key: 'Thai', target: 15, pass: '60% (รวมคณิต)' },
+        { name: 'ภาษาอังกฤษ (English)', target: 25, key: 'English', pass: '50% (13 ข้อ)' },
+        { name: 'ความรู้และลักษณะการเป็นข้าราชการที่ดี (Law)', key: 'Law', target: 25, pass: '60% (15 ข้อ)' }
+      ];
+
+      blueprint.forEach(row => {
+        const available = allQuestions.filter(q => q.subject === row.key).length;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-3 font-medium text-slate-800">${row.name}</td>
+          <td class="p-3 text-center font-bold text-indigo-600">${row.target} ข้อ</td>
+          <td class="p-3 text-center ${available < row.target ? 'text-amber-600 font-semibold' : 'text-emerald-600'}">${available} ข้อ</td>
+          <td class="p-3 text-right text-slate-500">${row.pass}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('btn-start-full-mock').addEventListener('click', () => startMockExam(1.0, 180));
+    document.getElementById('btn-start-mini-mock').addEventListener('click', () => startMockExam(0.5, 90));
+
+    function startMockExam(scale, minutes) {
+      const distribution = [
+        { key: 'Math', count: Math.round(35 * scale) },
+        { key: 'Thai', count: Math.round(15 * scale) },
+        { key: 'English', count: Math.round(25 * scale) },
+        { key: 'Law', count: Math.round(25 * scale) }
+      ];
+
+      let assembled = [];
+      distribution.forEach(d => {
+        const pool = shuffleArray(allQuestions.filter(q => q.subject === d.key));
+        assembled = assembled.concat(pool.slice(0, d.count));
+      });
+
+      // If General has questions and assembled < target, top up
+      if (assembled.length === 0) {
+        return alert("ยังไม่มีข้อสอบในคลังเพียงพอสำหรับเปิดสนามสอบครับ");
+      }
+
+      // Pre-shuffle choices once for each question so answers stay consistent when navigating back/forth
+      mockQuestions = assembled.map(q => {
+        const rawOptions = [
+          { text: q.correctChoice, isCorrect: true },
+          ...(q.wrongChoices || []).map(txt => ({ text: txt, isCorrect: false }))
+        ];
+        return {
+          ...q,
+          shuffledOptions: shuffleArray(rawOptions)
+        };
+      });
+
+      mockAnswers = {};
+      mockFlags = new Set();
+      mockCurrentIdx = 0;
+      mockSecondsLeft = minutes * 60;
+
+      hideAllMainSections();
+      document.getElementById('view-mock-runner').classList.remove('hidden');
+      document.getElementById('mock-q-total').textContent = mockQuestions.length;
+
+      startMockTimer();
+      renderMockQuestion();
+      renderMockPalette();
+    }
+
+    function startMockTimer() {
+      clearInterval(mockTimerInterval);
+      updateTimerDisplay();
+      mockTimerInterval = setInterval(() => {
+        mockSecondsLeft--;
+        updateTimerDisplay();
+        if (mockSecondsLeft <= 0) {
+          clearInterval(mockTimerInterval);
+          alert("หมดเวลาสอบแล้ว! ระบบกำลังส่งกระดาษคำตอบอัตโนมัติ");
+          submitMockExam();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const h = Math.floor(mockSecondsLeft / 3600);
+      const m = Math.floor((mockSecondsLeft % 3600) / 60);
+      const s = mockSecondsLeft % 60;
+      document.getElementById('mock-timer').textContent =
+        `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function renderMockQuestion() {
+      const q = mockQuestions[mockCurrentIdx];
+      document.getElementById('mock-q-num').textContent = mockCurrentIdx + 1;
+      document.getElementById('mock-q-subject').textContent = q.subject;
+      document.getElementById('mock-q-section').textContent = `${q.section} (${q.level})`;
+      document.getElementById('mock-q-text').textContent = q.question;
+
+      const flagBtn = document.getElementById('btn-flag-mock');
+      flagBtn.textContent = mockFlags.has(mockCurrentIdx) ? "🚩 ยกเลิกเครื่องหมาย" : "🏳️ ทำเครื่องหมายทบทวน";
+
+      const choicesEl = document.getElementById('mock-q-choices');
+      choicesEl.innerHTML = "";
+      const labels = ['ก', 'ข', 'ค', 'ง', 'จ'];
+
+      q.shuffledOptions.forEach((opt, idx) => {
+        const isSelected = mockAnswers[mockCurrentIdx] === opt.text;
+        const btn = document.createElement('button');
+        btn.className = isSelected
+          ? "w-full text-left p-4 rounded-xl border-2 border-indigo-600 bg-indigo-50 text-sm text-indigo-950 font-semibold flex items-start gap-3 cursor-pointer"
+          : "w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-slate-50 text-sm text-slate-700 flex items-start gap-3 cursor-pointer";
+        btn.innerHTML = `
+          <span class="w-6 h-6 rounded-lg ${isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'} font-bold text-xs flex items-center justify-center shrink-0">${labels[idx] || (idx + 1)}</span>
+          <span>${opt.text}</span>
+        `;
+        btn.addEventListener('click', () => {
+          mockAnswers[mockCurrentIdx] = opt.text;
+          renderMockQuestion();
+          renderMockPalette();
+        });
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function renderMockPalette() {
+      const palette = document.getElementById('mock-palette');
+      palette.innerHTML = "";
+      mockQuestions.forEach((_, idx) => {
+        const btn = document.createElement('button');
+        const answered = mockAnswers[idx] !== undefined;
+        const flagged = mockFlags.has(idx);
+        const current = idx === mockCurrentIdx;
+
+        let style = "bg-slate-100 text-slate-600 border-slate-200";
+        if (flagged) style = "bg-amber-400 text-amber-950 border-amber-500 font-bold";
+        else if (answered) style = "bg-indigo-600 text-white border-indigo-600 font-bold";
+
+        if (current) style += " ring-2 ring-offset-1 ring-slate-900";
+
+        btn.className = `h-8 rounded-lg border text-[11px] flex items-center justify-center cursor-pointer ${style}`;
+        btn.textContent = idx + 1;
+        btn.addEventListener('click', () => {
+          mockCurrentIdx = idx;
+          renderMockQuestion();
+          renderMockPalette();
+        });
+        palette.appendChild(btn);
+      });
+    }
+
+    document.getElementById('btn-mock-prev').addEventListener('click', () => {
+      if (mockCurrentIdx > 0) {
+        mockCurrentIdx--;
+        renderMockQuestion();
+        renderMockPalette();
+      }
+    });
+
+    document.getElementById('btn-mock-next').addEventListener('click', () => {
+      if (mockCurrentIdx < mockQuestions.length - 1) {
+        mockCurrentIdx++;
+        renderMockQuestion();
+        renderMockPalette();
+      }
+    });
+
+    document.getElementById('btn-flag-mock').addEventListener('click', () => {
+      if (mockFlags.has(mockCurrentIdx)) mockFlags.delete(mockCurrentIdx);
+      else mockFlags.add(mockCurrentIdx);
+      renderMockQuestion();
+      renderMockPalette();
+    });
+
+    document.getElementById('btn-submit-mock').addEventListener('click', () => {
+      const answeredCount = Object.keys(mockAnswers).length;
+      const ok = confirm(`คุณทำข้อสอบไปแล้ว ${answeredCount} จาก ${mockQuestions.length} ข้อ\nยืนยันการส่งกระดาษคำตอบหรือไม่?`);
+      if (ok) submitMockExam();
+    });
+
+    async function submitMockExam() {
+      clearInterval(mockTimerInterval);
+
+      let totalCorrect = 0;
+      let earnedTotalXp = 0;
+      const bySub = {};
+
+      for (let i = 0; i < mockQuestions.length; i++) {
+        const q = mockQuestions[i];
+        if (!bySub[q.subject]) bySub[q.subject] = { correct: 0, total: 0 };
+        bySub[q.subject].total++;
+
+        const chosen = mockAnswers[i];
+        const isCorrect = chosen === q.correctChoice;
+        if (isCorrect) {
+          totalCorrect++;
+          bySub[q.subject].correct++;
+          earnedTotalXp += (Number(q.xp) || 10);
+        }
+
+        if (currentUser && chosen !== undefined) {
+          await recordQuestionStat(q.id, isCorrect, isCorrect ? (Number(q.xp) || 10) : 0);
+        }
+      }
+
+      hideAllMainSections();
+      document.getElementById('view-summary').classList.remove('hidden');
+      document.getElementById('summary-stars-box').classList.add('hidden');
+      document.getElementById('btn-summary-next-round').classList.add('hidden');
+
+      const total = mockQuestions.length;
+      const pct = total > 0 ? Math.round((totalCorrect / total) * 100) : 0;
+      const passed = pct >= 60;
+
+      document.getElementById('summary-title').textContent = passed ? "สอบผ่านเกณฑ์! ยินดีด้วย" : "ยังไม่ผ่านเกณฑ์ 60%";
+      document.getElementById('summary-subtitle').textContent = "ผลคะแนนสนามสอบเสมือนจริง ก.พ. ภาค ก.";
+      document.getElementById('summary-score').textContent = totalCorrect;
+      document.getElementById('summary-total').textContent = total;
+      document.getElementById('summary-percent').textContent = pct;
+      document.getElementById('summary-xp').textContent = earnedTotalXp;
+
+      const breakdownBox = document.getElementById('mock-result-breakdown');
+      breakdownBox.classList.remove('hidden');
+
+      const passBadge = document.getElementById('mock-pass-badge');
+      passBadge.className = passed
+        ? "p-3 rounded-xl text-center font-bold text-sm bg-emerald-50 text-emerald-800 border border-emerald-200"
+        : "p-3 rounded-xl text-center font-bold text-sm bg-rose-50 text-rose-800 border border-rose-200";
+      passBadge.textContent = passed ? "✓ สถานะ: ผ่านเกณฑ์การประเมิน" : "✕ สถานะ: ไม่ผ่านเกณฑ์ (ต้องได้ 60% ขึ้นไป)";
+
+      const rowsEl = document.getElementById('mock-breakdown-rows');
+      rowsEl.innerHTML = "";
+      Object.keys(bySub).forEach(sub => {
+        const s = bySub[sub];
+        const subPct = Math.round((s.correct / s.total) * 100);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-2.5 font-semibold text-slate-700">${sub}</td>
+          <td class="p-2.5 text-center">${s.correct} / ${s.total} (${subPct}%)</td>
+          <td class="p-2.5 text-right font-bold ${subPct >= 60 ? 'text-emerald-600' : 'text-rose-600'}">${subPct >= 60 ? 'ผ่าน' : 'ไม่ผ่าน'}</td>
+        `;
+        rowsEl.appendChild(tr);
+      });
+    }
+
     document.getElementById('btn-back-home').addEventListener('click', () => {
-      renderDashboardStats();
-      showView('dashboard');
+      switchTab(currentTab);
     });
   </script>
 </body>
 </html>
+"""
+
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_code)
+
+print("Updated index.html with Duolingo path, Subject practice, and Mock Exam.")
