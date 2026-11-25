@@ -5,9 +5,21 @@ html_code = """<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>เตรียมสอบ ก.พ. - OCSC Learning Path</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Prompt', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Prompt', sans-serif; background-color: #f8fafc; color: #1e293b; }
+    body { font-family: 'Prompt', sans-serif; }
     .fade-in { animation: fadeIn 0.25s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .duo-btn { box-shadow: 0 4px 0 #4338ca; transition: all 0.1s; }
@@ -16,49 +28,75 @@ html_code = """<!DOCTYPE html>
     .duo-btn-green:active { transform: translateY(3px); box-shadow: 0 1px 0 #15803d; }
     .duo-btn-amber { box-shadow: 0 4px 0 #b45309; transition: all 0.1s; }
     .duo-btn-amber:active { transform: translateY(3px); box-shadow: 0 1px 0 #b45309; }
-    .node-shadow { box-shadow: 0 6px 0 rgba(0,0,0,0.12); }
-    .node-shadow:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.12); }
+    .node-shadow { box-shadow: 0 6px 0 rgba(0,0,0,0.14); }
+    .node-shadow:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.14); }
   </style>
 </head>
-<body class="min-h-screen flex flex-col pb-20 sm:pb-0">
+<body class="min-h-screen flex flex-col pb-20 sm:pb-0 bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
 
   <!-- Top Navbar -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
-    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2.5 cursor-pointer" id="nav-logo">
-        <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-extrabold text-base shadow-sm">
+  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 transition-colors">
+    <div class="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between gap-2">
+      <!-- Brand + Developer Credit -->
+      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" id="nav-logo">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-extrabold text-base shadow-sm">
           ก.พ.
         </div>
-        <div class="hidden sm:block">
-          <h1 class="font-bold text-slate-800 text-sm leading-tight">OCSC Learning</h1>
-          <p class="text-[11px] text-slate-500">ระบบติวสอบ ก.พ. ภาค ก.</p>
+        <div>
+          <h1 class="font-bold text-slate-800 dark:text-white text-sm leading-tight">OCSC Learning</h1>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">ระบบติวสอบ ก.พ. ภาค ก.</p>
+          <p class="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium leading-tight mt-0.5">พัฒนาโดย ครูศตวรรษ แก้วก่า</p>
         </div>
       </div>
 
       <!-- Desktop Navigation Tabs -->
-      <nav id="desktop-nav" class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-        <button data-tab="learn" class="nav-tab px-4 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer bg-white text-indigo-600 shadow-sm">
+      <nav id="desktop-nav" class="hidden lg:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+        <button data-tab="learn" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm">
           เส้นทางเรียนรู้
         </button>
-        <button data-tab="practice" class="nav-tab px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer">
+        <button data-tab="practice" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer">
           ฝึกทำแยกวิชา
         </button>
-        <button data-tab="mock" class="nav-tab px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer">
+        <button data-tab="mock" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer">
           สอบเสมือนจริง
+        </button>
+        <button data-tab="weakness" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer flex items-center gap-1">
+          วิเคราะห์จุดอ่อน
+          <span id="nav-weak-badge" class="hidden bg-rose-500 text-white text-[10px] px-1.5 rounded-full">0</span>
         </button>
       </nav>
 
-      <!-- Stats & Auth -->
-      <div class="flex items-center gap-3">
-        <div id="header-stats" class="hidden flex items-center gap-3 text-xs font-bold">
-          <span class="flex items-center gap-1 text-amber-500 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/60" title="วันต่อเนื่อง">
+      <!-- Right Controls: Theme, Support, Feedback, Stats, Auth -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <!-- Theme Toggle -->
+        <button id="btn-theme-toggle" title="สลับโหมดมืด / สว่าง" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-sm transition cursor-pointer">
+          <span id="theme-icon">🌙</span>
+        </button>
+
+        <!-- Feedback Button -->
+        <button id="btn-open-feedback" title="ให้คะแนน / ข้อเสนอแนะ" class="px-2.5 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200/80 dark:border-amber-800/60 text-amber-700 dark:text-amber-300 text-xs font-semibold flex items-center gap-1 transition cursor-pointer">
+          <span>⭐</span>
+          <span class="hidden sm:inline">แนะนำ/ติชม</span>
+        </button>
+
+        <!-- Support / Donate Button (Subtle & Warm) -->
+        <button id="btn-open-donate" title="สนับสนุนค่ากาแฟผู้พัฒนา" class="px-2.5 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200/80 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 text-xs font-semibold flex items-center gap-1 transition cursor-pointer">
+          <span>☕</span>
+          <span class="hidden sm:inline">กำลังใจ</span>
+        </button>
+
+        <!-- Stats -->
+        <div id="header-stats" class="hidden sm:flex items-center gap-1.5 text-xs font-bold">
+          <span class="flex items-center gap-1 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-1 rounded-lg border border-amber-200/60 dark:border-amber-800/50" title="วันต่อเนื่อง">
             🔥 <span id="hdr-streak">0</span>
           </span>
-          <span class="flex items-center gap-1 text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200/60" title="คะแนน XP">
+          <span class="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-1 rounded-lg border border-indigo-200/60 dark:border-indigo-800/50" title="คะแนน XP">
             ⚡ <span id="hdr-xp">0</span>
           </span>
         </div>
-        <div id="auth-bar" class="flex items-center gap-2">
+
+        <!-- Auth -->
+        <div id="auth-bar" class="flex items-center gap-1.5 pl-1">
           <span class="text-xs text-slate-400">...</span>
         </div>
       </div>
@@ -69,16 +107,17 @@ html_code = """<!DOCTYPE html>
   <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-6">
 
     <!-- Login View -->
-    <section id="view-login" class="hidden py-12 text-center fade-in">
-      <div class="max-w-md mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
+    <section id="view-login" class="hidden py-10 text-center fade-in">
+      <div class="max-w-md mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 p-8">
         <div class="w-16 h-16 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-5 text-2xl font-extrabold shadow-md">
           ก.พ.
         </div>
-        <h2 class="text-2xl font-bold text-slate-800 mb-2">พิชิตข้อสอบ ก.พ. ทีละด่าน</h2>
-        <p class="text-sm text-slate-500 mb-8 leading-relaxed">
-          เรียนรู้เป็นลำดับขั้น ด่านละ 5 รอบ สะสมดาวและ XP พร้อมโหมดฝึกแยกวิชาและสนามสอบเสมือนจริงจับเวลา 3 ชั่วโมง
+        <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-1">พิชิตข้อสอบ ก.พ. ทีละด่าน</h2>
+        <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium mb-3">พัฒนาโดย ครูศตวรรษ แก้วก่า</p>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+          เรียนรู้เป็นลำดับขั้น ด่านละ 5 รอบ สะสมดาวและ XP วิเคราะห์จุดอ่อนอัตโนมัติ พร้อมสนามสอบเสมือนจริงจับเวลา 3 ชั่วโมง
         </p>
-        <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3.5 px-4 rounded-2xl border-2 border-slate-200 shadow-sm transition cursor-pointer">
+        <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-100 font-semibold py-3.5 px-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm transition cursor-pointer">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5" />
           <span>เข้าสู่ระบบด้วย Google</span>
         </button>
@@ -86,21 +125,24 @@ html_code = """<!DOCTYPE html>
     </section>
 
     <!-- Loading Bank -->
-    <div id="global-loader" class="hidden bg-white rounded-2xl border border-slate-200 p-10 text-center my-6">
+    <div id="global-loader" class="hidden bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-10 text-center my-6">
       <div class="inline-block w-7 h-7 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-3"></div>
-      <p class="text-sm font-medium text-slate-600">กำลังโหลดคลังข้อสอบทั้ง 5 วิชา...</p>
+      <p class="text-sm font-medium text-slate-600 dark:text-slate-300">กำลังโหลดคลังข้อสอบทั้ง 5 วิชา...</p>
     </div>
 
     <!-- ========================================== -->
     <!-- TAB 1: DUOLINGO LEARNING PATH              -->
     <!-- ========================================== -->
-    <section id="tab-learn" class="hidden space-y-6 fade-in">
+    <section id="tab-learn" class="hidden space-y-5 fade-in">
       
       <!-- Subject Selector Pills -->
-      <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+      <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
         <div class="flex items-center justify-between mb-2 px-1">
-          <span class="text-xs font-semibold text-slate-500">เลือกวิชาที่ต้องการเรียน</span>
-          <button id="btn-refresh-bank" class="text-[11px] text-indigo-600 hover:underline cursor-pointer">อัปเดตคลังข้อสอบ</button>
+          <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">เลือกวิชาที่ต้องการเรียน</span>
+          <div class="flex items-center gap-3">
+            <button id="btn-toggle-all-sections" class="text-[11px] text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer">ย่อ/ขยายทั้งหมด</button>
+            <button id="btn-refresh-bank" class="text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer">อัปเดตคลังข้อสอบ</button>
+          </div>
         </div>
         <div id="learn-subject-tabs" class="grid grid-cols-5 gap-1.5">
           <!-- Subject buttons injected via JS -->
@@ -108,18 +150,23 @@ html_code = """<!DOCTYPE html>
       </div>
 
       <!-- Review Wrong Banner -->
-      <div id="review-banner" class="hidden bg-rose-50 border-2 border-rose-200 rounded-2xl p-4 flex items-center justify-between gap-3">
+      <div id="review-banner" class="hidden bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-200 dark:border-rose-800/70 rounded-2xl p-4 flex items-center justify-between gap-3">
         <div>
-          <h3 class="font-bold text-rose-900 text-sm">ทบทวนจุดอ่อน (<span id="review-count">0</span> ข้อ)</h3>
-          <p class="text-xs text-rose-700">เก็บกวาดข้อที่เคยตอบผิดเพื่อรับ XP พิเศษ</p>
+          <h3 class="font-bold text-rose-900 dark:text-rose-200 text-sm">ทบทวนจุดอ่อน (<span id="review-count">0</span> ข้อ)</h3>
+          <p class="text-xs text-rose-700 dark:text-rose-300">ต้องตอบถูกซ้ำ 2 ครั้งเพื่อปลดล็อกออกจากคลังจุดอ่อน</p>
         </div>
-        <button id="btn-start-review" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shrink-0 cursor-pointer">
-          ทบทวนเลย
-        </button>
+        <div class="flex items-center gap-2 shrink-0">
+          <button id="btn-goto-weakness" class="bg-white dark:bg-slate-800 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-700 text-xs font-bold px-3 py-2.5 rounded-xl transition cursor-pointer">
+            ดูวิเคราะห์
+          </button>
+          <button id="btn-start-review" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition cursor-pointer">
+            ทบทวนเลย
+          </button>
+        </div>
       </div>
 
-      <!-- Path Container (Sections & Levels) -->
-      <div id="learning-path-container" class="space-y-8 pb-8">
+      <!-- Path Container (Collapsible Sections & Levels) -->
+      <div id="learning-path-container" class="space-y-6 pb-6">
         <!-- Sections & Nodes injected via JS -->
       </div>
     </section>
@@ -128,9 +175,9 @@ html_code = """<!DOCTYPE html>
     <!-- TAB 2: PRACTICE BY SUBJECT (แยกวิชา)        -->
     <!-- ========================================== -->
     <section id="tab-practice" class="hidden space-y-5 fade-in">
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-        <h2 class="text-lg font-bold text-slate-800">ฝึกทำข้อสอบแบบแยกวิชา</h2>
-        <p class="text-xs text-slate-500 mt-1">เลือกวิชาและจำนวนข้อที่ต้องการฝึกทำ พร้อมเฉลยละเอียดทันทีหลังตอบแต่ละข้อ</p>
+      <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <h2 class="text-lg font-bold text-slate-800 dark:text-white">ฝึกทำข้อสอบแบบแยกวิชา</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">เลือกวิชาและจำนวนข้อที่ต้องการฝึกทำ พร้อมเฉลยละเอียดทันทีหลังตอบแต่ละข้อ</p>
 
         <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4" id="practice-subject-cards">
           <!-- Practice cards injected via JS -->
@@ -142,23 +189,23 @@ html_code = """<!DOCTYPE html>
     <!-- TAB 3: MOCK EXAM (สอบเสมือนจริง)             -->
     <!-- ========================================== -->
     <section id="tab-mock" class="hidden space-y-5 fade-in">
-      <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+      <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
           <div>
-            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">สนามสอบจำลอง ก.พ. ภาค ก.</span>
-            <h2 class="text-xl font-bold text-slate-800 mt-2">ทำข้อสอบเสมือนจริง (จับเวลา 3 ชั่วโมง)</h2>
-            <p class="text-xs text-slate-500 mt-1">โครงสร้างจำนวนข้อและเกณฑ์ผ่าน 60% ตามมาตรฐานสำนักงาน ก.พ. (ระดับ ป.ตรี)</p>
+            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-3 py-1 rounded-full">สนามสอบจำลอง ก.พ. ภาค ก.</span>
+            <h2 class="text-xl font-bold text-slate-800 dark:text-white mt-2">ทำข้อสอบเสมือนจริง (จับเวลา 3 ชั่วโมง)</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">โครงสร้างจำนวนข้อและเกณฑ์ผ่าน 60% ตามมาตรฐานสำนักงาน ก.พ. (ระดับ ป.ตรี)</p>
           </div>
-          <div class="bg-slate-50 px-4 py-3 rounded-2xl border border-slate-200 text-center shrink-0">
-            <p class="text-[11px] text-slate-500">เวลาสอบมาตรฐาน</p>
-            <p class="text-xl font-extrabold text-slate-800">180 นาที</p>
+          <div class="bg-slate-50 dark:bg-slate-800 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-center shrink-0">
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">เวลาสอบมาตรฐาน</p>
+            <p class="text-xl font-extrabold text-slate-800 dark:text-white">180 นาที</p>
           </div>
         </div>
 
         <!-- Exam Blueprint Table -->
-        <div class="my-6 overflow-hidden rounded-2xl border border-slate-200">
+        <div class="my-6 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
           <table class="w-full text-left text-xs">
-            <thead class="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+            <thead class="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-700">
               <tr>
                 <th class="p-3">หมวดวิชาสอบ</th>
                 <th class="p-3 text-center">สัดส่วนข้อสอบจริง</th>
@@ -166,13 +213,13 @@ html_code = """<!DOCTYPE html>
                 <th class="p-3 text-right">เกณฑ์ผ่าน</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100" id="mock-blueprint-body">
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="mock-blueprint-body">
               <!-- Rows injected via JS -->
             </tbody>
           </table>
         </div>
 
-        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 text-xs text-amber-800 space-y-1">
+        <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-2xl p-4 mb-6 text-xs text-amber-800 dark:text-amber-200 space-y-1">
           <p class="font-bold">กติกาโหมดสอบเสมือนจริง:</p>
           <p>• ระบบจะสุ่มข้อสอบตามสัดส่วนจริงของแต่ละวิชา (หากวิชาใดในคลังมีไม่ครบ ระบบจะดึงสูงสุดเท่าที่มี)</p>
           <p>• ระหว่างทำข้อสอบจะยังไม่แสดงเฉลย สามารถกดข้ามไป-กลับระหว่างข้อได้ และส่งกระดาษคำตอบเมื่อทำเสร็จ</p>
@@ -190,30 +237,78 @@ html_code = """<!DOCTYPE html>
     </section>
 
     <!-- ========================================== -->
-    <!-- QUIZ VIEW (LEARN & PRACTICE MODE)          -->
+    <!-- TAB 4: WEAKNESS ANALYTICS (วิเคราะห์จุดอ่อน) -->
+    <!-- ========================================== -->
+    <section id="tab-weakness" class="hidden space-y-5 fade-in">
+      <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+          <div>
+            <span class="text-xs font-bold text-rose-600 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 px-3 py-1 rounded-full">ระบบวิเคราะห์จุดอ่อนอัจฉริยะ</span>
+            <h2 class="text-xl font-bold text-slate-800 dark:text-white mt-2">เจาะลึกข้อที่ผิดบ่อย & บทที่ต้องเสริม</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              เงื่อนไขการพิชิตจุดอ่อน: ข้อที่ตอบผิดจะต้องฝึกตอบให้ <strong class="text-emerald-600 dark:text-emerald-400">ถูกซ้ำ 2 ครั้ง</strong> ระบบจึงจะตัดออกจากรายการจุดอ่อนอัตโนมัติ
+            </p>
+          </div>
+          <button id="btn-weakness-drill" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-5 py-3 rounded-2xl shadow-sm transition shrink-0 cursor-pointer">
+            เริ่มซ่อมจุดอ่อน (สูงสุด 10 ข้อ)
+          </button>
+        </div>
+
+        <!-- Subject Weakness Breakdown Bars -->
+        <div class="mt-6">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">สัดส่วนข้อผิดค้างซ่อมแยกรายวิชา</h3>
+          <div id="weakness-subject-bars" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Bars injected via JS -->
+          </div>
+        </div>
+
+        <!-- Top Weak Sections -->
+        <div class="mt-6">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">บทเรียน (Section) ที่พบจุดอ่อนมากที่สุด</h3>
+          <div id="weakness-section-list" class="space-y-2">
+            <!-- Top weak sections injected via JS -->
+          </div>
+        </div>
+
+        <!-- Detailed List of Frequent Wrong Questions -->
+        <div class="mt-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">รายการข้อสอบที่ยังติดค้าง (เรียงตามจำนวนครั้งที่ผิดบ่อยสุด)</h3>
+            <span id="weakness-total-label" class="text-xs font-bold text-rose-600 dark:text-rose-400">0 ข้อ</span>
+          </div>
+          <div id="weakness-questions-list" class="space-y-3">
+            <!-- Detailed wrong questions injected via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- QUIZ VIEW (LEARN & PRACTICE & REVIEW)      -->
     <!-- ========================================== -->
     <section id="view-quiz" class="hidden fade-in">
-      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
         
         <!-- Top Progress Bar -->
-        <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-4">
-          <button id="btn-exit-quiz" class="text-slate-400 hover:text-slate-700 font-bold text-lg cursor-pointer">✕</button>
-          <div class="flex-1 bg-slate-100 h-3 rounded-full overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-4">
+          <button id="btn-exit-quiz" class="text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold text-lg cursor-pointer">✕</button>
+          <div class="flex-1 bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden">
             <div id="quiz-progress-bar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 0%"></div>
           </div>
-          <span class="text-xs font-bold text-slate-600"><span id="quiz-current">1</span>/<span id="quiz-total">5</span></span>
+          <span class="text-xs font-bold text-slate-600 dark:text-slate-300"><span id="quiz-current">1</span>/<span id="quiz-total">5</span></span>
         </div>
 
         <!-- Meta Badges -->
         <div class="px-6 pt-4 flex flex-wrap items-center gap-2">
-          <span id="quiz-badge-1" class="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg">วิชา</span>
-          <span id="quiz-badge-2" class="text-[11px] font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">เนื้อหา</span>
-          <span id="quiz-badge-3" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg">+10 XP</span>
+          <span id="quiz-badge-1" class="text-[11px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-2.5 py-1 rounded-lg">วิชา</span>
+          <span id="quiz-badge-2" class="text-[11px] font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg">เนื้อหา</span>
+          <span id="quiz-badge-3" class="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-2.5 py-1 rounded-lg">+10 XP</span>
+          <span id="quiz-badge-streak" class="hidden text-[11px] font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/70 px-2.5 py-1 rounded-lg">สถานะซ่อมจุดอ่อน</span>
         </div>
 
         <!-- Question & Choices -->
         <div class="p-6">
-          <p id="quiz-question-text" class="text-base sm:text-lg font-semibold text-slate-800 leading-relaxed mb-6 whitespace-pre-line">
+          <p id="quiz-question-text" class="text-base sm:text-lg font-semibold text-slate-800 dark:text-slate-100 leading-relaxed mb-6 whitespace-pre-line">
             คำถาม...
           </p>
 
@@ -223,13 +318,14 @@ html_code = """<!DOCTYPE html>
         </div>
 
         <!-- Bottom Feedback Drawer -->
-        <div id="quiz-footer" class="p-5 border-t border-slate-200 bg-slate-50 transition-colors">
+        <div id="quiz-footer" class="p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 transition-colors">
           <div id="quiz-explanation" class="hidden mb-4">
             <div class="flex items-center gap-2 mb-1">
               <span id="quiz-result-icon" class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"></span>
               <p id="quiz-result-label" class="font-bold text-base"></p>
             </div>
-            <p id="quiz-explanation-text" class="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line pl-8"></p>
+            <p id="quiz-mastery-note" class="hidden text-xs font-semibold text-indigo-600 dark:text-indigo-400 pl-8 mb-1"></p>
+            <p id="quiz-explanation-text" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line pl-8"></p>
           </div>
 
           <div class="flex justify-end">
@@ -246,7 +342,7 @@ html_code = """<!DOCTYPE html>
     <!-- ========================================== -->
     <section id="view-mock-runner" class="hidden fade-in space-y-4">
       <!-- Sticky Exam Header -->
-      <div class="bg-slate-900 text-white px-5 py-3.5 rounded-2xl flex items-center justify-between shadow-md sticky top-18 z-30">
+      <div class="bg-slate-900 text-white px-5 py-3.5 rounded-2xl flex items-center justify-between shadow-md sticky top-18 z-30 border border-slate-800">
         <div class="flex items-center gap-3">
           <span class="text-xs bg-indigo-500/30 border border-indigo-400/40 px-2.5 py-1 rounded-lg font-semibold" id="mock-q-subject">วิชา</span>
           <span class="text-sm font-bold">ข้อที่ <span id="mock-q-num">1</span> / <span id="mock-q-total">100</span></span>
@@ -263,17 +359,17 @@ html_code = """<!DOCTYPE html>
       </div>
 
       <!-- Question Card -->
-      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
         <div class="flex items-center justify-between mb-3">
-          <span id="mock-q-section" class="text-xs text-slate-500 font-medium">หมวดย่อย</span>
-          <button id="btn-flag-mock" class="text-xs text-amber-600 hover:underline cursor-pointer">🚩 ทำเครื่องหมายทบทวน</button>
+          <span id="mock-q-section" class="text-xs text-slate-500 dark:text-slate-400 font-medium">หมวดย่อย</span>
+          <button id="btn-flag-mock" class="text-xs text-amber-600 dark:text-amber-400 hover:underline cursor-pointer">🚩 ทำเครื่องหมายทบทวน</button>
         </div>
-        <p id="mock-q-text" class="text-base font-medium text-slate-800 leading-relaxed mb-6 whitespace-pre-line"></p>
+        <p id="mock-q-text" class="text-base font-medium text-slate-800 dark:text-slate-100 leading-relaxed mb-6 whitespace-pre-line"></p>
         <div id="mock-q-choices" class="space-y-3"></div>
 
         <!-- Prev / Next Navigation -->
-        <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
-          <button id="btn-mock-prev" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer">
+        <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <button id="btn-mock-prev" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
             ← ข้อก่อนหน้า
           </button>
           <button id="btn-mock-next" class="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 cursor-pointer">
@@ -283,13 +379,13 @@ html_code = """<!DOCTYPE html>
       </div>
 
       <!-- Question Palette Grid -->
-      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
         <div class="flex items-center justify-between mb-3">
-          <p class="text-xs font-bold text-slate-700">กระดาษคำตอบ (คลิกเพื่อข้ามข้อ)</p>
-          <div class="flex items-center gap-3 text-[11px] text-slate-500">
+          <p class="text-xs font-bold text-slate-700 dark:text-slate-200">กระดาษคำตอบ (คลิกเพื่อข้ามข้อ)</p>
+          <div class="flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
             <span class="flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-sm bg-indigo-600 inline-block"></i> ตอบแล้ว</span>
             <span class="flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-sm bg-amber-400 inline-block"></i> ติดธง</span>
-            <span class="flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-sm bg-slate-100 border border-slate-300 inline-block"></i> ยังไม่ตอบ</span>
+            <span class="flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-sm bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 inline-block"></i> ยังไม่ตอบ</span>
           </div>
         </div>
         <div id="mock-palette" class="grid grid-cols-10 sm:grid-cols-15 gap-1.5"></div>
@@ -300,46 +396,46 @@ html_code = """<!DOCTYPE html>
     <!-- SUMMARY VIEW (LESSON / PRACTICE / MOCK)    -->
     <!-- ========================================== -->
     <section id="view-summary" class="hidden fade-in">
-      <div class="max-w-xl mx-auto bg-white rounded-3xl border border-slate-200 shadow-sm p-8 text-center">
+      <div class="max-w-xl mx-auto bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 text-center">
         
         <!-- Stars Display (For Duolingo Level Mode) -->
         <div id="summary-stars-box" class="hidden flex justify-center gap-3 mb-4 text-4xl">
-          <span id="star-1" class="text-slate-200">★</span>
-          <span id="star-2" class="text-slate-200">★</span>
-          <span id="star-3" class="text-slate-200">★</span>
+          <span id="star-1" class="text-slate-200 dark:text-slate-700">★</span>
+          <span id="star-2" class="text-slate-200 dark:text-slate-700">★</span>
+          <span id="star-3" class="text-slate-200 dark:text-slate-700">★</span>
         </div>
 
-        <h2 id="summary-title" class="text-2xl font-extrabold text-slate-800 mb-1">ยอดเยี่ยมมาก!</h2>
-        <p id="summary-subtitle" class="text-sm text-slate-500 mb-6">สรุปผลการทำแบบทดสอบ</p>
+        <h2 id="summary-title" class="text-2xl font-extrabold text-slate-800 dark:text-white mb-1">ยอดเยี่ยมมาก!</h2>
+        <p id="summary-subtitle" class="text-sm text-slate-500 dark:text-slate-400 mb-6">สรุปผลการทำแบบทดสอบ</p>
 
-        <div class="bg-slate-50 rounded-2xl p-4 mb-6 grid grid-cols-3 gap-2 border border-slate-100">
+        <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 mb-6 grid grid-cols-3 gap-2 border border-slate-100 dark:border-slate-700">
           <div>
-            <p class="text-xs text-slate-500">คะแนนที่ได้</p>
-            <p class="text-xl font-extrabold text-indigo-600"><span id="summary-score">0</span>/<span id="summary-total">0</span></p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">คะแนนที่ได้</p>
+            <p class="text-xl font-extrabold text-indigo-600 dark:text-indigo-400"><span id="summary-score">0</span>/<span id="summary-total">0</span></p>
           </div>
-          <div class="border-x border-slate-200">
-            <p class="text-xs text-slate-500">ความแม่นยำ</p>
-            <p class="text-xl font-extrabold text-emerald-600"><span id="summary-percent">0</span>%</p>
+          <div class="border-x border-slate-200 dark:border-slate-700">
+            <p class="text-xs text-slate-500 dark:text-slate-400">ความแม่นยำ</p>
+            <p class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400"><span id="summary-percent">0</span>%</p>
           </div>
           <div>
-            <p class="text-xs text-slate-500">ได้รับ XP</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">ได้รับ XP</p>
             <p class="text-xl font-extrabold text-amber-500">+<span id="summary-xp">0</span></p>
           </div>
         </div>
 
-        <!-- Mock Exam Breakdown (Only shown after Mock Exam) -->
+        <!-- Mock Exam Breakdown -->
         <div id="mock-result-breakdown" class="hidden text-left mb-6 space-y-3">
           <div id="mock-pass-badge" class="p-3 rounded-xl text-center font-bold text-sm"></div>
-          <div class="border border-slate-200 rounded-xl overflow-hidden text-xs">
+          <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden text-xs">
             <table class="w-full">
-              <thead class="bg-slate-50 border-b border-slate-200">
+              <thead class="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th class="p-2.5 text-left">หมวดวิชา</th>
                   <th class="p-2.5 text-center">คะแนน</th>
                   <th class="p-2.5 text-right">เกณฑ์ 60%</th>
                 </tr>
               </thead>
-              <tbody id="mock-breakdown-rows" class="divide-y divide-slate-100"></tbody>
+              <tbody id="mock-breakdown-rows" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
             </table>
           </div>
         </div>
@@ -357,43 +453,58 @@ html_code = """<!DOCTYPE html>
 
   </main>
 
+  <!-- Subtle Footer with Developer & Support Link -->
+  <footer class="max-w-4xl w-full mx-auto px-4 py-6 text-center text-xs text-slate-400 dark:text-slate-500 border-t border-slate-200/70 dark:border-slate-800/70 mt-4">
+    <p>ระบบติวสอบ ก.พ. ภาค ก. • พัฒนาโดย <span class="font-semibold text-slate-600 dark:text-slate-300">ครูศตวรรษ แก้วก่า</span></p>
+    <div class="flex items-center justify-center gap-4 mt-2">
+      <button id="footer-btn-feedback" class="hover:text-indigo-600 dark:hover:text-indigo-400 underline cursor-pointer">ส่งข้อเสนอแนะ / ให้ดาว</button>
+      <span>•</span>
+      <button id="footer-btn-donate" class="hover:text-emerald-600 dark:hover:text-emerald-400 underline cursor-pointer">ร่วมสนับสนุนค่ากาแฟผู้พัฒนา ☕</button>
+    </div>
+  </footer>
+
   <!-- Mobile Bottom Navigation -->
-  <nav id="mobile-nav" class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 flex justify-around py-2 z-40">
-    <button data-tab="learn" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-bold text-indigo-600 cursor-pointer">
-      <span class="text-lg">🗺️</span>
+  <nav id="mobile-nav" class="lg:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around py-2 z-40">
+    <button data-tab="learn" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer">
+      <span class="text-base">🗺️</span>
       <span>เส้นทางเรียน</span>
     </button>
-    <button data-tab="practice" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 cursor-pointer">
-      <span class="text-lg">📝</span>
+    <button data-tab="practice" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer">
+      <span class="text-base">📝</span>
       <span>ฝึกแยกวิชา</span>
     </button>
-    <button data-tab="mock" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 cursor-pointer">
-      <span class="text-lg">⏱️</span>
+    <button data-tab="mock" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer">
+      <span class="text-base">⏱️</span>
       <span>สอบเสมือนจริง</span>
+    </button>
+    <button data-tab="weakness" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer relative">
+      <span class="text-base">🎯</span>
+      <span>จุดอ่อน</span>
+      <span id="mob-weak-badge" class="hidden absolute -top-0.5 right-1 bg-rose-500 text-white text-[9px] px-1 rounded-full">0</span>
     </button>
   </nav>
 
-  <!-- Level Node Modal (Before starting a Duolingo round) -->
-  <div id="node-modal" class="hidden fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 fade-in">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-xl">
-      <span id="modal-section-name" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Section</span>
-      <h3 id="modal-level-title" class="text-xl font-extrabold text-slate-800 mt-3">ระดับที่ 1</h3>
-      <p id="modal-round-info" class="text-xs text-slate-500 mt-1">ความคืบหน้า: รอบที่ 1 / 5 (รอบละ 5 ข้อ)</p>
+  <!-- ========================================== -->
+  <!-- MODAL 1: LEVEL NODE MODAL                  -->
+  <!-- ========================================== -->
+  <div id="node-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 text-center shadow-xl">
+      <span id="modal-section-name" class="text-xs font-bold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-3 py-1 rounded-full">Section</span>
+      <h3 id="modal-level-title" class="text-xl font-extrabold text-slate-800 dark:text-white mt-3">ระดับที่ 1</h3>
+      <p id="modal-round-info" class="text-xs text-slate-500 dark:text-slate-400 mt-1">ความคืบหน้า: รอบที่ 1 / 5 (รอบละ 5 ข้อ)</p>
 
       <!-- Stars Earned in this Level -->
       <div class="flex justify-center gap-2 my-4 text-3xl">
-        <span id="modal-star-1" class="text-slate-200">★</span>
-        <span id="modal-star-2" class="text-slate-200">★</span>
-        <span id="modal-star-3" class="text-slate-200">★</span>
+        <span id="modal-star-1" class="text-slate-200 dark:text-slate-700">★</span>
+        <span id="modal-star-2" class="text-slate-200 dark:text-slate-700">★</span>
+        <span id="modal-star-3" class="text-slate-200 dark:text-slate-700">★</span>
       </div>
 
       <!-- 5 Rounds Progress Dots -->
-      <div id="modal-rounds-dots" class="flex justify-center gap-2 mb-6">
-        <!-- 5 dots injected via JS -->
-      </div>
+      <div id="modal-rounds-dots" class="flex justify-center gap-2 mb-6"></div>
 
       <div class="flex gap-2">
-        <button id="btn-close-modal" class="flex-1 py-3 rounded-2xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer">
+        <button id="btn-close-modal" class="flex-1 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
           ปิด
         </button>
         <button id="btn-start-node-round" class="flex-2 w-2/3 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-3 px-4 rounded-2xl cursor-pointer">
@@ -403,16 +514,101 @@ html_code = """<!DOCTYPE html>
     </div>
   </div>
 
+  <!-- ========================================== -->
+  <!-- MODAL 2: FEEDBACK & RATING MODAL           -->
+  <!-- ========================================== -->
+  <div id="feedback-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-xl">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-extrabold text-slate-800 dark:text-white">ให้คะแนน & ข้อเสนอแนะ</h3>
+        <button id="btn-close-feedback" class="text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold cursor-pointer">✕</button>
+      </div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+        เลือกกดให้ดาวอย่างเดียว หรือพิมพ์ข้อเสนอแนะเพิ่มเติมเพื่อส่งตรงถึงผู้พัฒนาได้เลยครับ
+      </p>
+
+      <!-- 5-Star Interactive Selector -->
+      <div class="bg-slate-50 dark:bg-slate-800/70 rounded-2xl p-4 text-center mb-4 border border-slate-200/70 dark:border-slate-700">
+        <div id="fb-stars-container" class="flex justify-center gap-2 text-3xl mb-1">
+          <button type="button" data-star="1" class="fb-star text-amber-400 hover:scale-110 transition cursor-pointer">★</button>
+          <button type="button" data-star="2" class="fb-star text-amber-400 hover:scale-110 transition cursor-pointer">★</button>
+          <button type="button" data-star="3" class="fb-star text-amber-400 hover:scale-110 transition cursor-pointer">★</button>
+          <button type="button" data-star="4" class="fb-star text-amber-400 hover:scale-110 transition cursor-pointer">★</button>
+          <button type="button" data-star="5" class="fb-star text-amber-400 hover:scale-110 transition cursor-pointer">★</button>
+        </div>
+        <p id="fb-star-label" class="text-xs font-bold text-amber-600 dark:text-amber-400">5 ดาว - ยอดเยี่ยมมาก!</p>
+      </div>
+
+      <!-- Optional Comment -->
+      <div class="mb-4">
+        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">ข้อเสนอแนะ / แจ้งข้อสอบผิด (ไม่บังคับกรอก)</label>
+        <textarea id="fb-comment" rows="3" placeholder="เช่น อยากให้เพิ่มแนวข้อสอบเรื่อง..., พบข้อผิดพลาดในวิชา..." class="w-full rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm p-3 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500"></textarea>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2">
+        <button id="btn-submit-feedback-db" class="flex-1 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-3 px-4 rounded-2xl cursor-pointer">
+          ส่งคะแนนทันที (ไม่ต้องเปิดเมล)
+        </button>
+        <button id="btn-submit-feedback-email" class="py-3 px-4 rounded-2xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer flex items-center justify-center gap-1">
+          <span>✉️ ส่งเข้าอีเมลโดยตรง</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 3: DONATE / SUPPORT QR MODAL         -->
+  <!-- ========================================== -->
+  <div id="donate-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 text-center shadow-xl relative overflow-hidden">
+      <!-- Subtle decorative top gradient -->
+      <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-500 via-emerald-500 to-amber-400"></div>
+
+      <button id="btn-close-donate" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold cursor-pointer">✕</button>
+
+      <div class="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold px-3 py-1 rounded-full mb-2">
+        <span>☕</span>
+        <span>ร่วมส่งกำลังใจให้ผู้พัฒนา</span>
+      </div>
+
+      <h3 class="text-lg font-extrabold text-slate-800 dark:text-white">เลี้ยงกาแฟ ครูศตวรรษ แก้วก่า</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+        เว็บนี้เปิดให้ใช้งานฟรีเพื่อช่วยน้อง ๆ เตรียมสอบ ก.พ.<br/>หากเห็นว่ามีประโยชน์ สามารถร่วมสนับสนุนค่าดูแลระบบได้ตามกำลังศรัทธาครับ
+      </p>
+
+      <!-- Eye-catching framed QR Code -->
+      <div class="my-5 p-3 bg-gradient-to-br from-indigo-50 via-white to-emerald-50 dark:from-slate-800 dark:via-slate-800 dark:to-slate-800 rounded-2xl border-2 border-indigo-200/80 dark:border-indigo-700/60 shadow-inner inline-block">
+        <div class="bg-white p-2 rounded-xl shadow-xs">
+          <img
+            src="https://s.imgz.io/2026/11/26/-2026-11-26-002015aec6fd411456fde3.png"
+            alt="QR Code ร่วมสนับสนุนผู้พัฒนา"
+            class="w-52 h-52 object-contain mx-auto rounded-lg"
+          />
+        </div>
+        <p class="text-[11px] font-bold text-indigo-700 dark:text-indigo-300 mt-2">สแกนผ่านแอปธนาคารได้ทุกธนาคาร</p>
+      </div>
+
+      <p class="text-[11px] text-slate-400 dark:text-slate-500 mb-4">
+        ขอบคุณทุกกำลังใจ ขอให้สอบผ่าน ก.พ. ภาค ก. ในรอบนี้เลยนะครับ!
+      </p>
+
+      <button id="btn-done-donate" class="w-full py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition cursor-pointer">
+        ปิดหน้าต่างนี้
+      </button>
+    </div>
+  </div>
+
   <!-- Firebase & App Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // ==========================================
     // 1. CONFIGURATION
     // ==========================================
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyK349w7TJJ6fd9sVxcHwS9vC4xOnCSkA6cs9PnhRAH5KCfMUKetg3GJq56pVfbMIu2fg/exec";
+    const DEVELOPER_EMAIL = "e25sag@gmail.com"; // เปลี่ยนเป็นอีเมลจริงของคุณครูได้ตรงนี้ครับ
 
     const firebaseConfig = {
       apiKey: "AIzaSyDerdir4rHDiAoWLDwvjkuZra_XM684cS4",
@@ -438,7 +634,30 @@ html_code = """<!DOCTYPE html>
     const provider = new GoogleAuthProvider();
 
     // ==========================================
-    // 2. STATE MANAGEMENT
+    // 2. THEME MANAGEMENT (DARK / LIGHT)
+    // ==========================================
+    function applyTheme(isDark) {
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('theme-icon').textContent = '☀️';
+        localStorage.setItem('ocsc_theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('theme-icon').textContent = '🌙';
+        localStorage.setItem('ocsc_theme', 'light');
+      }
+    }
+
+    const savedTheme = localStorage.getItem('ocsc_theme');
+    applyTheme(savedTheme === 'dark');
+
+    document.getElementById('btn-theme-toggle').addEventListener('click', () => {
+      const isCurrentlyDark = document.documentElement.classList.contains('dark');
+      applyTheme(!isCurrentlyDark);
+    });
+
+    // ==========================================
+    // 3. STATE MANAGEMENT
     // ==========================================
     let currentUser = null;
     let userStats = {
@@ -448,15 +667,19 @@ html_code = """<!DOCTYPE html>
       streakDays: 0,
       lastStudyDate: "",
       wrongQuestions: [],
-      levelProgress: {} // { "Math||อนุกรม||ระดับ 1": { roundsCompleted: 2, stars: 3 } }
+      // weaknessMap: { [qId]: { wrongCount: 2, correctStreak: 0, lastWrongAt: "..." } }
+      // กติกา: เมื่อตอบผิด wrongCount++, correctStreak = 0; เมื่อตอบถูก correctStreak++ ถ้าถึง 2 ครั้ง -> ตัดทิ้ง!
+      weaknessMap: {},
+      levelProgress: {}
     };
 
     let allQuestions = [];
     let selectedLearnSubject = 'Math';
     let currentTab = 'learn';
+    let collapsedSections = new Set(); // เก็บชื่อ Section ที่ถูกย่ออยู่
 
-    // Quiz Session State (Learn / Practice / Review)
-    let quizMode = 'learn'; // 'learn' | 'practice' | 'review'
+    // Quiz Session State
+    let quizMode = 'learn';
     let activeQuiz = [];
     let currentIndex = 0;
     let sessionScore = 0;
@@ -466,13 +689,12 @@ html_code = """<!DOCTYPE html>
 
     // Mock Exam State
     let mockQuestions = [];
-    let mockAnswers = {}; // { index: choiceText }
+    let mockAnswers = {};
     let mockFlags = new Set();
     let mockCurrentIdx = 0;
     let mockTimerInterval = null;
-    let mockSecondsLeft = 10800; // 180 mins
+    let mockSecondsLeft = 10800;
 
-    // Helpers
     function shuffleArray(arr) {
       const copy = [...arr];
       for (let i = copy.length - 1; i > 0; i--) {
@@ -483,7 +705,7 @@ html_code = """<!DOCTYPE html>
     }
 
     function hideAllMainSections() {
-      ['view-login', 'tab-learn', 'tab-practice', 'tab-mock', 'view-quiz', 'view-mock-runner', 'view-summary'].forEach(id => {
+      ['view-login', 'tab-learn', 'tab-practice', 'tab-mock', 'tab-weakness', 'view-quiz', 'view-mock-runner', 'view-summary'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
     }
@@ -498,27 +720,29 @@ html_code = """<!DOCTYPE html>
         const isMatch = btn.dataset.tab === tabName;
         if (btn.closest('#desktop-nav')) {
           btn.className = isMatch
-            ? "nav-tab px-4 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer bg-white text-indigo-600 shadow-sm"
-            : "nav-tab px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition cursor-pointer";
+            ? "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm flex items-center gap-1"
+            : "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer flex items-center gap-1";
         } else {
           btn.className = isMatch
-            ? "nav-tab flex flex-col items-center gap-0.5 text-[11px] font-bold text-indigo-600 cursor-pointer"
-            : "nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 cursor-pointer";
+            ? "nav-tab flex flex-col items-center gap-0.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer relative"
+            : "nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer relative";
         }
       });
 
       if (tabName === 'learn') renderLearningPath();
       if (tabName === 'practice') renderPracticeTab();
       if (tabName === 'mock') renderMockTab();
+      if (tabName === 'weakness') renderWeaknessTab();
     }
 
     document.querySelectorAll('.nav-tab').forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });
     document.getElementById('nav-logo').addEventListener('click', () => switchTab('learn'));
+    document.getElementById('btn-goto-weakness').addEventListener('click', () => switchTab('weakness'));
 
     // ==========================================
-    // 3. AUTHENTICATION & FIRESTORE
+    // 4. AUTHENTICATION & FIRESTORE
     // ==========================================
     document.getElementById('btn-google-login').addEventListener('click', () => {
       signInWithPopup(auth, provider).catch(err => alert("เข้าสู่ระบบไม่สำเร็จ: " + err.message));
@@ -531,8 +755,8 @@ html_code = """<!DOCTYPE html>
         currentUser = user;
         headerStats.classList.remove('hidden');
         authBar.innerHTML = `
-          <img src="${user.photoURL || ''}" class="w-7 h-7 rounded-full border border-slate-200" />
-          <button id="btn-logout" class="text-xs text-rose-600 hover:underline cursor-pointer">ออก</button>
+          <img src="${user.photoURL || ''}" class="w-7 h-7 rounded-full border border-slate-200 dark:border-slate-700" />
+          <button id="btn-logout" class="text-xs text-rose-600 dark:text-rose-400 hover:underline cursor-pointer">ออก</button>
         `;
         document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
 
@@ -556,21 +780,55 @@ html_code = """<!DOCTYPE html>
       if (snap.exists()) {
         userStats = { ...userStats, ...snap.data() };
         if (!userStats.levelProgress) userStats.levelProgress = {};
+        if (!userStats.weaknessMap) userStats.weaknessMap = {};
+
+        // Migrate legacy wrongQuestions array into weaknessMap if needed
+        let migrated = false;
+        (userStats.wrongQuestions || []).forEach(qId => {
+          if (!userStats.weaknessMap[qId]) {
+            userStats.weaknessMap[qId] = { wrongCount: 1, correctStreak: 0 };
+            migrated = true;
+          }
+        });
+        if (migrated) {
+          await updateDoc(userRef, { weaknessMap: userStats.weaknessMap }).catch(() => {});
+        }
       } else {
         await setDoc(userRef, userStats);
       }
       updateHeaderStats();
     }
 
+    function getActiveWeakIds() {
+      return Object.keys(userStats.weaknessMap || {}).filter(id => {
+        const item = userStats.weaknessMap[id];
+        return item && item.wrongCount > 0 && (item.correctStreak || 0) < 2;
+      });
+    }
+
     function updateHeaderStats() {
       document.getElementById('hdr-xp').textContent = (userStats.xp || 0).toLocaleString();
       document.getElementById('hdr-streak').textContent = userStats.streakDays || 0;
 
-      const wrongList = userStats.wrongQuestions || [];
+      const activeWeakIds = getActiveWeakIds();
+      const weakCount = activeWeakIds.length;
+
+      const navBadge = document.getElementById('nav-weak-badge');
+      const mobBadge = document.getElementById('mob-weak-badge');
+      if (weakCount > 0) {
+        navBadge.classList.remove('hidden');
+        navBadge.textContent = weakCount;
+        mobBadge.classList.remove('hidden');
+        mobBadge.textContent = weakCount;
+      } else {
+        navBadge.classList.add('hidden');
+        mobBadge.classList.add('hidden');
+      }
+
       const banner = document.getElementById('review-banner');
-      if (wrongList.length > 0 && allQuestions.length > 0) {
+      if (weakCount > 0 && allQuestions.length > 0) {
         banner.classList.remove('hidden');
-        document.getElementById('review-count').textContent = wrongList.length;
+        document.getElementById('review-count').textContent = weakCount;
       } else {
         banner.classList.add('hidden');
       }
@@ -597,10 +855,23 @@ html_code = """<!DOCTYPE html>
     });
 
     // ==========================================
-    // 4. DUOLINGO LEARNING PATH RENDERER
+    // 5. DUOLINGO LEARNING PATH (WITH COLLAPSIBLE SECTIONS)
     // ==========================================
+    document.getElementById('btn-toggle-all-sections').addEventListener('click', () => {
+      const subQuestions = allQuestions.filter(q => q.subject === selectedLearnSubject);
+      const allSecKeys = new Set(subQuestions.map(q => `${selectedLearnSubject}||${q.section || "เนื้อหาทั่วไป"}`));
+      
+      // If any section is expanded, collapse all; otherwise expand all
+      const hasExpanded = [...allSecKeys].some(k => !collapsedSections.has(k));
+      if (hasExpanded) {
+        allSecKeys.forEach(k => collapsedSections.add(k));
+      } else {
+        allSecKeys.forEach(k => collapsedSections.delete(k));
+      }
+      renderLearningPath();
+    });
+
     function renderLearningPath() {
-      // 1. Render Subject Tabs
       const subTabsEl = document.getElementById('learn-subject-tabs');
       subTabsEl.innerHTML = "";
       SUBJECTS.forEach(sub => {
@@ -608,7 +879,7 @@ html_code = """<!DOCTYPE html>
         const btn = document.createElement('button');
         btn.className = active
           ? "py-2 px-1 rounded-xl bg-indigo-600 text-white font-bold text-xs flex flex-col items-center gap-0.5 shadow-sm cursor-pointer"
-          : "py-2 px-1 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 font-medium text-xs flex flex-col items-center gap-0.5 cursor-pointer";
+          : "py-2 px-1 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium text-xs flex flex-col items-center gap-0.5 cursor-pointer";
         btn.innerHTML = `<span class="text-base">${sub.icon}</span><span>${sub.short}</span>`;
         btn.addEventListener('click', () => {
           selectedLearnSubject = sub.key;
@@ -617,20 +888,18 @@ html_code = """<!DOCTYPE html>
         subTabsEl.appendChild(btn);
       });
 
-      // 2. Group Questions by Section -> Level
       const subQuestions = allQuestions.filter(q => q.subject === selectedLearnSubject);
       const container = document.getElementById('learning-path-container');
       container.innerHTML = "";
 
       if (subQuestions.length === 0) {
         container.innerHTML = `
-          <div class="bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 text-center text-sm text-slate-500 dark:text-slate-400">
             ยังไม่มีข้อสอบในวิชานี้
           </div>`;
         return;
       }
 
-      // Preserve insertion order of Sections and Levels from Google Sheet
       const sectionsMap = new Map();
       subQuestions.forEach(q => {
         const sec = q.section || "เนื้อหาทั่วไป";
@@ -644,67 +913,100 @@ html_code = """<!DOCTYPE html>
       let secIdx = 0;
       sectionsMap.forEach((lvlMap, sectionName) => {
         secIdx++;
-        const secWrapper = document.createElement('div');
-        secWrapper.className = "space-y-6";
+        const secKey = `${selectedLearnSubject}||${sectionName}`;
+        const isCollapsed = collapsedSections.has(secKey);
 
-        // Section Banner (Duolingo Unit Header)
-        secWrapper.innerHTML = `
-          <div class="bg-indigo-600 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
-            <div>
-              <p class="text-[11px] uppercase tracking-wider text-indigo-200 font-bold">บทที่ ${secIdx}</p>
-              <h3 class="text-base sm:text-lg font-extrabold">${sectionName}</h3>
+        // Calculate section completion stats
+        let completedLevels = 0;
+        let totalStarsInSec = 0;
+        lvlMap.forEach((_, lvlName) => {
+          const prog = userStats.levelProgress?.[`${secKey}||${lvlName}`];
+          if (prog) {
+            if ((prog.roundsCompleted || 0) >= 5) completedLevels++;
+            totalStarsInSec += (prog.stars || 0);
+          }
+        });
+
+        const secWrapper = document.createElement('div');
+        secWrapper.className = "space-y-5";
+
+        // Collapsible Section Banner
+        const bannerBtn = document.createElement('button');
+        bannerBtn.type = "button";
+        bannerBtn.className = "w-full text-left bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer";
+        bannerBtn.innerHTML = `
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] uppercase tracking-wider text-indigo-200 font-bold">บทที่ ${secIdx}</span>
+              <span class="text-[11px] bg-white/15 px-2 py-0.5 rounded-md font-medium">พิชิต ${completedLevels}/${lvlMap.size} ด่าน • ★ ${totalStarsInSec}/${lvlMap.size * 3}</span>
             </div>
-            <span class="text-xs bg-white/15 px-3 py-1 rounded-xl font-semibold">${lvlMap.size} ระดับ</span>
+            <h3 class="text-base sm:text-lg font-extrabold mt-0.5">${sectionName}</h3>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="text-xs bg-white/15 px-2.5 py-1 rounded-xl font-semibold hidden sm:inline">${isCollapsed ? 'คลิกเพื่อขยาย' : 'ย่อบทเรียน'}</span>
+            <span class="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-sm font-bold transition-transform duration-200 ${isCollapsed ? '-rotate-90' : 'rotate-0'}">
+              ▼
+            </span>
           </div>
         `;
 
-        // Zig-zag Path of Level Nodes
-        const pathDiv = document.createElement('div');
-        pathDiv.className = "flex flex-col items-center gap-6 py-2";
-
-        let nodeIndex = 0;
-        lvlMap.forEach((qs, levelName) => {
-          const levelKey = `${selectedLearnSubject}||${sectionName}||${levelName}`;
-          const prog = userStats.levelProgress?.[levelKey] || { roundsCompleted: 0, stars: 0 };
-          const roundsDone = Math.min(prog.roundsCompleted || 0, 5);
-          const stars = prog.stars || 0;
-          const isCompleted = roundsDone >= 5;
-
-          // Zig-zag horizontal offset
-          const offsets = ['translate-x-0', '-translate-x-10', 'translate-x-0', 'translate-x-10'];
-          const offsetClass = offsets[nodeIndex % offsets.length];
-          nodeIndex++;
-
-          const nodeWrap = document.createElement('div');
-          nodeWrap.className = `flex flex-col items-center ${offsetClass}`;
-
-          const circleBg = isCompleted
-            ? 'bg-amber-400 text-amber-950 border-4 border-amber-200'
-            : (roundsDone > 0 ? 'bg-emerald-500 text-white border-4 border-emerald-200' : 'bg-indigo-600 text-white border-4 border-indigo-200');
-
-          nodeWrap.innerHTML = `
-            <div class="flex gap-0.5 text-sm mb-1">
-              <span class="${stars >= 1 ? 'text-amber-400' : 'text-slate-300'}">★</span>
-              <span class="${stars >= 2 ? 'text-amber-400' : 'text-slate-300'}">★</span>
-              <span class="${stars >= 3 ? 'text-amber-400' : 'text-slate-300'}">★</span>
-            </div>
-            <button class="w-18 h-18 w-[72px] h-[72px] rounded-full ${circleBg} node-shadow flex flex-col items-center justify-center cursor-pointer transition">
-              <span class="text-lg font-extrabold leading-none">${isCompleted ? '👑' : `${roundsDone}/5`}</span>
-              <span class="text-[10px] font-bold mt-1 opacity-90">รอบ</span>
-            </button>
-            <span class="mt-2 text-xs font-bold text-slate-700 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-xs">
-              ${levelName} (${qs.length} ข้อ)
-            </span>
-          `;
-
-          nodeWrap.querySelector('button').addEventListener('click', () => {
-            openNodeModal(sectionName, levelName, levelKey, qs);
-          });
-
-          pathDiv.appendChild(nodeWrap);
+        bannerBtn.addEventListener('click', () => {
+          if (collapsedSections.has(secKey)) collapsedSections.delete(secKey);
+          else collapsedSections.add(secKey);
+          renderLearningPath();
         });
 
-        secWrapper.appendChild(pathDiv);
+        secWrapper.appendChild(bannerBtn);
+
+        // Zig-zag Path of Level Nodes (Hidden if collapsed)
+        if (!isCollapsed) {
+          const pathDiv = document.createElement('div');
+          pathDiv.className = "flex flex-col items-center gap-6 py-2 fade-in";
+
+          let nodeIndex = 0;
+          lvlMap.forEach((qs, levelName) => {
+            const levelKey = `${secKey}||${levelName}`;
+            const prog = userStats.levelProgress?.[levelKey] || { roundsCompleted: 0, stars: 0 };
+            const roundsDone = Math.min(prog.roundsCompleted || 0, 5);
+            const stars = prog.stars || 0;
+            const isCompleted = roundsDone >= 5;
+
+            const offsets = ['translate-x-0', '-translate-x-10', 'translate-x-0', 'translate-x-10'];
+            const offsetClass = offsets[nodeIndex % offsets.length];
+            nodeIndex++;
+
+            const nodeWrap = document.createElement('div');
+            nodeWrap.className = `flex flex-col items-center ${offsetClass}`;
+
+            const circleBg = isCompleted
+              ? 'bg-amber-400 text-amber-950 border-4 border-amber-200 dark:border-amber-600'
+              : (roundsDone > 0 ? 'bg-emerald-500 text-white border-4 border-emerald-200 dark:border-emerald-700' : 'bg-indigo-600 text-white border-4 border-indigo-200 dark:border-indigo-800');
+
+            nodeWrap.innerHTML = `
+              <div class="flex gap-0.5 text-sm mb-1">
+                <span class="${stars >= 1 ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'}">★</span>
+                <span class="${stars >= 2 ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'}">★</span>
+                <span class="${stars >= 3 ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'}">★</span>
+              </div>
+              <button class="w-[72px] h-[72px] rounded-full ${circleBg} node-shadow flex flex-col items-center justify-center cursor-pointer transition">
+                <span class="text-lg font-extrabold leading-none">${isCompleted ? '👑' : `${roundsDone}/5`}</span>
+                <span class="text-[10px] font-bold mt-1 opacity-90">รอบ</span>
+              </button>
+              <span class="mt-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700 shadow-xs">
+                ${levelName} (${qs.length} ข้อ)
+              </span>
+            `;
+
+            nodeWrap.querySelector('button').addEventListener('click', () => {
+              openNodeModal(sectionName, levelName, levelKey, qs);
+            });
+
+            pathDiv.appendChild(nodeWrap);
+          });
+
+          secWrapper.appendChild(pathDiv);
+        }
+
         container.appendChild(secWrapper);
       });
     }
@@ -725,7 +1027,7 @@ html_code = """<!DOCTYPE html>
         : `ความคืบหน้า: รอบที่ ${nextRound} จาก 5 (รอบละ 5 ข้อ)`;
 
       [1, 2, 3].forEach(s => {
-        document.getElementById(`modal-star-${s}`).className = stars >= s ? 'text-amber-400' : 'text-slate-200';
+        document.getElementById(`modal-star-${s}`).className = stars >= s ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700';
       });
 
       const dotsEl = document.getElementById('modal-rounds-dots');
@@ -734,7 +1036,7 @@ html_code = """<!DOCTYPE html>
         const dot = document.createElement('div');
         dot.className = r <= roundsDone
           ? "w-7 h-2.5 rounded-full bg-emerald-500"
-          : (r === nextRound ? "w-7 h-2.5 rounded-full bg-indigo-600 animate-pulse" : "w-7 h-2.5 rounded-full bg-slate-200");
+          : (r === nextRound ? "w-7 h-2.5 rounded-full bg-indigo-600 animate-pulse" : "w-7 h-2.5 rounded-full bg-slate-200 dark:bg-slate-700");
         dotsEl.appendChild(dot);
       }
 
@@ -755,14 +1057,13 @@ html_code = """<!DOCTYPE html>
     });
 
     function startLevelRound() {
-      // Pick 5 random questions (or all if fewer than 5) from this level
       const pool = shuffleArray(currentLevelQuestions);
       const roundQs = pool.slice(0, Math.min(5, pool.length));
       startQuizSession(roundQs, 'learn');
     }
 
     // ==========================================
-    // 5. PRACTICE BY SUBJECT TAB
+    // 6. PRACTICE BY SUBJECT TAB
     // ==========================================
     function renderPracticeTab() {
       const container = document.getElementById('practice-subject-cards');
@@ -771,17 +1072,17 @@ html_code = """<!DOCTYPE html>
       SUBJECTS.forEach(sub => {
         const qs = allQuestions.filter(q => q.subject === sub.key);
         const card = document.createElement('div');
-        card.className = "p-4 rounded-2xl border border-slate-200 bg-slate-50/60 flex flex-col justify-between gap-4";
+        card.className = "p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex flex-col justify-between gap-4";
         card.innerHTML = `
           <div class="flex items-start gap-3">
-            <span class="text-2xl bg-white w-11 h-11 rounded-xl border border-slate-200 flex items-center justify-center shrink-0">${sub.icon}</span>
+            <span class="text-2xl bg-white dark:bg-slate-800 w-11 h-11 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0">${sub.icon}</span>
             <div>
-              <h4 class="font-bold text-slate-800 text-sm">${sub.title}</h4>
-              <p class="text-xs text-slate-500 mt-0.5">คลังข้อสอบทั้งหมด ${qs.length} ข้อ</p>
+              <h4 class="font-bold text-slate-800 dark:text-white text-sm">${sub.title}</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">คลังข้อสอบทั้งหมด ${qs.length} ข้อ</p>
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <select class="practice-count-select flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium text-slate-700">
+            <select class="practice-count-select flex-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200">
               <option value="10">10 ข้อ</option>
               <option value="20">20 ข้อ</option>
               <option value="30">30 ข้อ</option>
@@ -805,15 +1106,122 @@ html_code = """<!DOCTYPE html>
     }
 
     // ==========================================
-    // 6. QUIZ RUNNER (LEARN / PRACTICE / REVIEW)
+    // 7. WEAKNESS ANALYTICS & 2x MASTERY REMOVAL
     // ==========================================
-    document.getElementById('btn-start-review').addEventListener('click', () => {
-      const wrongSet = new Set(userStats.wrongQuestions || []);
-      const reviewQs = allQuestions.filter(q => wrongSet.has(String(q.id)));
-      if (reviewQs.length === 0) return;
-      startQuizSession(shuffleArray(reviewQs).slice(0, 10), 'review');
-    });
+    function renderWeaknessTab() {
+      const weakIds = getActiveWeakIds();
+      const qMap = new Map(allQuestions.map(q => [String(q.id), q]));
+      const weakItems = weakIds
+        .map(id => ({ q: qMap.get(id), stat: userStats.weaknessMap[id], id }))
+        .filter(item => item.q !== undefined)
+        .sort((a, b) => (b.stat.wrongCount || 0) - (a.stat.wrongCount || 0));
 
+      document.getElementById('weakness-total-label').textContent = `${weakItems.length} ข้อ`;
+      const drillBtn = document.getElementById('btn-weakness-drill');
+      if (weakItems.length === 0) {
+        drillBtn.classList.add('opacity-50', 'pointer-events-none');
+      } else {
+        drillBtn.classList.remove('opacity-50', 'pointer-events-none');
+      }
+
+      // 1. Subject Breakdown Bars
+      const subBarsEl = document.getElementById('weakness-subject-bars');
+      subBarsEl.innerHTML = "";
+      SUBJECTS.forEach(sub => {
+        const count = weakItems.filter(item => item.q.subject === sub.key).length;
+        const pct = weakItems.length > 0 ? Math.round((count / weakItems.length) * 100) : 0;
+        const div = document.createElement('div');
+        div.className = "p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40";
+        div.innerHTML = `
+          <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+            <span class="text-slate-700 dark:text-slate-200">${sub.icon} ${sub.title}</span>
+            <span class="${count > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}">${count} ข้อ (${pct}%)</span>
+          </div>
+          <div class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div class="h-full bg-rose-500 rounded-full transition-all" style="width: ${pct}%"></div>
+          </div>
+        `;
+        subBarsEl.appendChild(div);
+      });
+
+      // 2. Top Weak Sections
+      const secCounts = {};
+      weakItems.forEach(item => {
+        const key = `${item.q.subject} • ${item.q.section || 'ทั่วไป'}`;
+        secCounts[key] = (secCounts[key] || 0) + (item.stat.wrongCount || 1);
+      });
+      const sortedSecs = Object.entries(secCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      const secListEl = document.getElementById('weakness-section-list');
+      secListEl.innerHTML = "";
+
+      if (sortedSecs.length === 0) {
+        secListEl.innerHTML = `<p class="text-xs text-slate-400 dark:text-slate-500 py-2">เยี่ยมมาก! ยังไม่มีจุดอ่อนสะสมในขณะนี้</p>`;
+      } else {
+        sortedSecs.forEach(([secLabel, errTotal], idx) => {
+          const row = document.createElement('div');
+          row.className = "flex items-center justify-between p-3 rounded-xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200/70 dark:border-rose-900/50 text-xs";
+          row.innerHTML = `
+            <span class="font-bold text-slate-800 dark:text-slate-200">#${idx + 1} ${secLabel}</span>
+            <span class="font-bold text-rose-600 dark:text-rose-400">ผิดสะสม ${errTotal} ครั้ง</span>
+          `;
+          secListEl.appendChild(row);
+        });
+      }
+
+      // 3. Detailed Question Cards
+      const qListEl = document.getElementById('weakness-questions-list');
+      qListEl.innerHTML = "";
+      if (weakItems.length === 0) {
+        qListEl.innerHTML = `
+          <div class="p-8 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400">
+            ไม่มีข้อสอบค้างซ่อม! ข้อที่คุณเคยทำผิดและตอบถูกซ้ำครบ 2 ครั้งได้ถูกตัดออกเรียบร้อยแล้ว 🎉
+          </div>`;
+        return;
+      }
+
+      weakItems.forEach(item => {
+        const streak = item.stat.correctStreak || 0;
+        const card = document.createElement('div');
+        card.className = "p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
+        card.innerHTML = `
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">${item.q.subject}</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400">${item.q.section} • ${item.q.level}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-300">ผิด ${item.stat.wrongCount} ครั้ง</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded ${streak === 1 ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}">
+                ถูกซ้ำ ${streak}/2 ครั้ง
+              </span>
+            </div>
+            <p class="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 line-clamp-2">${item.q.question}</p>
+          </div>
+          <button class="btn-practice-single shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl cursor-pointer">
+            ซ่อมข้อนี้
+          </button>
+        `;
+        card.querySelector('.btn-practice-single').addEventListener('click', () => {
+          startQuizSession([item.q], 'review');
+        });
+        qListEl.appendChild(card);
+      });
+    }
+
+    function launchWeaknessDrill() {
+      const weakIds = getActiveWeakIds();
+      // Prioritize most frequently missed questions first
+      weakIds.sort((a, b) => (userStats.weaknessMap[b]?.wrongCount || 0) - (userStats.weaknessMap[a]?.wrongCount || 0));
+      const topIds = new Set(weakIds.slice(0, 10));
+      const reviewQs = allQuestions.filter(q => topIds.has(String(q.id)));
+      if (reviewQs.length === 0) return;
+      startQuizSession(shuffleArray(reviewQs), 'review');
+    }
+
+    document.getElementById('btn-start-review').addEventListener('click', launchWeaknessDrill);
+    document.getElementById('btn-weakness-drill').addEventListener('click', launchWeaknessDrill);
+
+    // ==========================================
+    // 8. QUIZ RUNNER & 2x STREAK LOGIC
+    // ==========================================
     function startQuizSession(questions, mode) {
       quizMode = mode;
       activeQuiz = questions;
@@ -836,12 +1244,23 @@ html_code = """<!DOCTYPE html>
       document.getElementById('quiz-badge-1').textContent = q.subject;
       document.getElementById('quiz-badge-2').textContent = `${q.section} • ${q.level}`;
       document.getElementById('quiz-badge-3').textContent = `+${q.xp || 10} XP`;
+
+      // Show mastery badge if this question is currently in weaknessMap
+      const weakEntry = userStats.weaknessMap?.[String(q.id)];
+      const streakBadge = document.getElementById('quiz-badge-streak');
+      if (weakEntry && weakEntry.wrongCount > 0 && (weakEntry.correctStreak || 0) < 2) {
+        streakBadge.classList.remove('hidden');
+        streakBadge.textContent = `🎯 จุดอ่อน (ถูกซ้ำ ${weakEntry.correctStreak || 0}/2 ครั้ง)`;
+      } else {
+        streakBadge.classList.add('hidden');
+      }
+
       document.getElementById('quiz-question-text').textContent = q.question;
 
-      // Reset Footer
       const footer = document.getElementById('quiz-footer');
-      footer.className = "p-5 border-t border-slate-200 bg-slate-50 transition-colors";
+      footer.className = "p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 transition-colors";
       document.getElementById('quiz-explanation').classList.add('hidden');
+      document.getElementById('quiz-mastery-note').classList.add('hidden');
       document.getElementById('btn-next-question').classList.add('hidden');
 
       const choicesEl = document.getElementById('quiz-choices');
@@ -856,10 +1275,10 @@ html_code = """<!DOCTYPE html>
 
       shuffledOptions.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-indigo-300 hover:bg-slate-50 text-sm text-slate-700 font-medium transition flex items-start gap-3 cursor-pointer";
+        btn.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:bg-slate-50 dark:hover:bg-slate-800/70 text-sm text-slate-700 dark:text-slate-200 font-medium transition flex items-start gap-3 cursor-pointer";
         btn.dataset.correct = opt.isCorrect ? "1" : "0";
         btn.innerHTML = `
-          <span class="w-7 h-7 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center shrink-0">${labels[idx] || (idx + 1)}</span>
+          <span class="w-7 h-7 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs flex items-center justify-center shrink-0">${labels[idx] || (idx + 1)}</span>
           <span class="pt-0.5">${opt.text}</span>
         `;
         btn.addEventListener('click', () => handleQuizAnswer(opt.isCorrect, btn, choicesEl, q));
@@ -872,7 +1291,7 @@ html_code = """<!DOCTYPE html>
       buttons.forEach(b => {
         b.disabled = true;
         if (b.dataset.correct === "1") {
-          b.className = "w-full text-left p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-sm text-emerald-950 font-bold flex items-start gap-3";
+          b.className = "w-full text-left p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60 text-sm text-emerald-950 dark:text-emerald-200 font-bold flex items-start gap-3";
         }
       });
 
@@ -880,29 +1299,46 @@ html_code = """<!DOCTYPE html>
       const footer = document.getElementById('quiz-footer');
       const icon = document.getElementById('quiz-result-icon');
       const label = document.getElementById('quiz-result-label');
+      const masteryNote = document.getElementById('quiz-mastery-note');
+
+      const qId = String(q.id);
+      const prevWeak = userStats.weaknessMap?.[qId];
 
       if (isCorrect) {
         sessionScore++;
         sessionXp += earnedXp;
-        footer.className = "p-5 border-t border-emerald-200 bg-emerald-50/80 transition-colors";
+        footer.className = "p-5 border-t border-emerald-200 dark:border-emerald-800 bg-emerald-50/80 dark:bg-emerald-950/40 transition-colors";
         icon.className = "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white bg-emerald-600";
         icon.textContent = "✓";
-        label.className = "font-extrabold text-base text-emerald-800";
+        label.className = "font-extrabold text-base text-emerald-800 dark:text-emerald-300";
         label.textContent = `ถูกต้อง! (+${earnedXp} XP)`;
+
+        // Check 2x mastery notification
+        if (prevWeak && prevWeak.wrongCount > 0) {
+          const nextStreak = (prevWeak.correctStreak || 0) + 1;
+          masteryNote.classList.remove('hidden');
+          if (nextStreak >= 2) {
+            masteryNote.textContent = "🎉 ตอบถูกซ้ำครบ 2 ครั้งแล้ว! ระบบได้ตัดข้อนี้ออกจากรายการจุดอ่อนเรียบร้อย";
+          } else {
+            masteryNote.textContent = "✨ ตอบถูกครั้งที่ 1/2 สำหรับจุดอ่อนนี้ (ตอบถูกอีก 1 ครั้งจะตัดออกจากจุดอ่อน)";
+          }
+        }
       } else {
-        clickedBtn.className = "w-full text-left p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 text-sm text-rose-950 font-bold flex items-start gap-3";
-        footer.className = "p-5 border-t border-rose-200 bg-rose-50/80 transition-colors";
+        clickedBtn.className = "w-full text-left p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 dark:bg-rose-950/60 text-sm text-rose-950 dark:text-rose-200 font-bold flex items-start gap-3";
+        footer.className = "p-5 border-t border-rose-200 dark:border-rose-800 bg-rose-50/80 dark:bg-rose-950/40 transition-colors";
         icon.className = "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white bg-rose-600";
         icon.textContent = "✕";
-        label.className = "font-extrabold text-base text-rose-800";
+        label.className = "font-extrabold text-base text-rose-800 dark:text-rose-300";
         label.textContent = `ยังไม่ถูก (คำตอบคือ: ${q.correctChoice})`;
+
+        masteryNote.classList.remove('hidden');
+        masteryNote.textContent = "📌 บันทึกลงคลังจุดอ่อนแล้ว (ต้องฝึกตอบให้ถูกซ้ำ 2 ครั้งเพื่อปลดล็อก)";
       }
 
       document.getElementById('quiz-explanation').classList.remove('hidden');
       document.getElementById('quiz-explanation-text').textContent = q.explanation || "ไม่มีคำอธิบายเพิ่มเติม";
       document.getElementById('btn-next-question').classList.remove('hidden');
 
-      // Sync single question answer to Firestore
       if (currentUser) {
         await recordQuestionStat(q.id, isCorrect, earnedXp);
       }
@@ -919,20 +1355,29 @@ html_code = """<!DOCTYPE html>
       }
 
       const qId = String(rawId);
-      const updates = {
-        xp: increment(earnedXp),
-        totalAnswered: increment(1),
-        correctCount: increment(isCorrect ? 1 : 0),
-        streakDays: newStreak,
-        lastStudyDate: today
-      };
+      if (!userStats.weaknessMap) userStats.weaknessMap = {};
+      const currentEntry = userStats.weaknessMap[qId];
 
       if (isCorrect) {
-        updates.wrongQuestions = arrayRemove(qId);
-        userStats.wrongQuestions = (userStats.wrongQuestions || []).filter(id => id !== qId);
+        if (currentEntry && currentEntry.wrongCount > 0) {
+          const updatedStreak = (currentEntry.correctStreak || 0) + 1;
+          if (updatedStreak >= 2) {
+            // Mastered twice -> Remove completely from weaknessMap!
+            delete userStats.weaknessMap[qId];
+          } else {
+            userStats.weaknessMap[qId] = {
+              ...currentEntry,
+              correctStreak: updatedStreak
+            };
+          }
+        }
       } else {
-        updates.wrongQuestions = arrayUnion(qId);
-        if (!userStats.wrongQuestions.includes(qId)) userStats.wrongQuestions.push(qId);
+        // Missed -> Increment wrongCount and reset correctStreak to 0
+        userStats.weaknessMap[qId] = {
+          wrongCount: (currentEntry?.wrongCount || 0) + 1,
+          correctStreak: 0,
+          lastWrongAt: today
+        };
       }
 
       userStats.xp = (userStats.xp || 0) + earnedXp;
@@ -940,9 +1385,19 @@ html_code = """<!DOCTYPE html>
       if (isCorrect) userStats.correctCount = (userStats.correctCount || 0) + 1;
       userStats.streakDays = newStreak;
       userStats.lastStudyDate = today;
+      userStats.wrongQuestions = getActiveWeakIds();
+
       updateHeaderStats();
 
-      await updateDoc(userRef, updates).catch(console.error);
+      await updateDoc(userRef, {
+        xp: increment(earnedXp),
+        totalAnswered: increment(1),
+        correctCount: increment(isCorrect ? 1 : 0),
+        streakDays: newStreak,
+        lastStudyDate: today,
+        weaknessMap: userStats.weaknessMap,
+        wrongQuestions: userStats.wrongQuestions
+      }).catch(console.error);
     }
 
     document.getElementById('btn-next-question').addEventListener('click', () => {
@@ -975,17 +1430,15 @@ html_code = """<!DOCTYPE html>
       const nextRoundBtn = document.getElementById('btn-summary-next-round');
 
       if (quizMode === 'learn' && currentLevelKey) {
-        // Calculate 1 - 3 stars based on accuracy
         let earnedStars = 1;
         if (pct >= 80) earnedStars = 3;
         else if (pct >= 60) earnedStars = 2;
 
         starsBox.classList.remove('hidden');
         [1, 2, 3].forEach(s => {
-          document.getElementById(`star-${s}`).className = earnedStars >= s ? 'text-amber-400' : 'text-slate-200';
+          document.getElementById(`star-${s}`).className = earnedStars >= s ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700';
         });
 
-        // Update Level Progress in Firestore
         const prev = userStats.levelProgress?.[currentLevelKey] || { roundsCompleted: 0, stars: 0 };
         const newRounds = Math.min((prev.roundsCompleted || 0) + 1, 5);
         const bestStars = Math.max(prev.stars || 0, earnedStars);
@@ -1012,7 +1465,7 @@ html_code = """<!DOCTYPE html>
         starsBox.classList.add('hidden');
         nextRoundBtn.classList.add('hidden');
         document.getElementById('summary-title').textContent = "ฝึกทำข้อสอบเสร็จสิ้น!";
-        document.getElementById('summary-subtitle').textContent = "สถิติถูกบันทึกเข้าสู่ระบบเรียบร้อยแล้ว";
+        document.getElementById('summary-subtitle').textContent = "สถิติและสถานะจุดอ่อนถูกอัปเดตเรียบร้อยแล้ว";
       }
     }
 
@@ -1021,13 +1474,12 @@ html_code = """<!DOCTYPE html>
     });
 
     // ==========================================
-    // 7. MOCK EXAM (สอบเสมือนจริง)
+    // 9. MOCK EXAM (สอบเสมือนจริง)
     // ==========================================
     function renderMockTab() {
       const tbody = document.getElementById('mock-blueprint-body');
       tbody.innerHTML = "";
 
-      // OCSC Standard Blueprint: Math 35, Thai 15, English 25, Law 25 (+ General mixed into Math/General if needed)
       const blueprint = [
         { name: 'ความสามารถในการคิดวิเคราะห์ (Math)', key: 'Math', target: 35, pass: '60% (รวมไทย)' },
         { name: 'ความสามารถในการคิดวิเคราะห์ (Thai)', key: 'Thai', target: 15, pass: '60% (รวมคณิต)' },
@@ -1039,10 +1491,10 @@ html_code = """<!DOCTYPE html>
         const available = allQuestions.filter(q => q.subject === row.key).length;
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="p-3 font-medium text-slate-800">${row.name}</td>
-          <td class="p-3 text-center font-bold text-indigo-600">${row.target} ข้อ</td>
-          <td class="p-3 text-center ${available < row.target ? 'text-amber-600 font-semibold' : 'text-emerald-600'}">${available} ข้อ</td>
-          <td class="p-3 text-right text-slate-500">${row.pass}</td>
+          <td class="p-3 font-medium text-slate-800 dark:text-slate-200">${row.name}</td>
+          <td class="p-3 text-center font-bold text-indigo-600 dark:text-indigo-400">${row.target} ข้อ</td>
+          <td class="p-3 text-center ${available < row.target ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-emerald-600 dark:text-emerald-400'}">${available} ข้อ</td>
+          <td class="p-3 text-right text-slate-500 dark:text-slate-400">${row.pass}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -1065,12 +1517,10 @@ html_code = """<!DOCTYPE html>
         assembled = assembled.concat(pool.slice(0, d.count));
       });
 
-      // If General has questions and assembled < target, top up
       if (assembled.length === 0) {
         return alert("ยังไม่มีข้อสอบในคลังเพียงพอสำหรับเปิดสนามสอบครับ");
       }
 
-      // Pre-shuffle choices once for each question so answers stay consistent when navigating back/forth
       mockQuestions = assembled.map(q => {
         const rawOptions = [
           { text: q.correctChoice, isCorrect: true },
@@ -1136,10 +1586,10 @@ html_code = """<!DOCTYPE html>
         const isSelected = mockAnswers[mockCurrentIdx] === opt.text;
         const btn = document.createElement('button');
         btn.className = isSelected
-          ? "w-full text-left p-4 rounded-xl border-2 border-indigo-600 bg-indigo-50 text-sm text-indigo-950 font-semibold flex items-start gap-3 cursor-pointer"
-          : "w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-slate-50 text-sm text-slate-700 flex items-start gap-3 cursor-pointer";
+          ? "w-full text-left p-4 rounded-xl border-2 border-indigo-600 bg-indigo-50 dark:bg-indigo-950/60 text-sm text-indigo-950 dark:text-indigo-200 font-semibold flex items-start gap-3 cursor-pointer"
+          : "w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-200 flex items-start gap-3 cursor-pointer";
         btn.innerHTML = `
-          <span class="w-6 h-6 rounded-lg ${isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'} font-bold text-xs flex items-center justify-center shrink-0">${labels[idx] || (idx + 1)}</span>
+          <span class="w-6 h-6 rounded-lg ${isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'} font-bold text-xs flex items-center justify-center shrink-0">${labels[idx] || (idx + 1)}</span>
           <span>${opt.text}</span>
         `;
         btn.addEventListener('click', () => {
@@ -1160,11 +1610,11 @@ html_code = """<!DOCTYPE html>
         const flagged = mockFlags.has(idx);
         const current = idx === mockCurrentIdx;
 
-        let style = "bg-slate-100 text-slate-600 border-slate-200";
+        let style = "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700";
         if (flagged) style = "bg-amber-400 text-amber-950 border-amber-500 font-bold";
         else if (answered) style = "bg-indigo-600 text-white border-indigo-600 font-bold";
 
-        if (current) style += " ring-2 ring-offset-1 ring-slate-900";
+        if (current) style += " ring-2 ring-offset-1 ring-slate-900 dark:ring-white";
 
         btn.className = `h-8 rounded-lg border text-[11px] flex items-center justify-center cursor-pointer ${style}`;
         btn.textContent = idx + 1;
@@ -1252,8 +1702,8 @@ html_code = """<!DOCTYPE html>
 
       const passBadge = document.getElementById('mock-pass-badge');
       passBadge.className = passed
-        ? "p-3 rounded-xl text-center font-bold text-sm bg-emerald-50 text-emerald-800 border border-emerald-200"
-        : "p-3 rounded-xl text-center font-bold text-sm bg-rose-50 text-rose-800 border border-rose-200";
+        ? "p-3 rounded-xl text-center font-bold text-sm bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+        : "p-3 rounded-xl text-center font-bold text-sm bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800";
       passBadge.textContent = passed ? "✓ สถานะ: ผ่านเกณฑ์การประเมิน" : "✕ สถานะ: ไม่ผ่านเกณฑ์ (ต้องได้ 60% ขึ้นไป)";
 
       const rowsEl = document.getElementById('mock-breakdown-rows');
@@ -1263,9 +1713,9 @@ html_code = """<!DOCTYPE html>
         const subPct = Math.round((s.correct / s.total) * 100);
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="p-2.5 font-semibold text-slate-700">${sub}</td>
+          <td class="p-2.5 font-semibold text-slate-700 dark:text-slate-200">${sub}</td>
           <td class="p-2.5 text-center">${s.correct} / ${s.total} (${subPct}%)</td>
-          <td class="p-2.5 text-right font-bold ${subPct >= 60 ? 'text-emerald-600' : 'text-rose-600'}">${subPct >= 60 ? 'ผ่าน' : 'ไม่ผ่าน'}</td>
+          <td class="p-2.5 text-right font-bold ${subPct >= 60 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${subPct >= 60 ? 'ผ่าน' : 'ไม่ผ่าน'}</td>
         `;
         rowsEl.appendChild(tr);
       });
@@ -1274,6 +1724,102 @@ html_code = """<!DOCTYPE html>
     document.getElementById('btn-back-home').addEventListener('click', () => {
       switchTab(currentTab);
     });
+
+    // ==========================================
+    // 10. FEEDBACK & RATING MODAL LOGIC
+    // ==========================================
+    let selectedFeedbackStar = 5;
+    const starDescriptions = {
+      1: "1 ดาว - ต้องปรับปรุงเพิ่มเติม",
+      2: "2 ดาว - พอใช้ได้",
+      3: "3 ดาว - ปานกลาง",
+      4: "4 ดาว - ดีมาก มีประโยชน์",
+      5: "5 ดาว - ยอดเยี่ยมมาก!"
+    };
+
+    function updateFeedbackStarsUI(rating) {
+      selectedFeedbackStar = rating;
+      document.querySelectorAll('.fb-star').forEach(btn => {
+        const s = Number(btn.dataset.star);
+        btn.className = s <= rating
+          ? "fb-star text-amber-400 hover:scale-110 transition cursor-pointer"
+          : "fb-star text-slate-300 dark:text-slate-600 hover:scale-110 transition cursor-pointer";
+      });
+      document.getElementById('fb-star-label').textContent = starDescriptions[rating];
+    }
+
+    document.querySelectorAll('.fb-star').forEach(btn => {
+      btn.addEventListener('click', () => updateFeedbackStarsUI(Number(btn.dataset.star)));
+    });
+
+    function openFeedbackModal() {
+      updateFeedbackStarsUI(5);
+      document.getElementById('fb-comment').value = "";
+      document.getElementById('feedback-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('btn-open-feedback').addEventListener('click', openFeedbackModal);
+    document.getElementById('footer-btn-feedback').addEventListener('click', openFeedbackModal);
+    document.getElementById('btn-close-feedback').addEventListener('click', () => {
+      document.getElementById('feedback-modal').classList.add('hidden');
+    });
+
+    // Save Rating & Comment directly to Firestore (1-click star rating without needing email app)
+    document.getElementById('btn-submit-feedback-db').addEventListener('click', async () => {
+      const comment = document.getElementById('fb-comment').value.trim();
+      try {
+        await addDoc(collection(db, "feedbacks"), {
+          rating: selectedFeedbackStar,
+          comment: comment,
+          userEmail: currentUser?.email || "guest",
+          userName: currentUser?.displayName || "ผู้ใช้งาน",
+          createdAt: new Date().toISOString()
+        });
+        document.getElementById('feedback-modal').classList.add('hidden');
+        alert(`ขอบคุณสำหรับ ${selectedFeedbackStar} ดาวและข้อเสนอแนะครับ! ข้อมูลถูกส่งถึงผู้พัฒนาเรียบร้อยแล้ว`);
+      } catch (err) {
+        // Fallback to mailto if Firestore rules block feedbacks collection
+        const subject = encodeURIComponent(`[OCSC Learning] ประเมิน ${selectedFeedbackStar} ดาว`);
+        const body = encodeURIComponent(`คะแนน: ${selectedFeedbackStar}/5 ดาว\nข้อเสนอแนะ:\n${comment || "(กดให้ดาวอย่างเดียว)"}`);
+        window.location.href = `mailto:${DEVELOPER_EMAIL}?subject=${subject}&body=${body}`;
+        document.getElementById('feedback-modal').classList.add('hidden');
+      }
+    });
+
+    // Direct Email Button (mailto)
+    document.getElementById('btn-submit-feedback-email').addEventListener('click', () => {
+      const comment = document.getElementById('fb-comment').value.trim();
+      const subject = encodeURIComponent(`[OCSC Learning] ข้อเสนอแนะ (${selectedFeedbackStar} ดาว)`);
+      const body = encodeURIComponent(
+        `ผู้ส่ง: ${currentUser?.displayName || "ผู้ใช้งาน"} (${currentUser?.email || "-"})\n` +
+        `คะแนนความพึงพอใจ: ${selectedFeedbackStar} / 5 ดาว\n\n` +
+        `ข้อเสนอแนะเพิ่มเติม:\n${comment || "(ไม่ได้ระบุข้อความเพิ่มเติม)"}`
+      );
+      window.location.href = `mailto:${DEVELOPER_EMAIL}?subject=${subject}&body=${body}`;
+      document.getElementById('feedback-modal').classList.add('hidden');
+    });
+
+    // ==========================================
+    // 11. DONATE / SUPPORT MODAL LOGIC
+    // ==========================================
+    function openDonateModal() {
+      document.getElementById('donate-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('btn-open-donate').addEventListener('click', openDonateModal);
+    document.getElementById('footer-btn-donate').addEventListener('click', openDonateModal);
+    document.getElementById('btn-close-donate').addEventListener('click', () => {
+      document.getElementById('donate-modal').classList.add('hidden');
+    });
+    document.getElementById('btn-done-donate').addEventListener('click', () => {
+      document.getElementById('donate-modal').classList.add('hidden');
+    });
   </script>
 </body>
 </html>
+"""
+
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_code)
+
+print("Successfully updated index.html with all requested features.")
