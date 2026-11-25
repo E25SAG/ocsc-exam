@@ -1,4 +1,4 @@
-html_code = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
@@ -30,6 +30,19 @@ html_code = """<!DOCTYPE html>
     .duo-btn-amber:active { transform: translateY(3px); box-shadow: 0 1px 0 #b45309; }
     .node-shadow { box-shadow: 0 6px 0 rgba(0,0,0,0.14); }
     .node-shadow:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.14); }
+    .accordion-content {
+      display: grid;
+      grid-template-rows: 1fr;
+      transition: grid-template-rows 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease;
+      opacity: 1;
+    }
+    .accordion-content.collapsed {
+      grid-template-rows: 0fr;
+      opacity: 0;
+    }
+    .accordion-inner {
+      overflow: hidden;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col pb-20 sm:pb-0 bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
@@ -608,7 +621,7 @@ html_code = """<!DOCTYPE html>
     // 1. CONFIGURATION
     // ==========================================
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyK349w7TJJ6fd9sVxcHwS9vC4xOnCSkA6cs9PnhRAH5KCfMUKetg3GJq56pVfbMIu2fg/exec";
-    const DEVELOPER_EMAIL = "e25sag@gmail.com"; // เปลี่ยนเป็นอีเมลจริงของคุณครูได้ตรงนี้ครับ
+    const DEVELOPER_EMAIL = "e25sag@gmail.com";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDerdir4rHDiAoWLDwvjkuZra_XM684cS4",
@@ -667,8 +680,6 @@ html_code = """<!DOCTYPE html>
       streakDays: 0,
       lastStudyDate: "",
       wrongQuestions: [],
-      // weaknessMap: { [qId]: { wrongCount: 2, correctStreak: 0, lastWrongAt: "..." } }
-      // กติกา: เมื่อตอบผิด wrongCount++, correctStreak = 0; เมื่อตอบถูก correctStreak++ ถ้าถึง 2 ครั้ง -> ตัดทิ้ง!
       weaknessMap: {},
       levelProgress: {}
     };
@@ -676,7 +687,7 @@ html_code = """<!DOCTYPE html>
     let allQuestions = [];
     let selectedLearnSubject = 'Math';
     let currentTab = 'learn';
-    let collapsedSections = new Set(); // เก็บชื่อ Section ที่ถูกย่ออยู่
+    let collapsedSections = new Set();
 
     // Quiz Session State
     let quizMode = 'learn';
@@ -782,7 +793,6 @@ html_code = """<!DOCTYPE html>
         if (!userStats.levelProgress) userStats.levelProgress = {};
         if (!userStats.weaknessMap) userStats.weaknessMap = {};
 
-        // Migrate legacy wrongQuestions array into weaknessMap if needed
         let migrated = false;
         (userStats.wrongQuestions || []).forEach(qId => {
           if (!userStats.weaknessMap[qId]) {
@@ -855,20 +865,31 @@ html_code = """<!DOCTYPE html>
     });
 
     // ==========================================
-    // 5. DUOLINGO LEARNING PATH (WITH COLLAPSIBLE SECTIONS)
+    // 5. DUOLINGO LEARNING PATH (SMOOTH ACCORDION)
     // ==========================================
     document.getElementById('btn-toggle-all-sections').addEventListener('click', () => {
       const subQuestions = allQuestions.filter(q => q.subject === selectedLearnSubject);
-      const allSecKeys = new Set(subQuestions.map(q => `${selectedLearnSubject}||${q.section || "เนื้อหาทั่วไป"}`));
+      const allSecKeys = [...new Set(subQuestions.map(q => `${selectedLearnSubject}||${q.section || "เนื้อหาทั่วไป"}`))];
       
-      // If any section is expanded, collapse all; otherwise expand all
-      const hasExpanded = [...allSecKeys].some(k => !collapsedSections.has(k));
-      if (hasExpanded) {
-        allSecKeys.forEach(k => collapsedSections.add(k));
-      } else {
-        allSecKeys.forEach(k => collapsedSections.delete(k));
-      }
-      renderLearningPath();
+      const hasExpanded = allSecKeys.some(k => !collapsedSections.has(k));
+      allSecKeys.forEach(k => {
+        if (hasExpanded) collapsedSections.add(k);
+        else collapsedSections.delete(k);
+
+        const contentEl = document.querySelector(`[data-sec-content="${CSS.escape(k)}"]`);
+        const arrowEl = document.querySelector(`[data-sec-arrow="${CSS.escape(k)}"]`);
+        const labelEl = document.querySelector(`[data-sec-label="${CSS.escape(k)}"]`);
+        if (contentEl) {
+          contentEl.classList.toggle('collapsed', hasExpanded);
+        }
+        if (arrowEl) {
+          arrowEl.classList.toggle('-rotate-90', hasExpanded);
+          arrowEl.classList.toggle('rotate-0', !hasExpanded);
+        }
+        if (labelEl) {
+          labelEl.textContent = hasExpanded ? 'คลิกเพื่อขยาย' : 'ย่อบทเรียน';
+        }
+      });
     });
 
     function renderLearningPath() {
@@ -916,7 +937,6 @@ html_code = """<!DOCTYPE html>
         const secKey = `${selectedLearnSubject}||${sectionName}`;
         const isCollapsed = collapsedSections.has(secKey);
 
-        // Calculate section completion stats
         let completedLevels = 0;
         let totalStarsInSec = 0;
         lvlMap.forEach((_, lvlName) => {
@@ -928,7 +948,7 @@ html_code = """<!DOCTYPE html>
         });
 
         const secWrapper = document.createElement('div');
-        secWrapper.className = "space-y-5";
+        secWrapper.className = "";
 
         // Collapsible Section Banner
         const bannerBtn = document.createElement('button');
@@ -943,69 +963,87 @@ html_code = """<!DOCTYPE html>
             <h3 class="text-base sm:text-lg font-extrabold mt-0.5">${sectionName}</h3>
           </div>
           <div class="flex items-center gap-2 shrink-0">
-            <span class="text-xs bg-white/15 px-2.5 py-1 rounded-xl font-semibold hidden sm:inline">${isCollapsed ? 'คลิกเพื่อขยาย' : 'ย่อบทเรียน'}</span>
-            <span class="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-sm font-bold transition-transform duration-200 ${isCollapsed ? '-rotate-90' : 'rotate-0'}">
+            <span data-sec-label="${secKey}" class="text-xs bg-white/15 px-2.5 py-1 rounded-xl font-semibold hidden sm:inline">${isCollapsed ? 'คลิกเพื่อขยาย' : 'ย่อบทเรียน'}</span>
+            <span data-sec-arrow="${secKey}" class="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-sm font-bold transition-transform duration-300 ${isCollapsed ? '-rotate-90' : 'rotate-0'}">
               ▼
             </span>
           </div>
         `;
 
+        // Smooth Accordion Wrapper
+        const accordionOuter = document.createElement('div');
+        accordionOuter.dataset.secContent = secKey;
+        accordionOuter.className = `accordion-content ${isCollapsed ? 'collapsed' : ''}`;
+
+        const accordionInner = document.createElement('div');
+        accordionInner.className = "accordion-inner";
+
+        const pathDiv = document.createElement('div');
+        pathDiv.className = "flex flex-col items-center gap-6 pt-4 pb-2";
+
+        let nodeIndex = 0;
+        lvlMap.forEach((qs, levelName) => {
+          const levelKey = `${secKey}||${levelName}`;
+          const prog = userStats.levelProgress?.[levelKey] || { roundsCompleted: 0, stars: 0 };
+          const roundsDone = Math.min(prog.roundsCompleted || 0, 5);
+          const stars = prog.stars || 0;
+          const isCompleted = roundsDone >= 5;
+
+          const offsets = ['translate-x-0', '-translate-x-10', 'translate-x-0', 'translate-x-10'];
+          const offsetClass = offsets[nodeIndex % offsets.length];
+          nodeIndex++;
+
+          const nodeWrap = document.createElement('div');
+          nodeWrap.className = `flex flex-col items-center ${offsetClass}`;
+
+          const circleBg = isCompleted
+            ? 'bg-amber-400 text-amber-950 border-4 border-amber-200 dark:border-amber-600'
+            : (roundsDone > 0 ? 'bg-emerald-500 text-white border-4 border-emerald-200 dark:border-emerald-700' : 'bg-indigo-600 text-white border-4 border-indigo-200 dark:border-indigo-800');
+
+          nodeWrap.innerHTML = `
+            <div class="flex gap-0.5 text-sm mb-1">
+              <span class="${stars >= 1 ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'}">★</span>
+              <span class="${stars >= 2 ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'}">★</span>
+              <span class="${stars >= 3 ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'}">★</span>
+            </div>
+            <button class="w-[72px] h-[72px] rounded-full ${circleBg} node-shadow flex flex-col items-center justify-center cursor-pointer transition">
+              <span class="text-lg font-extrabold leading-none">${isCompleted ? '👑' : `${roundsDone}/5`}</span>
+              <span class="text-[10px] font-bold mt-1 opacity-90">รอบ</span>
+            </button>
+            <span class="mt-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700 shadow-xs">
+              ${levelName} (${qs.length} ข้อ)
+            </span>
+          `;
+
+          nodeWrap.querySelector('button').addEventListener('click', () => {
+            openNodeModal(sectionName, levelName, levelKey, qs);
+          });
+
+          pathDiv.appendChild(nodeWrap);
+        });
+
+        accordionInner.appendChild(pathDiv);
+        accordionOuter.appendChild(accordionInner);
+
         bannerBtn.addEventListener('click', () => {
-          if (collapsedSections.has(secKey)) collapsedSections.delete(secKey);
-          else collapsedSections.add(secKey);
-          renderLearningPath();
+          const willCollapse = !collapsedSections.has(secKey);
+          if (willCollapse) collapsedSections.add(secKey);
+          else collapsedSections.delete(secKey);
+
+          accordionOuter.classList.toggle('collapsed', willCollapse);
+          const arrow = bannerBtn.querySelector('[data-sec-arrow]');
+          const label = bannerBtn.querySelector('[data-sec-label]');
+          if (arrow) {
+            arrow.classList.toggle('-rotate-90', willCollapse);
+            arrow.classList.toggle('rotate-0', !willCollapse);
+          }
+          if (label) {
+            label.textContent = willCollapse ? 'คลิกเพื่อขยาย' : 'ย่อบทเรียน';
+          }
         });
 
         secWrapper.appendChild(bannerBtn);
-
-        // Zig-zag Path of Level Nodes (Hidden if collapsed)
-        if (!isCollapsed) {
-          const pathDiv = document.createElement('div');
-          pathDiv.className = "flex flex-col items-center gap-6 py-2 fade-in";
-
-          let nodeIndex = 0;
-          lvlMap.forEach((qs, levelName) => {
-            const levelKey = `${secKey}||${levelName}`;
-            const prog = userStats.levelProgress?.[levelKey] || { roundsCompleted: 0, stars: 0 };
-            const roundsDone = Math.min(prog.roundsCompleted || 0, 5);
-            const stars = prog.stars || 0;
-            const isCompleted = roundsDone >= 5;
-
-            const offsets = ['translate-x-0', '-translate-x-10', 'translate-x-0', 'translate-x-10'];
-            const offsetClass = offsets[nodeIndex % offsets.length];
-            nodeIndex++;
-
-            const nodeWrap = document.createElement('div');
-            nodeWrap.className = `flex flex-col items-center ${offsetClass}`;
-
-            const circleBg = isCompleted
-              ? 'bg-amber-400 text-amber-950 border-4 border-amber-200 dark:border-amber-600'
-              : (roundsDone > 0 ? 'bg-emerald-500 text-white border-4 border-emerald-200 dark:border-emerald-700' : 'bg-indigo-600 text-white border-4 border-indigo-200 dark:border-indigo-800');
-
-            nodeWrap.innerHTML = `
-              <div class="flex gap-0.5 text-sm mb-1">
-                <span class="${stars >= 1 ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'}">★</span>
-                <span class="${stars >= 2 ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'}">★</span>
-                <span class="${stars >= 3 ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'}">★</span>
-              </div>
-              <button class="w-[72px] h-[72px] rounded-full ${circleBg} node-shadow flex flex-col items-center justify-center cursor-pointer transition">
-                <span class="text-lg font-extrabold leading-none">${isCompleted ? '👑' : `${roundsDone}/5`}</span>
-                <span class="text-[10px] font-bold mt-1 opacity-90">รอบ</span>
-              </button>
-              <span class="mt-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700 shadow-xs">
-                ${levelName} (${qs.length} ข้อ)
-              </span>
-            `;
-
-            nodeWrap.querySelector('button').addEventListener('click', () => {
-              openNodeModal(sectionName, levelName, levelKey, qs);
-            });
-
-            pathDiv.appendChild(nodeWrap);
-          });
-
-          secWrapper.appendChild(pathDiv);
-        }
+        secWrapper.appendChild(accordionOuter);
 
         container.appendChild(secWrapper);
       });
@@ -1124,7 +1162,6 @@ html_code = """<!DOCTYPE html>
         drillBtn.classList.remove('opacity-50', 'pointer-events-none');
       }
 
-      // 1. Subject Breakdown Bars
       const subBarsEl = document.getElementById('weakness-subject-bars');
       subBarsEl.innerHTML = "";
       SUBJECTS.forEach(sub => {
@@ -1144,7 +1181,6 @@ html_code = """<!DOCTYPE html>
         subBarsEl.appendChild(div);
       });
 
-      // 2. Top Weak Sections
       const secCounts = {};
       weakItems.forEach(item => {
         const key = `${item.q.subject} • ${item.q.section || 'ทั่วไป'}`;
@@ -1168,7 +1204,6 @@ html_code = """<!DOCTYPE html>
         });
       }
 
-      // 3. Detailed Question Cards
       const qListEl = document.getElementById('weakness-questions-list');
       qListEl.innerHTML = "";
       if (weakItems.length === 0) {
@@ -1208,7 +1243,6 @@ html_code = """<!DOCTYPE html>
 
     function launchWeaknessDrill() {
       const weakIds = getActiveWeakIds();
-      // Prioritize most frequently missed questions first
       weakIds.sort((a, b) => (userStats.weaknessMap[b]?.wrongCount || 0) - (userStats.weaknessMap[a]?.wrongCount || 0));
       const topIds = new Set(weakIds.slice(0, 10));
       const reviewQs = allQuestions.filter(q => topIds.has(String(q.id)));
@@ -1245,7 +1279,6 @@ html_code = """<!DOCTYPE html>
       document.getElementById('quiz-badge-2').textContent = `${q.section} • ${q.level}`;
       document.getElementById('quiz-badge-3').textContent = `+${q.xp || 10} XP`;
 
-      // Show mastery badge if this question is currently in weaknessMap
       const weakEntry = userStats.weaknessMap?.[String(q.id)];
       const streakBadge = document.getElementById('quiz-badge-streak');
       if (weakEntry && weakEntry.wrongCount > 0 && (weakEntry.correctStreak || 0) < 2) {
@@ -1313,7 +1346,6 @@ html_code = """<!DOCTYPE html>
         label.className = "font-extrabold text-base text-emerald-800 dark:text-emerald-300";
         label.textContent = `ถูกต้อง! (+${earnedXp} XP)`;
 
-        // Check 2x mastery notification
         if (prevWeak && prevWeak.wrongCount > 0) {
           const nextStreak = (prevWeak.correctStreak || 0) + 1;
           masteryNote.classList.remove('hidden');
@@ -1362,7 +1394,6 @@ html_code = """<!DOCTYPE html>
         if (currentEntry && currentEntry.wrongCount > 0) {
           const updatedStreak = (currentEntry.correctStreak || 0) + 1;
           if (updatedStreak >= 2) {
-            // Mastered twice -> Remove completely from weaknessMap!
             delete userStats.weaknessMap[qId];
           } else {
             userStats.weaknessMap[qId] = {
@@ -1372,7 +1403,6 @@ html_code = """<!DOCTYPE html>
           }
         }
       } else {
-        // Missed -> Increment wrongCount and reset correctStreak to 0
         userStats.weaknessMap[qId] = {
           wrongCount: (currentEntry?.wrongCount || 0) + 1,
           correctStreak: 0,
@@ -1764,7 +1794,6 @@ html_code = """<!DOCTYPE html>
       document.getElementById('feedback-modal').classList.add('hidden');
     });
 
-    // Save Rating & Comment directly to Firestore (1-click star rating without needing email app)
     document.getElementById('btn-submit-feedback-db').addEventListener('click', async () => {
       const comment = document.getElementById('fb-comment').value.trim();
       try {
@@ -1778,7 +1807,6 @@ html_code = """<!DOCTYPE html>
         document.getElementById('feedback-modal').classList.add('hidden');
         alert(`ขอบคุณสำหรับ ${selectedFeedbackStar} ดาวและข้อเสนอแนะครับ! ข้อมูลถูกส่งถึงผู้พัฒนาเรียบร้อยแล้ว`);
       } catch (err) {
-        // Fallback to mailto if Firestore rules block feedbacks collection
         const subject = encodeURIComponent(`[OCSC Learning] ประเมิน ${selectedFeedbackStar} ดาว`);
         const body = encodeURIComponent(`คะแนน: ${selectedFeedbackStar}/5 ดาว\nข้อเสนอแนะ:\n${comment || "(กดให้ดาวอย่างเดียว)"}`);
         window.location.href = `mailto:${DEVELOPER_EMAIL}?subject=${subject}&body=${body}`;
@@ -1786,7 +1814,6 @@ html_code = """<!DOCTYPE html>
       }
     });
 
-    // Direct Email Button (mailto)
     document.getElementById('btn-submit-feedback-email').addEventListener('click', () => {
       const comment = document.getElementById('fb-comment').value.trim();
       const subject = encodeURIComponent(`[OCSC Learning] ข้อเสนอแนะ (${selectedFeedbackStar} ดาว)`);
@@ -1817,9 +1844,3 @@ html_code = """<!DOCTYPE html>
   </script>
 </body>
 </html>
-"""
-
-with open("index.html", "w", encoding="utf-8") as f:
-    f.write(html_code)
-
-print("Successfully updated index.html with all requested features.")
