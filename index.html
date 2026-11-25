@@ -128,7 +128,7 @@
         <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-1">พิชิตข้อสอบ ก.พ. ทีละด่าน</h2>
         <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium mb-3">พัฒนาโดย ครูศตวรรษ แก้วก่า</p>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
-          เรียนรู้เป็นลำดับขั้น ด่านละ 5 รอบ สะสมดาวและ XP วิเคราะห์จุดอ่อนอัตโนมัติ พร้อมสนามสอบเสมือนจริงจับเวลา 3 ชั่วโมง
+          เรียนรู้หลักการและตัวอย่างก่อนลงมือทำจริง ด่านละ 5 รอบ สะสมดาวและ XP วิเคราะห์จุดอ่อนอัตโนมัติ พร้อมสนามสอบเสมือนจริงจับเวลา 3 ชั่วโมง
         </p>
         <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-100 font-semibold py-3.5 px-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm transition cursor-pointer">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5" />
@@ -498,30 +498,94 @@
   </nav>
 
   <!-- ========================================== -->
-  <!-- MODAL 1: LEVEL NODE MODAL                  -->
+  <!-- MODAL 1: LEVEL NODE MODAL (LEARN + PLAY)   -->
   <!-- ========================================== -->
-  <div id="node-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 text-center shadow-xl">
-      <span id="modal-section-name" class="text-xs font-bold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-3 py-1 rounded-full">Section</span>
-      <h3 id="modal-level-title" class="text-xl font-extrabold text-slate-800 dark:text-white mt-3">ระดับที่ 1</h3>
-      <p id="modal-round-info" class="text-xs text-slate-500 dark:text-slate-400 mt-1">ความคืบหน้า: รอบที่ 1 / 5 (รอบละ 5 ข้อ)</p>
-
-      <!-- Stars Earned in this Level -->
-      <div class="flex justify-center gap-2 my-4 text-3xl">
-        <span id="modal-star-1" class="text-slate-200 dark:text-slate-700">★</span>
-        <span id="modal-star-2" class="text-slate-200 dark:text-slate-700">★</span>
-        <span id="modal-star-3" class="text-slate-200 dark:text-slate-700">★</span>
+  <div id="node-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 fade-in">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-xl max-h-[90vh] flex flex-col">
+      <!-- Header -->
+      <div class="flex items-start justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
+        <div class="text-left">
+          <span id="modal-section-name" class="text-[11px] font-bold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-2.5 py-0.5 rounded-full">Section</span>
+          <h3 id="modal-level-title" class="text-lg sm:text-xl font-extrabold text-slate-800 dark:text-white mt-1.5">ระดับที่ 1</h3>
+        </div>
+        <button id="btn-close-modal-x" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white font-bold text-sm flex items-center justify-center cursor-pointer shrink-0">✕</button>
       </div>
 
-      <!-- 5 Rounds Progress Dots -->
-      <div id="modal-rounds-dots" class="flex justify-center gap-2 mb-6"></div>
+      <!-- Modal Mode Switcher Tabs -->
+      <div class="grid grid-cols-2 gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl my-3 shrink-0">
+        <button type="button" id="modal-tab-lesson" class="py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs flex items-center justify-center gap-1.5">
+          <span>📖</span>
+          <span>เรียนหลักการ & ตัวอย่าง</span>
+        </button>
+        <button type="button" id="modal-tab-play" class="py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5">
+          <span>🎯</span>
+          <span>ด่านฝึกหัด (<span id="modal-tab-round-badge">0/5</span>)</span>
+        </button>
+      </div>
 
-      <div class="flex gap-2">
-        <button id="btn-close-modal" class="flex-1 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+      <!-- TAB A: LESSON & WORKED EXAMPLE (Scrollable) -->
+      <div id="modal-pane-lesson" class="overflow-y-auto pr-1 space-y-3 text-left flex-1">
+        <!-- Core Concept / Formula Card -->
+        <div class="bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 rounded-2xl p-4">
+          <div class="flex items-center gap-1.5 text-xs font-extrabold text-indigo-800 dark:text-indigo-300 mb-1.5">
+            <span>💡</span>
+            <span id="lesson-concept-title">หลักการคิดและสูตรลัดที่ต้องรู้</span>
+          </div>
+          <div id="lesson-concept-body" class="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed whitespace-pre-line"></div>
+        </div>
+
+        <!-- Worked Example Card -->
+        <div class="bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-xs font-extrabold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
+              <span>✍️</span>
+              <span>ตัวอย่างโจทย์ & วิธีคิดทีละขั้น</span>
+            </span>
+            <span id="lesson-example-tag" class="text-[10px] font-bold bg-amber-200/70 dark:bg-amber-900/70 text-amber-900 dark:text-amber-200 px-2 py-0.5 rounded-md">ตัวอย่างแนวข้อสอบ</span>
+          </div>
+          <p id="lesson-example-q" class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 bg-white/80 dark:bg-slate-900/70 p-3 rounded-xl border border-amber-200/60 dark:border-amber-800/40 mb-2.5 whitespace-pre-line"></p>
+          <div class="space-y-1">
+            <p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-400">แนวทางวิเคราะห์:</p>
+            <div id="lesson-example-steps" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line pl-2 border-l-2 border-emerald-400"></div>
+          </div>
+        </div>
+
+        <!-- Exam Tip / Trap Warning -->
+        <div id="lesson-tip-box" class="bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-800/50 rounded-2xl p-3.5 flex items-start gap-2.5">
+          <span class="text-base shrink-0">⚡</span>
+          <div class="text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed">
+            <span class="font-bold">ทริคทำข้อสอบไว: </span>
+            <span id="lesson-tip-text"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB B: PLAY & PROGRESS PANE -->
+      <div id="modal-pane-play" class="hidden py-4 text-center flex-1 flex flex-col justify-center">
+        <p id="modal-round-info" class="text-xs text-slate-500 dark:text-slate-400">ความคืบหน้า: รอบที่ 1 / 5 (รอบละ 5 ข้อ)</p>
+
+        <!-- Stars Earned in this Level -->
+        <div class="flex justify-center gap-2 my-4 text-4xl">
+          <span id="modal-star-1" class="text-slate-200 dark:text-slate-700">★</span>
+          <span id="modal-star-2" class="text-slate-200 dark:text-slate-700">★</span>
+          <span id="modal-star-3" class="text-slate-200 dark:text-slate-700">★</span>
+        </div>
+
+        <!-- 5 Rounds Progress Dots -->
+        <div id="modal-rounds-dots" class="flex justify-center gap-2 mb-4"></div>
+
+        <p class="text-[11px] text-slate-400 dark:text-slate-500 max-w-xs mx-auto">
+          ทำคะแนนให้ได้ 80% ขึ้นไปเพื่อรับ 3 ดาวเต็ม และสะสมครบ 5 รอบเพื่อพิชิตมงกุฎประจำด่าน
+        </p>
+      </div>
+
+      <!-- Footer Action Buttons -->
+      <div class="flex gap-2 pt-4 mt-3 border-t border-slate-100 dark:border-slate-800 shrink-0">
+        <button id="btn-close-modal" class="py-3 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
           ปิด
         </button>
-        <button id="btn-start-node-round" class="flex-2 w-2/3 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-3 px-4 rounded-2xl cursor-pointer">
-          เริ่มรอบที่ 1 (+XP)
+        <button id="btn-start-node-round" class="flex-1 duo-btn-green bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold py-3 px-4 rounded-2xl cursor-pointer">
+          เข้าใจแล้ว! เริ่มทำรอบที่ 1 →
         </button>
       </div>
     </div>
@@ -950,7 +1014,7 @@
         const secWrapper = document.createElement('div');
         secWrapper.className = "";
 
-        // Collapsible Section Banner
+        // Collapsible Section Banner + Direct Lesson Button
         const bannerBtn = document.createElement('button');
         bannerBtn.type = "button";
         bannerBtn.className = "w-full text-left bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer";
@@ -962,8 +1026,12 @@
             </div>
             <h3 class="text-base sm:text-lg font-extrabold mt-0.5">${sectionName}</h3>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
-            <span data-sec-label="${secKey}" class="text-xs bg-white/15 px-2.5 py-1 rounded-xl font-semibold hidden sm:inline">${isCollapsed ? 'คลิกเพื่อขยาย' : 'ย่อบทเรียน'}</span>
+          <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <span data-open-sec-lesson="${secKey}" class="text-xs bg-amber-400 hover:bg-amber-300 text-amber-950 px-2.5 py-1.5 rounded-xl font-extrabold shadow-xs transition flex items-center gap-1">
+              <span>📖</span>
+              <span>สอนบทนี้</span>
+            </span>
+            <span data-sec-label="${secKey}" class="text-xs bg-white/15 px-2.5 py-1.5 rounded-xl font-semibold hidden md:inline">${isCollapsed ? 'คลิกเพื่อขยาย' : 'ย่อบทเรียน'}</span>
             <span data-sec-arrow="${secKey}" class="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-sm font-bold transition-transform duration-300 ${isCollapsed ? '-rotate-90' : 'rotate-0'}">
               ▼
             </span>
@@ -1025,7 +1093,16 @@
         accordionInner.appendChild(pathDiv);
         accordionOuter.appendChild(accordionInner);
 
-        bannerBtn.addEventListener('click', () => {
+        bannerBtn.addEventListener('click', (e) => {
+          if (e.target.closest('[data-open-sec-lesson]')) {
+            e.stopPropagation();
+            const firstEntry = lvlMap.entries().next().value;
+            if (firstEntry) {
+              const [firstLvlName, firstQs] = firstEntry;
+              openNodeModal(sectionName, firstLvlName, `${secKey}||${firstLvlName}`, firstQs, true);
+            }
+            return;
+          }
           const willCollapse = !collapsedSections.has(secKey);
           if (willCollapse) collapsedSections.add(secKey);
           else collapsedSections.delete(secKey);
@@ -1049,8 +1126,223 @@
       });
     }
 
-    // Modal for Level Node
-    function openNodeModal(sectionName, levelName, levelKey, qs) {
+    // ==========================================
+    // BUILT-IN LESSON & WORKED EXAMPLE LIBRARY
+    // ==========================================
+    const LESSON_KNOWLEDGE_BASE = [
+      // MATH
+      {
+        subject: 'Math',
+        keywords: ['อนุกรม', 'series', 'ลำดับ'],
+        conceptTitle: 'หลักการวิเคราะห์อนุกรม ก.พ. 4 สเต็ป',
+        conceptBody: '1. เช็กการเพิ่ม/ลดแบบพื้นฐาน: บวก ลบ คูณ หาร คงที่ หรือเพิ่มทีละขั้น (ตีแฉก 1-2 ชั้น)\n2. เช็กเลขยกกำลัง/รูท: จำเลขยกกำลัง 1² ถึง 15² และ 1³ ถึง 10³ ให้แม่น (มักบวก/ลบ 1 หรือ 2)\n3. เช็กอนุกรมสะสม: ตัวหน้าบวกกันได้ตัวถัดไป (เช่น 2 ตัวบวกกัน หรือ 3 ตัวบวกกัน)\n4. เช็กอนุกรมสลับชุด (ซ้อน): ถ้าตัวเลขขึ้น ๆ ลง ๆ ให้ดูตัวเว้นตัว (คี่คู่) หรือเว้น 2 ตัว',
+        exampleQ: 'จงหาตัวเลขถัดไปของอนุกรม:  3,  5,  9,  17,  33,  ...',
+        exampleSteps: '• ขั้นที่ 1: หาผลต่างระหว่างพจน์ที่ติดกัน\n  3 → 5 (+2)\n  5 → 9 (+4)\n  9 → 17 (+8)\n  17 → 33 (+16)\n• ขั้นที่ 2: สังเกตผลต่าง +2, +4, +8, +16 เป็นการคูณ 2 เพิ่มขึ้นเรื่อย ๆ\n• ขั้นที่ 3: ดังนั้นตัวถัดไปต้องบวกด้วย 16 × 2 = +32\n• คำตอบ: 33 + 32 = 65',
+        tipText: 'ถ้าเห็นตัวเลขกระโดดเร็วมาก ให้คิดถึงการคูณหรือยกกำลังก่อน แต่ถ้าเลขแกว่งขึ้น-ลง ให้แยกคิดเป็นอนุกรมสลับชุดทันที!'
+      },
+      {
+        subject: 'Math',
+        keywords: ['เงื่อนไขสัญลักษณ์', 'สัญลักษณ์', 'อสมการ'],
+        conceptTitle: 'กฎเหล็กเงื่อนไขสัญลักษณ์ (ทำ 5 ข้อเต็มใน 5 นาที)',
+        conceptBody: '1. เปลี่ยนเครื่องหมายไม่เท่ากับ (≠, ≮, ≯, ≰, ≱) ให้เป็นเครื่องหมายปกติก่อนเสมอ\n   • ≯ แปลว่า ≤  |  ≮ แปลว่า ≥  |  ≰ แปลว่า >  |  ≱ แปลว่า <\n2. หา "ตัวเชื่อม" ระหว่าง 2 บรรทัด และปรับตัวเชื่อมให้มีค่าเท่ากันก่อนยุบรวม\n3. กฎการยุบเครื่องหมาย:\n   • ไปทางเดียวกัน: ยึดตัวที่เจาะจงกว่า (> ชนะ ≥, < ชนะ ≤, = แพ้ทุกตัว)\n   • สวนทางกัน (เช่น A > B < C): ตอบ "ไม่แน่ชัด" ทันที!',
+        exampleQ: 'เงื่อนไข: A > B = C ≤ D และ C > E\nข้อสรุป: A > E จริงหรือไม่?',
+        exampleSteps: '• ขั้นที่ 1: หาเส้นทางเชื่อมจาก A ไปหา E โดยมี C เป็นตัวเชื่อม\n  จะได้สายสัมพันธ์: A > B = C > E\n• ขั้นที่ 2: ยุบเครื่องหมายระหว่าง A กับ E\n  เครื่องหมายทั้งหมดชี้ไปทางเดียวกัน (>) ไม่มีตัวสวนทาง\n• ขั้นที่ 3: ยึดเครื่องหมาย > เป็นหลัก จะได้ A > E\n• คำตอบ: ข้อสรุปเป็นจริง (แน่นอน)',
+        tipText: 'ห้ามเดาแทนค่าตัวเลขสุ่มสี่สุ่มห้า ให้ยุบเครื่องหมายตามเส้นทางตัวเชื่อมเท่านั้น ถ้าเจอเครื่องหมายหันหัวชนกันเมื่อไหร่ ตอบ "ไม่แน่ชัด" ได้เลย'
+      },
+      {
+        subject: 'Math',
+        keywords: ['เงื่อนไขภาษา', 'ตรรกศาสตร์', 'เหตุผล', 'อุปมา'],
+        conceptTitle: 'เทคนิคแก้เงื่อนไขภาษา & ตรรกศาสตร์',
+        conceptBody: '• เงื่อนไขภาษา: สร้าง "ตารางความสัมพันธ์" (เช่น คน - อาชีพ - สีเสื้อ - จังหวัด) แล้วใส่เครื่องหมาย ✓ ในช่องที่ใช่ และ ✕ ในช่องที่ไม่ใช่ เมื่อแถวใดมี ✓ ช่องอื่นในแถวและคอลัมน์นั้นต้องเป็น ✕ ทันที\n• ตรรกศาสตร์ (ถ้า P แล้ว Q): มีค่าความจริงเหมือนกับ "ถ้า ไม่ Q แล้ว ไม่ P" (สลับที่ + เติมนิเสธ) แต่ห้ามสลับที่เฉย ๆ เด็ดขาด!',
+        exampleQ: 'กำหนดให้: "ถ้าฝนตก แล้วรถติด" เป็นจริง\nข้อใดสรุปได้ถูกต้องแน่นอน?',
+        exampleSteps: '• รูปแบบประโยคคือ: ถ้า P (ฝนตก) → แล้ว Q (รถติด)\n• กฎสมมูลตรรกศาสตร์: ถ้า ~Q → แล้ว ~P (สลับหน้าหลังแล้วใส่คำว่า "ไม่")\n• แปลงเป็นภาษาพูด: "ถ้ารถไม่ติด แสดงว่าฝนไม่ตก"\n• คำตอบ: ถ้ารถไม่ติด แล้วฝนไม่ตก',
+        tipText: 'หากโจทย์บอกว่า "รถติด" ห้ามสรุปว่า "ฝนตก" เพราะรถอาจติดจากสาเหตุอื่นได้ (สรุปย้อนกลับไม่ได้)'
+      },
+      {
+        subject: 'Math',
+        keywords: ['ร้อยละ', 'เปอร์เซ็นต์', 'กำไร', 'ขาดทุน', 'อัตราส่วน', 'สมการ', 'คณิตศาสตร์ทั่วไป'],
+        conceptTitle: 'สูตรลัดร้อยละ กำไร-ขาดทุน และสมการ',
+        conceptBody: '• เทียบบัญญัติไตรยางศ์ 100 เสมอ: ทุน = 100%\n  - กำไร X% → ราคาขาย = (100 + X)% ของทุน\n  - ขาดทุน X% → ราคาขาย = (100 - X)% ของทุน\n• สูตรหาเปอร์เซ็นต์เปลี่ยนแปลง = [(ค่าใหม่ - ค่าเดิม) ÷ ค่าเดิม] × 100\n• การตั้งสมการ: ให้สิ่งที่โจทย์ถาม (หรือตัวแปรที่เล็กที่สุด) เป็น X',
+        exampleQ: 'ขายเสื้อตัวหนึ่งราคา 480 บาท ได้กำไร 20% จงหาต้นทุนของเสื้อตัวนี้',
+        exampleSteps: '• ขั้นที่ 1: กำไร 20% แปลว่า ถ้าทุน 100 บาท จะขาย 120 บาท\n• ขั้นที่ 2: ตั้งสัดส่วนหาทุน\n  ขาย 120 บาท มาจากทุน 100 บาท\n  ขาย 480 บาท มาจากทุน = (480 × 100) ÷ 120\n• ขั้นที่ 3: ตัดทอน 480 ÷ 120 = 4 แล้วคูณ 100 = 400\n• คำตอบ: ต้นทุน 400 บาท',
+        tipText: 'ระวัง! ห้ามนำ 480 × 20% แล้วเอาไปลบออกเด็ดขาด เพราะกำไร 20% คิดจาก "ต้นทุน" ไม่ใช่คิดจากราคาขาย'
+      },
+      {
+        subject: 'Math',
+        keywords: ['ตาราง', 'กราฟ', 'ข้อมูล'],
+        conceptTitle: 'เทคนิควิเคราะห์ตารางข้อมูลให้ไวและไม่พลาด',
+        conceptBody: '1. อ่าน "ชื่อตาราง" และ "หน่วย" บนหัวตารางก่อนเสมอ (เช่น หน่วย: ล้านบาท หรือ พันคน)\n2. อ่านคำถามก่อนค่อยไปดูตัวเลขในตาราง ไม่ต้องนั่งบวกทุกช่องตั้งแต่แรก\n3. ใช้การ "ประมาณค่า" ตัดช้อยส์ที่ห่างกันมาก ๆ เพื่อประหยัดเวลาคิดเลข',
+        exampleQ: 'ปี 2568 ส่งออก 250 ล้านบาท ปี 2569 ส่งออก 300 ล้านบาท เพิ่มขึ้นร้อยละเท่าใด?',
+        exampleSteps: '• ขั้นที่ 1: หาส่วนต่างที่เพิ่มขึ้น = 300 - 250 = 50 ล้านบาท\n• ขั้นที่ 2: เทียบกับปีฐาน (ปี 2568 = 250)\n  ร้อยละที่เพิ่ม = (50 ÷ 250) × 100\n• ขั้นที่ 3: 50/250 = 1/5 = 0.2 → คูณ 100 = 20%\n• คำตอบ: เพิ่มขึ้นร้อยละ 20',
+        tipText: 'คำว่า "เพิ่มขึ้น/ลดลงร้อยละเท่าใด" ตัวหารด้านล่างต้องเป็น "ค่าเดิม (ปีก่อนหน้า)" เสมอ'
+      },
+      // THAI
+      {
+        subject: 'Thai',
+        keywords: ['เรียงประโยค', 'ลำดับข้อความ'],
+        conceptTitle: 'สูตรลับเรียงประโยค ก.พ. (หาหัว - จับคู่ - หาหาง)',
+        conceptBody: '1. หาประโยคเปิด (หัว): มักขึ้นต้นด้วยคำนามหลัก การนิยามความหมาย หรือคำเกริ่นกว้าง ๆ (ห้ามขึ้นต้นด้วยคำเชื่อม เช่น ดังนั้น, จึง, นอกจากนี้, แต่, ซึ่ง)\n2. จับคู่คำเชื่อม (ตัวกลาง): หาคำที่รับช่วงต่อกัน เช่น "ประการแรก... ประการที่สอง..." หรือคำสรรพนามที่อ้างถึงประโยคก่อน\n3. หาประโยคสรุป (หาง): มักมีคำว่า ดังนั้น, จึง, นับได้ว่า, ส่งผลให้, ในที่สุด',
+        exampleQ: '1) จึงส่งผลให้เกษตรกรมีรายได้เพิ่มขึ้นอย่างยั่งยืน\n2) การทำเกษตรทฤษฎีใหม่เป็นการบริหารจัดการที่ดินและน้ำ\n3) เพื่อให้มีน้ำใช้ตลอดทั้งปีและลดความเสี่ยงจากภัยแล้ง',
+        exampleSteps: '• ขั้นที่ 1: ประโยค (2) ให้คำนิยาม "การทำเกษตรทฤษฎีใหม่..." → เป็นประโยคเปิดที่ 1\n• ขั้นที่ 2: ประโยค (3) บอกวัตถุประสงค์ "เพื่อให้มีน้ำใช้..." ขยายความการจัดการน้ำในข้อ (2) → เป็นลำดับที่ 2\n• ขั้นที่ 3: ประโยค (1) ขึ้นต้นด้วย "จึงส่งผลให้..." เป็นบทสรุป → เป็นลำดับสุดท้าย\n• คำตอบ: เรียงลำดับได้ 2 - 3 - 1',
+        tipText: 'ตัดช้อยส์จาก "ประโยคแรก" และ "ประโยคสุดท้าย" ก่อนเสมอ จะตัดช้อยส์ผิดทิ้งได้ทันที 2-3 ข้อ!'
+      },
+      {
+        subject: 'Thai',
+        keywords: ['บทความ', 'จับใจความ', 'สรุปความ', 'ตีความ'],
+        conceptTitle: 'หลักการอ่านบทความสั้น-ยาว (ห้ามคิดเกินตัวบท)',
+        conceptBody: '1. ยึด "ข้อมูลในบทความ" เป็นความจริง 100% ห้ามเอาความรู้ส่วนตัวข้างนอกมาตัดสิน\n2. ระวังคำตัดสินเด็ดขาดในช้อยส์ เช่น "ทั้งหมด, เสมอ, เท่านั้น, ทุกชนิด, ไม่มีทาง" (มักจะผิด เพราะแคบเกินไป)\n3. ใจความสำคัญมักอยู่ที่ประโยคแรกหรือประโยคสุดท้ายของย่อหน้า (สังเกตคำว่า ดังนั้น, สรุปได้ว่า, สิ่งสำคัญคือ)',
+        exampleQ: 'บทความ: "การดื่มน้ำสะอาดวันละ 6-8 แก้ว ช่วยให้ระบบไหลเวียนโลหิตทำงานได้ดีขึ้น และลดอาการอ่อนเพลียระหว่างวัน"\nข้อใดสอดคล้องกับบทความ?',
+        exampleSteps: '• วิเคราะห์ตัวเลือกตามเนื้อความเป๊ะ ๆ:\n  - ถ้าช้อยส์บอก "การดื่มน้ำทำให้หายจากโรคหัวใจ" → ผิด (คิดเกินตัวบท)\n  - ถ้าช้อยส์บอก "น้ำสะอาดมีส่วนช่วยให้ร่างกายสดชื่นไม่อ่อนเพลียง่าย" → ถูก (ตรงกับคำว่าลดอาการอ่อนเพลียระหว่างวัน)',
+        tipText: 'อ่านคำถามก่อนอ่านบทความ จะได้รู้ว่าต้องโฟกัสหาจุดไหนในเนื้อเรื่อง'
+      },
+      {
+        subject: 'Thai',
+        keywords: ['คำศัพท์', 'คำราชาศัพท์', 'ประโยคบกพร่อง', 'การใช้คำ', 'ภาษาไทย'],
+        conceptTitle: 'จุดหลอกยอดฮิต: ประโยคบกพร่อง & คำราชาศัพท์',
+        conceptBody: '• ประโยคไม่สมบูรณ์: ขาดประธาน หรือขาดกริยาหลัก (มักมีคำว่า "การ...", "ความ...", "ที่...", "ซึ่ง..." นำหน้ายาว ๆ แล้วจบดื้อ ๆ ไม่มีกริยามารองรับ)\n• คำฟุ่มเฟือย: เช่น "ทำการตรวจสอบ" (ใช้ ตรวจสอบ), "ในเรื่องของ" (ใช้ เรื่อง)\n• คำราชาศัพท์: "ทรง" + คำนาม (ทรงม้า, ทรงดนตรี) / "ทรง" + กริยาสามัญ (ทรงวิ่ง, ทรงยืน) / ห้ามใช้ "ทรง" นำหน้าคำราชาศัพท์อยู่แล้ว (เช่น ห้ามใช้ ทรงเสวย, ทรงบรรทม)',
+        exampleQ: 'ข้อใดใช้คำราชาศัพท์ถูกต้อง?\nก. พระองค์ทรงเสวยพระกระยาหาร\nข. พระองค์ทรงพระดำเนินไปยังพลับพลา',
+        exampleSteps: '• ข้อ ก. ผิด เพราะ "เสวย" เป็นคำราชาศัพท์อยู่แล้ว ห้ามเติม "ทรง" ข้างหน้า\n• ข้อ ข. ถูกต้อง เพราะ "ทรงพระดำเนิน" เป็นคำราชาศัพท์ที่ใช้ได้ถูกต้องตามแบบแผน',
+        tipText: 'จำแม่น ๆ: ห้ามใช้ "ทรง" นำหน้าคำกริยาราชาศัพท์ (เสวย, บรรทม, ตรัส, โปรด, เสด็จ) ยกเว้นคำว่า "ทรงผนวช"'
+      },
+      // ENGLISH
+      {
+        subject: 'English',
+        keywords: ['Grammar', 'Tense', 'โครงสร้าง', 'ไวยากรณ์'],
+        conceptTitle: 'สูตรลัด Grammar ก.พ. ออกสอบทุกปี',
+        conceptBody: '1. Subject-Verb Agreement: ประธานเอกพจน์ กริยาเติม s/es (ระวังวลีคั่น เช่น A box of apples "is"...)\n2. If-Clause 3 แบบหลัก:\n   • Type 1 (เป็นไปได้): If + V.1 , will + V.inf\n   • Type 2 (เพ้อฝัน/ไม่จริงปัจจุบัน): If + V.2 (were) , would + V.inf\n   • Type 3 (อดีตแก้ไขไม่ได้): If + had + V.3 , would have + V.3\n3. Passive Voice (ถูกกระทำ): Be + V.3 เสมอ',
+        exampleQ: 'If I ______ rich, I would travel around the world.\nA) am   B) was   C) were   D) had been',
+        exampleSteps: '• ขั้นที่ 1: ดูประโยคหลังคำว่า I มีคำว่า "would travel" (would + V.inf)\n• ขั้นที่ 2: เข้าสูตร If-Clause Type 2 (สมมติสิ่งที่ไม่เป็นจริงในปัจจุบัน)\n• ขั้นที่ 3: กริยาหลัง If ต้องเป็น V.2 และในภาษาเขียน/ข้อสอบ ใช้ "were" กับทุกประธาน\n• คำตอบ: C) were',
+        tipText: 'เจอข้อสอบ Grammar ให้ดู "คำบอกเวลา (Time Marker)" หรือ "กริยาอีกฝั่งของประโยค" ก่อนแปลคำศัพท์!'
+      },
+      {
+        subject: 'English',
+        keywords: ['Conversation', 'บทสนทนา'],
+        conceptTitle: 'เทคนิคทำข้อสอบ Conversation ให้ได้คะแนนเต็ม',
+        conceptBody: '1. ดู "ความสัมพันธ์ของผู้พูด" (เพื่อนคุยกัน vs พนักงานคุยกับลูกค้า/เจ้านาย) เพื่อเลือกระดับความสุภาพ\n2. อ่าน "ประโยคก่อนหน้าและประโยคถัดไป" ของช่องว่างเสมอ เพราะคำตอบอยู่ในบริบทที่คู่สนทนาตอบรับ\n3. สำนวนที่ออกบ่อย: Never mind (ไม่เป็นไร), Could you do me a favor? (ช่วยอะไรหน่อยได้ไหม), That sounds great! (ฟังดูเยี่ยมเลย)',
+        exampleQ: 'A: Would you mind if I opened the window?\nB: ______. It is quite hot in here.',
+        exampleSteps: '• ขั้นที่ 1: คำถามขึ้นต้นด้วย "Would you mind..." แปลว่า "คุณจะรังเกียจไหมถ้า..."\n• ขั้นที่ 2: ประโยคหลัง B บอกว่า "ข้างในนี้ค่อนข้างร้อนนะ" แสดงว่า B อนุญาตให้เปิดหน้าต่าง\n• ขั้นที่ 3: การตอบอนุญาตสำหรับคำถาม "รังเกียจไหม" ต้องตอบว่า "ไม่รังเกียจเลย" = Not at all / Of course not\n• คำตอบ: Not at all.',
+        tipText: 'ระวังกับดัก Would you mind...! ถ้าตอบ Yes แปลว่า "รังเกียจ (ห้ามทำ)" ถ้าอนุญาตต้องตอบ Not at all / No, go ahead'
+      },
+      {
+        subject: 'English',
+        keywords: ['Vocabulary', 'คำศัพท์', 'Reading', 'บทอ่าน'],
+        conceptTitle: 'กลยุทธ์เดาศัพท์ & อ่าน Reading ฉบับ ก.พ.',
+        conceptBody: '• การเดาศัพท์ (Context Clues): ดูคำเชื่อมรอบข้าง เช่น but/however (ความหมายตรงข้าม) หรือ and/similarly (ความหมายไปทางเดียวกัน)\n• ข้อสอบ Reading: อ่านคำถาม 3 ข้อก่อน แล้วค่อยสแกนหา Keyword ในบทความ (ชื่อเฉพาะ, ตัวเลข, ปี ค.ศ.)\n• คำถาม Main Idea (ใจความสำคัญ): ดูย่อหน้าแรกประโยคแรก และสรุปย่อหน้าสุดท้าย',
+        exampleQ: 'The new policy is mandatory; every employee must follow it without exception.\nคำว่า "mandatory" ใกล้เคียงกับข้อใด? (optional / compulsory)',
+        exampleSteps: '• ขั้นที่ 1: สังเกตส่วนขยายหลังเครื่องหมาย ; บอกว่า "พนักงานทุกคนต้องปฏิบัติตามโดยไม่มีข้อยกเว้น"\n• ขั้นที่ 2: ดังนั้น mandatory ต้องแปลว่า "ที่เป็นข้อบังคับ / จำเป็นต้องทำ"\n• คำตอบ: compulsory (ที่เป็นข้อบังคับ) ส่วน optional แปลว่า ตามสมัครใจ',
+        tipText: 'จำ Prefix ช่วยเดาศัพท์: un-, in-, im-, dis-, non- แปลว่า "ไม่" / re- แปลว่า "อีกครั้ง" / pre- แปลว่า "ก่อน"'
+      },
+      // LAW
+      {
+        subject: 'Law',
+        keywords: ['ระเบียบบริหารราชการแผ่นดิน', 'บริหารราชการ'],
+        conceptTitle: 'สรุปหัวใจ พ.ร.บ. ระเบียบบริหารราชการแผ่นดิน 2534',
+        conceptBody: 'แบ่งการบริหารราชการออกเป็น 3 ส่วน:\n1. ส่วนกลาง: สำนักนายกรัฐมนตรี (ฐานะเป็นกระทรวง), กระทรวง, ทบวง, กรม (จัดตั้ง/ยุบ = พ.ร.บ. / ยุบส่วนราชการที่ไม่เพิ่มตำแหน่ง = พ.ร.ฎ.)\n2. ส่วนภูมิภาค: จังหวัด (ผู้ว่าฯ) และ อำเภอ (นายอำเภอ) — *หมายเหตุ: ตำบลและหมู่บ้าน เป็นหน่วยย่อยของอำเภอ ไม่ใช่ส่วนภูมิภาค*\n3. ส่วนท้องถิ่น: อบจ., เทศบาล, อบต., กทม., เมืองพัทยา',
+        exampleQ: 'การจัดตั้ง เปลี่ยนชื่อ หรือยุบกระทรวง ทบวง กรม ต้องตราเป็นกฎหมายใด?',
+        exampleSteps: '• หลักจำ: การตั้งใหม่ หรือเปลี่ยนชื่อกระทรวง/กรม มีผลต่อโครงสร้างและงบประมาณแผ่นดิน → ต้องตราเป็น "พระราชบัญญัติ (พ.ร.บ.)"\n• ข้อยกเว้น: หากเป็นการ "ยุบ" โดยไม่เพิ่มตำแหน่ง หรือ "แบ่งส่วนราชการภายในกรม" → ตราเป็น "พระราชกฤษฎีกา (พ.ร.ฎ.)"\n• คำตอบ: พระราชบัญญัติ (พ.ร.บ.)',
+        tipText: 'จำแม่น ๆ: กฎกระทรวง = แบ่งส่วนราชการภายในกรม | พ.ร.ฎ. = ยุบ/รวมโอนไม่เพิ่มตำแหน่ง | พ.ร.บ. = ตั้งใหม่/เปลี่ยนชื่อ'
+      },
+      {
+        subject: 'Law',
+        keywords: ['วิธีปฏิบัติราชการทางปกครอง', 'ปกครอง', 'คำสั่งทางปกครอง'],
+        conceptTitle: 'หลักสำคัญ พ.ร.บ. วิธีปฏิบัติราชการทางปกครอง 2539',
+        conceptBody: '• คำสั่งทางปกครอง: การใช้อำนาจตามกฎหมายของเจ้าหน้าที่ที่มีผลกระทบต่อสิทธิหน้าที่ของบุคคลเฉพาะราย (เช่น คำสั่งอนุมัติ อนุญาต เพิกถอนใบอนุญาต)\n• การอุทธรณ์คำสั่งทางปกครอง: ต้องยื่นอุทธรณ์ต่อ "เจ้าหน้าที่ผู้ทำคำสั่งทางปกครอง" ภายใน 15 วัน นับแต่วันที่ได้รับแจ้งคำสั่ง\n• การพิจารณาอุทธรณ์: เจ้าหน้าที่ต้องพิจารณาให้เสร็จภายใน 30 วัน (ขยายได้อีกไม่เกิน 30 วัน)',
+        exampleQ: 'นาย ก. ได้รับแจ้งคำสั่งเพิกถอนใบอนุญาต หากไม่เห็นด้วย ต้องยื่นอุทธรณ์ภายในกี่วัน และยื่นต่อใคร?',
+        exampleSteps: '• ขั้นที่ 1: ระยะเวลาอุทธรณ์ปกติตามมาตรา 44 คือ ภายใน 15 วัน นับแต่วันได้รับแจ้ง\n• ขั้นที่ 2: ยื่นต่อ "เจ้าหน้าที่ผู้ทำคำสั่งทางปกครองนั้น" เพื่อให้โอกาสเขาทบทวนคำสั่งตนเองก่อนส่งให้ผู้มีอำนาจพิจารณาอุทธรณ์\n• คำตอบ: ภายใน 15 วัน ต่อเจ้าหน้าที่ผู้ทำคำสั่งทางปกครอง',
+        tipText: 'ตัวเลขออกสอบบ่อย: อุทธรณ์ภายใน 15 วัน → พิจารณา 30 วัน (+ขยายได้ 30 วัน) → ฟ้องศาลปกครองภายใน 90 วัน'
+      },
+      {
+        subject: 'Law',
+        keywords: ['กิจการบ้านเมืองที่ดี', 'พ.ร.ฎ.', '46'],
+        conceptTitle: 'หลักบริหารกิจการบ้านเมืองที่ดี (พ.ร.ฎ. 2546)',
+        conceptBody: 'มีเป้าหมาย 7 ประการ (จำย่อ: สุข-ผล-คุ้ม-สะดวก-ปรับ-เผย-ประเมิน):\n1. เกิดประโยชน์สุขของประชาชน\n2. เกิดผลสัมฤทธิ์ต่อภารกิจของรัฐ (ต้องจัดทำแผนปฏิบัติราชการ)\n3. มีประสิทธิภาพและเกิดความคุ้มค่า (ให้ส่วนราชการทำบัญชีต้นทุน)\n4. ไม่มีขั้นตอนการปฏิบัติงานเกินความจำเป็น (ลดขั้นตอน/กระจายอำนาจ)\n5. มีการปรับปรุงภารกิจให้ทันต่อสถานการณ์ (ทบทวนทุก 5 ปี)\n6. ประชาชนได้รับการอำนวยความสะดวกและตอบสนองความต้องการ\n7. มีการประเมินผลการปฏิบัติราชการอย่างสม่ำเสมอ',
+        exampleQ: 'ตาม พ.ร.ฎ. ว่าด้วยหลักเกณฑ์และวิธีการบริหารกิจการบ้านเมืองที่ดี ส่วนราชการต้องทบทวนภารกิจของตนทุกกี่ปี?',
+        exampleSteps: '• อ้างอิงมาตรา 33 แห่ง พ.ร.ฎ. ว่าด้วยหลักเกณฑ์และวิธีการบริหารกิจการบ้านเมืองที่ดี พ.ศ. 2546\n• กำหนดให้ส่วนราชการต้องจัดให้มีการทบทวนภารกิจว่าภารกิจใดสมควรยกเลิก ปรับปรุง หรือเปลี่ยนแปลง โดยคำนึงถึงแผนการบริหารราชการแผ่นดินและงบประมาณ ทุก 5 ปี\n• คำตอบ: ทุก 5 ปี',
+        tipText: 'ถ้าประชาชนสอบถามข้อมูลหรือยื่นคำขอ ส่วนราชการต้องตอบหรือแจ้งความคืบหน้าให้ทราบภายใน 15 วัน'
+      },
+      {
+        subject: 'Law',
+        keywords: ['ละเมิด', 'ความรับผิดทางละเมิด', 'เจ้าหน้าที่'],
+        conceptTitle: 'ความรับผิดทางละเมิดของเจ้าหน้าที่ (พ.ร.บ. 2539)',
+        conceptBody: 'แบ่งเป็น 2 กรณีใหญ่:\n1. ทำละเมิดต่อ "บุคคลภายนอก" ในการปฏิบัติหน้าที่ → ผู้เสียหายต้องฟ้อง "หน่วยงานของรัฐ" โดยตรง (ห้ามฟ้องเจ้าหน้าที่) และหน่วยงานจะไล่เบี้ยเจ้าหน้าที่ได้เฉพาะกรณี "จงใจ" หรือ "ประมาทเลินเล่ออย่างร้ายแรง" เท่านั้น\n2. ทำละเมิดต่อ "บุคคลภายนอก" นอกหน้าที่ (เรื่องส่วนตัว) → ฟ้อง "ตัวเจ้าหน้าที่" โดยตรง หน่วยงานไม่เกี่ยว\n3. อายุความ: หน่วยงานไล่เบี้ยเจ้าหน้าที่ภายใน 1 ปี นับแต่วันที่หน่วยงานได้ใช้ค่าสินไหมทดแทนให้ผู้เสียหาย',
+        exampleQ: 'พนักงานขับรถของกรม A ขับรถราชการไปส่งเอกสารด้วยความประมาทเลินเล่อธรรมดา ชนรถชาวบ้านเสียหาย ผู้เสียหายต้องฟ้องใคร และกรม A ไล่เบี้ยพนักงานขับรถได้หรือไม่?',
+        exampleSteps: '• ขั้นที่ 1: เป็นการปฏิบัติหน้าที่ → ผู้เสียหายต้องฟ้อง "กรม A (หน่วยงานของรัฐ)" เท่านั้น\n• ขั้นที่ 2: พนักงานขับรถกระทำโดย "ประมาทเลินเล่อธรรมดา" (ไม่ร้ายแรง) → กฎหมายคุ้มครองเจ้าหน้าที่ ไม่ต้องรับผิดชดใช้ค่าสินไหม\n• คำตอบ: ผู้เสียหายฟ้องกรม A และกรม A ไล่เบี้ยพนักงานขับรถไม่ได้',
+        tipText: 'จำหัวใจสำคัญ: ประมาทธรรมดา = เจ้าหน้าที่รอด | จงใจ หรือ ประมาทอย่างร้ายแรง = โดนไล่เบี้ยตามสัดส่วนความผิด (ไม่นำหลักลูกหนี้ร่วมมาใช้)'
+      },
+      {
+        subject: 'Law',
+        keywords: ['จริยธรรม', 'มาตรฐานทางจริยธรรม', 'อาญา', 'ทุจริต'],
+        conceptTitle: 'มาตรฐานทางจริยธรรม 7 ประการ & กฎหมายอาญาความผิดต่อตำแหน่งหน้าที่',
+        conceptBody: '• มาตรฐานทางจริยธรรม 7 ข้อ: 1) ยึดมั่นในสถาบันหลัก 2) ซื่อสัตย์สุจริต มีจิตสำนึกที่ดี 3) กล้าตัดสินใจและกระทำในสิ่งที่ถูกต้องชอบธรรม 4) คิดถึงประโยชน์ส่วนรวมมากกว่าประโยชน์ส่วนตัว 5) มุ่งผลสัมฤทธิ์ของงาน 6) ปฏิบัติหน้าที่อย่างเป็นธรรมและไม่เลือกปฏิบัติ 7) ดำรงตนเป็นแบบอย่างที่ดีและรักษาภาพลักษณ์ของทางราชการ\n• ความผิดต่อตำแหน่งหน้าที่ราชการ (ป.อาญา): เรียกรับสินบน (ม.149), ละเว้นการปฏิบัติหน้าที่โดยมิชอบ (ม.157)',
+        exampleQ: 'เจ้าพนักงานเรียก รับ หรือยอมจะรับทรัพย์สินสำหรับตนเองโดยมิชอบ เพื่อกระทำการหรือไม่กระทำการอย่างใดในตำแหน่ง ผิดมาตราใด?',
+        exampleSteps: '• การเรียกรับสินบนของเจ้าพนักงาน เป็นความผิดตามประมวลกฎหมายอาญา มาตรา 149 (โทษสูงสุดถึงประหารชีวิต)\n• ส่วนมาตรา 157 คือ ปฏิบัติหรือละเว้นการปฏิบัติหน้าที่โดยมิชอบเพื่อให้เกิดความเสียหายแก่ผู้หนึ่งผู้ใด\n• คำตอบ: ประมวลกฎหมายอาญา มาตรา 149',
+        tipText: 'แยกให้ออก: ม.149 = เรียกรับสินบน | ม.147 = ยักยอกทรัพย์ราชการที่ตนดูแล | ม.157 = ปฏิบัติ/ละเว้นหน้าที่โดยมิชอบ'
+      }
+    ];
+
+    function getLessonContentForLevel(sectionName, levelName, qs) {
+      const sampleQ = qs[0] || {};
+      const subject = sampleQ.subject || selectedLearnSubject;
+
+      // 1. Check if Google Sheet provides custom lesson fields
+      if (sampleQ.lesson) {
+        return {
+          conceptTitle: `หลักการสำคัญ: ${sectionName} (${levelName})`,
+          conceptBody: sampleQ.lesson,
+          exampleQ: sampleQ.example || sampleQ.question || 'ตัวอย่างแนวข้อสอบในบทนี้',
+          exampleSteps: sampleQ.explanation || 'วิเคราะห์เงื่อนไขตามโจทย์และเลือกคำตอบที่ถูกต้องที่สุด',
+          tipText: sampleQ.tip || 'อ่านโจทย์ให้ครบถ้วนและตัดตัวเลือกที่ไม่เกี่ยวข้องออกก่อนเสมอ'
+        };
+      }
+
+      // 2. Match against Built-in Thai OCSC Knowledge Base by subject + keywords
+      const searchTarget = `${sectionName} ${levelName}`.toLowerCase();
+      const matched = LESSON_KNOWLEDGE_BASE.find(item =>
+        item.subject === subject &&
+        item.keywords.some(kw => searchTarget.includes(kw.toLowerCase()))
+      );
+
+      if (matched) {
+        return matched;
+      }
+
+      // 3. Smart Fallback: Build a guided walkthrough directly from a sample question in this level
+      const fallbackQ = qs[0];
+      return {
+        conceptTitle: `แนวทางการทำข้อสอบหมวด "${sectionName}" (${levelName})`,
+        conceptBody: `ในด่านนี้มีข้อสอบทั้งหมด ${qs.length} ข้อ แนะนำให้อ่านเงื่อนไขสำคัญของโจทย์ จับคีย์เวิร์ดหลัก และตัดตัวเลือกที่ขัดแย้งกับหลักการออกทีละข้อ ก่อนตัดสินใจเลือกคำตอบที่สมบูรณ์ที่สุด`,
+        exampleQ: fallbackQ ? fallbackQ.question : `ตัวอย่างโจทย์เรื่อง ${sectionName}`,
+        exampleSteps: fallbackQ
+          ? `• คำตอบที่ถูกต้องคือ: "${fallbackQ.correctChoice}"\n• เหตุผลประกอบ: ${fallbackQ.explanation || 'วิเคราะห์ตามหลักเกณฑ์ของเนื้อหาในหมวดนี้'}`
+          : 'วิเคราะห์โจทย์ทีละขั้นตอนและตรวจสอบความถูกต้องก่อนตอบ',
+        tipText: 'ฝึกทำซ้ำจนเข้าใจหลักการ หากข้อใดตอบผิด ระบบจะเก็บเข้าคลังจุดอ่อนเพื่อให้ซ่อมซ้ำจนแม่นยำครับ'
+      };
+    }
+
+    function setNodeModalTab(tabName) {
+      const btnLesson = document.getElementById('modal-tab-lesson');
+      const btnPlay = document.getElementById('modal-tab-play');
+      const paneLesson = document.getElementById('modal-pane-lesson');
+      const panePlay = document.getElementById('modal-pane-play');
+
+      if (tabName === 'lesson') {
+        btnLesson.className = "py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs flex items-center justify-center gap-1.5";
+        btnPlay.className = "py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5";
+        paneLesson.classList.remove('hidden');
+        panePlay.classList.add('hidden');
+      } else {
+        btnPlay.className = "py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs flex items-center justify-center gap-1.5";
+        btnLesson.className = "py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5";
+        panePlay.classList.remove('hidden');
+        paneLesson.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('modal-tab-lesson').addEventListener('click', () => setNodeModalTab('lesson'));
+    document.getElementById('modal-tab-play').addEventListener('click', () => setNodeModalTab('play'));
+
+    // Modal for Level Node (Shows Lesson & Worked Example before playing!)
+    function openNodeModal(sectionName, levelName, levelKey, qs, forceLessonTab = false) {
       currentLevelKey = levelKey;
       currentLevelQuestions = qs;
       const prog = userStats.levelProgress?.[levelKey] || { roundsCompleted: 0, stars: 0 };
@@ -1060,6 +1352,17 @@
 
       document.getElementById('modal-section-name').textContent = sectionName;
       document.getElementById('modal-level-title').textContent = levelName;
+      document.getElementById('modal-tab-round-badge').textContent = `${roundsDone}/5`;
+
+      // Populate Lesson & Worked Example content
+      const lesson = getLessonContentForLevel(sectionName, levelName, qs);
+      document.getElementById('lesson-concept-title').textContent = lesson.conceptTitle;
+      document.getElementById('lesson-concept-body').textContent = lesson.conceptBody;
+      document.getElementById('lesson-example-q').textContent = lesson.exampleQ;
+      document.getElementById('lesson-example-steps').textContent = lesson.exampleSteps;
+      document.getElementById('lesson-tip-text').textContent = lesson.tipText;
+
+      // Populate Progress & Stars
       document.getElementById('modal-round-info').textContent = roundsDone >= 5
         ? `พิชิตครบ 5 รอบแล้ว! (เล่นซ้ำเพื่อเก็บ 3 ดาวได้)`
         : `ความคืบหน้า: รอบที่ ${nextRound} จาก 5 (รอบละ 5 ข้อ)`;
@@ -1079,13 +1382,23 @@
       }
 
       document.getElementById('btn-start-node-round').textContent = roundsDone >= 5
-        ? `ฝึกซ้ำระดับนี้ (5 ข้อ)`
-        : `เริ่มรอบที่ ${nextRound} / 5`;
+        ? `ฝึกซ้ำระดับนี้ (5 ข้อ) →`
+        : `เข้าใจแล้ว! เริ่มทำรอบที่ ${nextRound} / 5 →`;
+
+      // Default to "Lesson & Worked Example" first if new to this level (roundsDone === 0) or explicitly clicked "📖 สอนบทนี้"
+      if (forceLessonTab || roundsDone === 0) {
+        setNodeModalTab('lesson');
+      } else {
+        setNodeModalTab('play');
+      }
 
       document.getElementById('node-modal').classList.remove('hidden');
     }
 
     document.getElementById('btn-close-modal').addEventListener('click', () => {
+      document.getElementById('node-modal').classList.add('hidden');
+    });
+    document.getElementById('btn-close-modal-x').addEventListener('click', () => {
       document.getElementById('node-modal').classList.add('hidden');
     });
 
