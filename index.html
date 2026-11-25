@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เตรียมสอบ ก.พ. (OCSC Exam Prep)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Prompt', sans-serif; background-color: #f8fafc; color: #1e293b; }
+    .fade-in { animation: fadeIn 0.25s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2.5 cursor-pointer" id="nav-logo">
+        <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+          ก.พ.
+        </div>
+        <div>
+          <h1 class="font-bold text-slate-800 text-base leading-tight">OCSC Exam Prep</h1>
+          <p class="text-xs text-slate-500">คลังข้อสอบและระบบฝึกทำโจทย์ฟรี</p>
+        </div>
+      </div>
+
+      <!-- Auth Status -->
+      <div id="auth-bar" class="flex items-center gap-3">
+        <span class="text-xs text-slate-400">กำลังโหลด...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-6">
+
+    <!-- Login View -->
+    <section id="view-login" class="hidden py-12 text-center fade-in">
+      <div class="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+        <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-5 text-2xl font-bold">
+          ก.พ.
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800 mb-2">พร้อมพิชิตข้อสอบ ก.พ. หรือยัง?</h2>
+        <p class="text-sm text-slate-500 mb-8 leading-relaxed">
+          ฝึกทำข้อสอบครบทั้ง 5 วิชา สะสมแต้ม XP พร้อมบันทึกสถิติและทบทวนข้อที่เคยทำผิดอัตโนมัติ
+        </p>
+        <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-medium py-3 px-4 rounded-xl border border-slate-300 shadow-sm transition cursor-pointer">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5" />
+          <span>เข้าสู่ระบบด้วย Google</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Dashboard View -->
+    <section id="view-dashboard" class="hidden space-y-6 fade-in">
+      
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs text-slate-500 mb-1">คะแนนสะสม</p>
+          <p class="text-2xl font-bold text-indigo-600"><span id="stat-xp">0</span> <span class="text-xs font-normal text-slate-400">XP</span></p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs text-slate-500 mb-1">ทำข้อสอบไปแล้ว</p>
+          <p class="text-2xl font-bold text-slate-800"><span id="stat-total">0</span> <span class="text-xs font-normal text-slate-400">ข้อ</span></p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs text-slate-500 mb-1">ความแม่นยำ</p>
+          <p class="text-2xl font-bold text-emerald-600"><span id="stat-accuracy">0</span><span class="text-sm font-normal">%</span></p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs text-slate-500 mb-1">ต่อเนื่อง (Streak)</p>
+          <p class="text-2xl font-bold text-amber-500"><span id="stat-streak">0</span> <span class="text-xs font-normal text-slate-400">วัน</span></p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-2 sm:col-span-1">
+          <p class="text-xs text-slate-500 mb-1">ข้อผิดรอทบทวน</p>
+          <p class="text-2xl font-bold text-rose-600"><span id="stat-wrong">0</span> <span class="text-xs font-normal text-slate-400">ข้อ</span></p>
+        </div>
+      </div>
+
+      <!-- Review Wrong Questions Banner -->
+      <div id="review-banner" class="hidden bg-rose-50 border border-rose-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="font-semibold text-rose-900 text-sm">โหมดทบทวนข้อที่เคยตอบผิด</h3>
+          <p class="text-xs text-rose-700 mt-0.5">ฝึกทำซ้ำเฉพาะข้อที่พลาด เพื่ออุดรอยรั่วก่อนวันสอบจริง</p>
+        </div>
+        <button id="btn-start-review" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-medium px-4 py-2.5 rounded-xl transition shrink-0 cursor-pointer">
+          เริ่มทบทวน (<span id="review-count">0</span> ข้อ)
+        </button>
+      </div>
+
+      <!-- Subjects -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-bold text-slate-800 text-base">เลือกวิชาที่ต้องการฝึกทำ (5 วิชาหลัก)</h3>
+          <button id="btn-refresh-bank" class="text-xs text-indigo-600 hover:underline cursor-pointer">รีเฟรชคลังข้อสอบ</button>
+        </div>
+        
+        <div id="loading-questions" class="bg-white rounded-2xl border border-slate-200 p-8 text-center">
+          <div class="inline-block w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mb-2"></div>
+          <p class="text-sm text-slate-500">กำลังโหลดคลังข้อสอบจาก Google Sheets...</p>
+        </div>
+
+        <div id="subject-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 hidden">
+          <!-- Subjects injected via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz View -->
+    <section id="view-quiz" class="hidden fade-in">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        
+        <!-- Quiz Header -->
+        <div class="bg-slate-50 px-5 py-3.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span id="quiz-subject-badge" class="text-xs font-semibold text-indigo-700 bg-indigo-100 px-2.5 py-1 rounded-lg">วิชา</span>
+            <span id="quiz-section-badge" class="text-xs font-medium text-slate-600 bg-slate-200/70 px-2.5 py-1 rounded-lg">เนื้อหา</span>
+            <span id="quiz-level-badge" class="text-xs font-medium text-amber-700 bg-amber-100 px-2 py-1 rounded-lg">ระดับ</span>
+            <span id="quiz-xp-badge" class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-lg">+10 XP</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-xs text-slate-500">ข้อที่ <strong id="quiz-current">1</strong> / <span id="quiz-total">10</span></span>
+            <button id="btn-exit-quiz" class="text-xs text-rose-600 hover:underline cursor-pointer">ออก</button>
+          </div>
+        </div>
+
+        <!-- Question Body -->
+        <div class="p-6">
+          <p id="quiz-question-text" class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-6 whitespace-pre-line">
+            คำถาม...
+          </p>
+
+          <!-- Choices -->
+          <div id="quiz-choices" class="space-y-3">
+            <!-- Choices injected via JS -->
+          </div>
+
+          <!-- Explanation Box -->
+          <div id="quiz-explanation" class="hidden mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <p id="quiz-result-label" class="font-bold text-sm mb-1.5"></p>
+            <p class="text-xs font-semibold text-slate-500 mb-1">คำอธิบายหลักการคิดและเหตุผล:</p>
+            <p id="quiz-explanation-text" class="text-sm text-slate-700 leading-relaxed whitespace-pre-line"></p>
+          </div>
+        </div>
+
+        <!-- Quiz Footer -->
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+          <button id="btn-next-question" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition cursor-pointer">
+            ข้อถัดไป →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Summary View -->
+    <section id="view-summary" class="hidden fade-in">
+      <div class="max-w-md mx-auto bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center">
+        <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+          ✓
+        </div>
+        <h2 class="text-xl font-bold text-slate-800 mb-1">ทำข้อสอบเสร็จสิ้น!</h2>
+        <p id="summary-subtitle" class="text-sm text-slate-500 mb-6">สรุปผลคะแนนรอบนี้</p>
+
+        <div class="bg-slate-50 rounded-xl p-4 mb-6 grid grid-cols-3 gap-2 border border-slate-100">
+          <div>
+            <p class="text-xs text-slate-500">ตอบถูก</p>
+            <p class="text-xl font-bold text-indigo-600"><span id="summary-score">0</span>/<span id="summary-total">0</span></p>
+          </div>
+          <div class="border-x border-slate-200">
+            <p class="text-xs text-slate-500">ความแม่นยำ</p>
+            <p class="text-xl font-bold text-emerald-600"><span id="summary-percent">0</span>%</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500">ได้รับ XP</p>
+            <p class="text-xl font-bold text-amber-500">+<span id="summary-xp">0</span></p>
+          </div>
+        </div>
+
+        <button id="btn-back-home" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition cursor-pointer">
+          กลับหน้าหลัก
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Firebase & App Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // ==========================================
+    // 1. CONFIGURATION
+    // ==========================================
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyK349w7TJJ6fd9sVxcHwS9vC4xOnCSkA6cs9PnhRAH5KCfMUKetg3GJq56pVfbMIu2fg/exec";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDerdir4rHDiAoWLDwvjkuZra_XM684cS4",
+      authDomain: "ocsc-exam.firebaseapp.com",
+      projectId: "ocsc-exam",
+      storageBucket: "ocsc-exam.firebasestorage.app",
+      messagingSenderId: "581924586998",
+      appId: "1:581924586998:web:3567b04ae456af0974f3d7",
+      measurementId: "G-3E76DXDBV0"
+    };
+
+    const SUBJECT_META = {
+      Math: { title: "คณิตศาสตร์ (Math)", desc: "อนุกรม โจทย์คณิตศาสตร์ เงื่อนไขสัญลักษณ์ ตารางข้อมูล" },
+      Thai: { title: "ภาษาไทย (Thai)", desc: "การอ่านจับใจความ เรียงประโยค บทความ หลักภาษา" },
+      English: { title: "ภาษาอังกฤษ (English)", desc: "Grammar, Vocabulary, Conversation, Reading" },
+      General: { title: "ความรู้ทั่วไป (General)", desc: "เหตุการณ์ปัจจุบัน สังคม เศรษฐกิจ และความรู้รอบตัว" },
+      Law: { title: "กฎหมาย (Law)", desc: "พ.ร.บ. ระเบียบบริหารราชการแผ่นดิน วิธีปฏิบัติราชการฯ" }
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    // App State
+    let currentUser = null;
+    let userStats = {
+      xp: 0,
+      totalAnswered: 0,
+      correctCount: 0,
+      streakDays: 0,
+      lastStudyDate: "",
+      wrongQuestions: [],
+      completedLessons: []
+    };
+    let allQuestions = [];
+    let activeQuiz = [];
+    let currentIndex = 0;
+    let sessionScore = 0;
+    let sessionXp = 0;
+
+    // DOM Elements
+    const views = {
+      login: document.getElementById('view-login'),
+      dashboard: document.getElementById('view-dashboard'),
+      quiz: document.getElementById('view-quiz'),
+      summary: document.getElementById('view-summary')
+    };
+
+    function showView(name) {
+      Object.values(views).forEach(el => el.classList.add('hidden'));
+      views[name].classList.remove('hidden');
+    }
+
+    // Shuffle Helper (Fisher-Yates)
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    // ==========================================
+    // 2. AUTHENTICATION & USER PROFILE
+    // ==========================================
+    document.getElementById('btn-google-login').addEventListener('click', () => {
+      signInWithPopup(auth, provider).catch(err => alert("เข้าสู่ระบบไม่สำเร็จ: " + err.message));
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      const authBar = document.getElementById('auth-bar');
+      if (user) {
+        currentUser = user;
+        authBar.innerHTML = `
+          <div class="flex items-center gap-2">
+            <img src="${user.photoURL || ''}" class="w-7 h-7 rounded-full border border-slate-200" />
+            <span class="text-xs font-medium text-slate-700 hidden sm:inline">${user.displayName}</span>
+          </div>
+          <button id="btn-logout" class="text-xs text-rose-600 hover:underline ml-2 cursor-pointer">ออก</button>
+        `;
+        document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
+
+        await loadUserStats(user.uid);
+        showView('dashboard');
+        if (allQuestions.length === 0) await fetchQuestions();
+      } else {
+        currentUser = null;
+        authBar.innerHTML = `<span class="text-xs text-slate-500">ยังไม่เข้าสู่ระบบ</span>`;
+        showView('login');
+      }
+    });
+
+    async function loadUserStats(uid) {
+      const userRef = doc(db, "users", uid);
+      const snap = await getDoc(userRef);
+
+      if (snap.exists()) {
+        userStats = { ...userStats, ...snap.data() };
+      } else {
+        userStats = {
+          xp: 0,
+          totalAnswered: 0,
+          correctCount: 0,
+          streakDays: 0,
+          lastStudyDate: "",
+          wrongQuestions: [],
+          completedLessons: []
+        };
+        await setDoc(userRef, userStats);
+      }
+      renderDashboardStats();
+    }
+
+    function renderDashboardStats() {
+      document.getElementById('stat-xp').textContent = (userStats.xp || 0).toLocaleString();
+      document.getElementById('stat-total').textContent = userStats.totalAnswered || 0;
+      const acc = userStats.totalAnswered > 0 
+        ? Math.round((userStats.correctCount / userStats.totalAnswered) * 100) 
+        : 0;
+      document.getElementById('stat-accuracy').textContent = acc;
+      document.getElementById('stat-streak').textContent = userStats.streakDays || 0;
+
+      const wrongList = userStats.wrongQuestions || [];
+      document.getElementById('stat-wrong').textContent = wrongList.length;
+
+      const reviewBanner = document.getElementById('review-banner');
+      if (wrongList.length > 0 && allQuestions.length > 0) {
+        reviewBanner.classList.remove('hidden');
+        document.getElementById('review-count').textContent = wrongList.length;
+      } else {
+        reviewBanner.classList.add('hidden');
+      }
+    }
+
+    // ==========================================
+    // 3. FETCH QUESTIONS FROM GOOGLE SHEETS
+    // ==========================================
+    async function fetchQuestions() {
+      const loader = document.getElementById('loading-questions');
+      const subList = document.getElementById('subject-list');
+      loader.classList.remove('hidden');
+      subList.classList.add('hidden');
+
+      try {
+        const res = await fetch(APPS_SCRIPT_URL);
+        const data = await res.json();
+        allQuestions = Array.isArray(data) ? data : [];
+        renderSubjects();
+        renderDashboardStats();
+      } catch (err) {
+        loader.innerHTML = `<p class="text-sm text-rose-600">โหลดข้อสอบไม่สำเร็จ: ${err.message}</p>`;
+      }
+    }
+
+    document.getElementById('btn-refresh-bank').addEventListener('click', fetchQuestions);
+
+    function renderSubjects() {
+      const loader = document.getElementById('loading-questions');
+      const subList = document.getElementById('subject-list');
+      loader.classList.add('hidden');
+      subList.classList.remove('hidden');
+
+      const subjectOrder = ['Math', 'Thai', 'English', 'General', 'Law'];
+      const groups = {};
+      subjectOrder.forEach(s => groups[s] = []);
+
+      allQuestions.forEach(q => {
+        const sub = q.subject || "General";
+        if (!groups[sub]) groups[sub] = [];
+        groups[sub].push(q);
+      });
+
+      subList.innerHTML = "";
+      Object.keys(groups).forEach(subKey => {
+        const qs = groups[subKey];
+        const meta = SUBJECT_META[subKey] || { title: subKey, desc: "คลังข้อสอบ" };
+        const card = document.createElement('div');
+        card.className = "bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-400 shadow-sm transition flex items-center justify-between gap-4 cursor-pointer";
+        card.innerHTML = `
+          <div>
+            <h4 class="font-bold text-slate-800 text-sm">${meta.title}</h4>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-1">${meta.desc}</p>
+            <p class="text-xs font-medium text-indigo-600 mt-2">จำนวน ${qs.length} ข้อ</p>
+          </div>
+          <span class="bg-indigo-50 text-indigo-600 text-xs font-semibold px-3.5 py-2 rounded-xl shrink-0">
+            ${qs.length > 0 ? 'เริ่มทำ →' : 'ยังไม่มีข้อสอบ'}
+          </span>
+        `;
+        if (qs.length > 0) {
+          card.addEventListener('click', () => startQuiz(qs, meta.title));
+        } else {
+          card.classList.add('opacity-60', 'cursor-not-allowed');
+        }
+        subList.appendChild(card);
+      });
+    }
+
+    // ==========================================
+    // 4. QUIZ ENGINE (RANDOMIZED CHOICES) & SYNC
+    // ==========================================
+    document.getElementById('btn-start-review').addEventListener('click', () => {
+      const wrongSet = new Set(userStats.wrongQuestions || []);
+      const reviewQs = allQuestions.filter(q => wrongSet.has(String(q.id)));
+      if (reviewQs.length === 0) return alert("ไม่มีข้อที่ทำผิดค้างอยู่ครับ");
+      startQuiz(reviewQs, "ทบทวนข้อที่ผิด");
+    });
+
+    function startQuiz(questions, title) {
+      activeQuiz = shuffleArray(questions); // สุ่มลำดับข้อสอบ
+      currentIndex = 0;
+      sessionScore = 0;
+      sessionXp = 0;
+      document.getElementById('quiz-subject-badge').textContent = title;
+      document.getElementById('quiz-total').textContent = activeQuiz.length;
+      showView('quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = activeQuiz[currentIndex];
+      document.getElementById('quiz-current').textContent = currentIndex + 1;
+      document.getElementById('quiz-section-badge').textContent = q.section || "ทั่วไป";
+      document.getElementById('quiz-level-badge').textContent = `ระดับ: ${q.level || "ทั่วไป"}`;
+      document.getElementById('quiz-xp-badge').textContent = `+${q.xp || 10} XP`;
+      document.getElementById('quiz-question-text').textContent = q.question;
+
+      document.getElementById('quiz-explanation').classList.add('hidden');
+      document.getElementById('btn-next-question').classList.add('hidden');
+
+      const choicesEl = document.getElementById('quiz-choices');
+      choicesEl.innerHTML = "";
+
+      // นำช้อยส์ที่ถูก (คอลัมน์ E) มารวมกับช้อยส์ที่ผิด (F, G, H) แล้วสุ่มตำแหน่ง
+      const rawOptions = [
+        { text: q.correctChoice, isCorrect: true },
+        ...(q.wrongChoices || []).map(txt => ({ text: txt, isCorrect: false }))
+      ];
+      const shuffledOptions = shuffleArray(rawOptions);
+      const labels = ['ก', 'ข', 'ค', 'ง', 'จ'];
+
+      shuffledOptions.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-slate-50 text-sm text-slate-700 transition flex items-start gap-3 cursor-pointer";
+        btn.dataset.correct = opt.isCorrect ? "1" : "0";
+        btn.innerHTML = `
+          <span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-600 font-semibold text-xs flex items-center justify-center shrink-0 mt-0.5">${labels[idx] || (idx + 1)}</span>
+          <span>${opt.text}</span>
+        `;
+        btn.addEventListener('click', () => handleAnswer(opt.isCorrect, btn, choicesEl, q));
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    async function handleAnswer(isCorrect, clickedBtn, choicesEl, q) {
+      const buttons = choicesEl.querySelectorAll('button');
+      buttons.forEach(b => {
+        b.disabled = true;
+        // ไฮไลต์ข้อที่ถูกต้องให้เห็นเสมอหลังตอบ
+        if (b.dataset.correct === "1") {
+          b.classList.replace('border-slate-200', 'border-emerald-500');
+          b.classList.add('bg-emerald-50', 'text-emerald-900', 'font-medium');
+        }
+      });
+
+      const earnedXp = isCorrect ? (Number(q.xp) || 10) : 0;
+
+      if (isCorrect) {
+        sessionScore++;
+        sessionXp += earnedXp;
+      } else {
+        clickedBtn.classList.replace('border-slate-200', 'border-rose-500');
+        clickedBtn.classList.add('bg-rose-50', 'text-rose-900');
+      }
+
+      // Show Explanation
+      const expBox = document.getElementById('quiz-explanation');
+      const resLabel = document.getElementById('quiz-result-label');
+      expBox.classList.remove('hidden');
+      resLabel.textContent = isCorrect 
+        ? `✓ ถูกต้อง! (+${earnedXp} XP)` 
+        : `✕ ไม่ถูกต้อง (คำตอบที่ถูกคือ: ${q.correctChoice})`;
+      resLabel.className = isCorrect ? "font-bold text-sm mb-1.5 text-emerald-700" : "font-bold text-sm mb-1.5 text-rose-700";
+      document.getElementById('quiz-explanation-text').textContent = q.explanation || "ไม่มีคำอธิบายเพิ่มเติม";
+
+      document.getElementById('btn-next-question').classList.remove('hidden');
+
+      // Update Firestore Stats
+      if (currentUser) {
+        const userRef = doc(db, "users", currentUser.uid);
+        const today = new Date().toISOString().split('T')[0];
+        let newStreak = userStats.streakDays || 0;
+
+        if (userStats.lastStudyDate !== today) {
+          const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+          newStreak = (userStats.lastStudyDate === yesterday) ? newStreak + 1 : 1;
+        }
+
+        const qId = String(q.id);
+        const updates = {
+          xp: increment(earnedXp),
+          totalAnswered: increment(1),
+          correctCount: increment(isCorrect ? 1 : 0),
+          streakDays: newStreak,
+          lastStudyDate: today
+        };
+
+        if (isCorrect) {
+          updates.wrongQuestions = arrayRemove(qId);
+          userStats.wrongQuestions = (userStats.wrongQuestions || []).filter(id => id !== qId);
+        } else {
+          updates.wrongQuestions = arrayUnion(qId);
+          if (!userStats.wrongQuestions.includes(qId)) userStats.wrongQuestions.push(qId);
+        }
+
+        userStats.xp = (userStats.xp || 0) + earnedXp;
+        userStats.totalAnswered = (userStats.totalAnswered || 0) + 1;
+        if (isCorrect) userStats.correctCount = (userStats.correctCount || 0) + 1;
+        userStats.streakDays = newStreak;
+        userStats.lastStudyDate = today;
+
+        await updateDoc(userRef, updates).catch(console.error);
+      }
+    }
+
+    document.getElementById('btn-next-question').addEventListener('click', () => {
+      currentIndex++;
+      if (currentIndex < activeQuiz.length) {
+        renderQuestion();
+      } else {
+        showSummary();
+      }
+    });
+
+    function showSummary() {
+      document.getElementById('summary-score').textContent = sessionScore;
+      document.getElementById('summary-total').textContent = activeQuiz.length;
+      const pct = Math.round((sessionScore / activeQuiz.length) * 100);
+      document.getElementById('summary-percent').textContent = pct;
+      document.getElementById('summary-xp').textContent = sessionXp;
+      showView('summary');
+    }
+
+    document.getElementById('btn-exit-quiz').addEventListener('click', () => {
+      renderDashboardStats();
+      showView('dashboard');
+    });
+
+    document.getElementById('btn-back-home').addEventListener('click', () => {
+      renderDashboardStats();
+      showView('dashboard');
+    });
+  </script>
+</body>
+</html>
