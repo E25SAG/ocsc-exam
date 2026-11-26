@@ -66,6 +66,19 @@
       overflow: hidden;
     }
 
+    /* Gold Perfect Chapter Glow */
+    @keyframes goldChapterGlow {
+      0%, 100% {
+        box-shadow: 0 0 14px rgba(245, 158, 11, 0.55), 0 0 28px rgba(251, 191, 36, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 24px rgba(245, 158, 11, 0.9), 0 0 42px rgba(253, 224, 71, 0.55);
+      }
+    }
+    .chapter-gold-glow {
+      animation: goldChapterGlow 2.4s infinite ease-in-out;
+    }
+
     /* Streak Celebration Animations */
     @keyframes flamePulse {
       0%, 100% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.7)); }
@@ -219,6 +232,41 @@
           ลงชื่อเข้าใช้ด้วย Google
         </button>
       </div>
+
+      <!-- Anonymous Server Ranking / Percentile Card -->
+      <div id="server-rank-card" class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-lg shrink-0 shadow-xs">
+              🏆
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400">อันดับของคุณเทียบกับผู้ใช้งานทั้งหมด</h3>
+                <button id="btn-refresh-rank" title="อัปเดตอันดับล่าสุด" class="text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer">↻</button>
+              </div>
+              <p id="server-rank-headline" class="text-sm sm:text-base font-extrabold text-slate-800 dark:text-white mt-0.5 truncate">
+                กำลังคำนวณอันดับบน Server...
+              </p>
+            </div>
+          </div>
+          <span id="server-rank-badge" class="hidden whitespace-nowrap text-xs font-extrabold px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800/60 shrink-0">
+            Top --%
+          </span>
+        </div>
+
+        <!-- Percentile Progress Bar (Only shown when total users >= 100) -->
+        <div id="server-percentile-bar-wrap" class="hidden mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800">
+          <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-1.5">
+            <span>เริ่มต้น (0%)</span>
+            <span id="server-percentile-subtext" class="font-semibold text-indigo-600 dark:text-indigo-400">เหนือกว่าผู้ใช้งาน --% บนระบบ</span>
+            <span>สูงสุด (100%)</span>
+          </div>
+          <div class="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden p-0.5">
+            <div id="server-percentile-fill" class="h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-400 transition-all duration-700" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
       
       <!-- Subject Selector Pills -->
       <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -232,6 +280,13 @@
         <div id="learn-subject-tabs" class="grid grid-cols-5 gap-1.5">
           <!-- Subject buttons injected via JS -->
         </div>
+      </div>
+
+      <!-- Chapter Status Legend -->
+      <div class="flex flex-wrap items-center justify-end gap-3 px-1 text-[11px] text-slate-500 dark:text-slate-400">
+        <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></i> ยังไม่ทำ</span>
+        <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"></i> ทำแล้ว</span>
+        <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-xs shadow-amber-400 inline-block"></i> ถูกหมด (3 ดาวครบทุกด่าน)</span>
       </div>
 
       <!-- Review Wrong Banner -->
@@ -846,7 +901,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, getDocs, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // ==========================================
     // 1. CONFIGURATION
@@ -1009,7 +1064,10 @@
         }
       });
 
-      if (tabName === 'learn') renderLearningPath();
+      if (tabName === 'learn') {
+        renderLearningPath();
+        refreshServerRanking();
+      }
       if (tabName === 'practice') renderPracticeTab();
       if (tabName === 'mock') renderMockTab();
       if (tabName === 'weakness') renderWeaknessTab();
@@ -1022,6 +1080,71 @@
       if (currentUser || isGuestMode) switchTab('learn');
     });
     document.getElementById('btn-goto-weakness').addEventListener('click', () => switchTab('weakness'));
+
+    // ==========================================
+    // ANONYMOUS SERVER RANKING / PERCENTILE
+    // ==========================================
+    let cachedAllServerXps = null;
+
+    async function refreshServerRanking(forceFetch = false) {
+      const headlineEl = document.getElementById('server-rank-headline');
+      const badgeEl = document.getElementById('server-rank-badge');
+      const barWrapEl = document.getElementById('server-percentile-bar-wrap');
+      const barFillEl = document.getElementById('server-percentile-fill');
+      const barSubtextEl = document.getElementById('server-percentile-subtext');
+
+      try {
+        if (!cachedAllServerXps || forceFetch) {
+          const snap = await getDocs(collection(db, "users"));
+          const xps = [];
+          snap.forEach(d => {
+            if (currentUser && d.id === currentUser.uid) return;
+            const data = d.data();
+            xps.push(Number(data.xp) || 0);
+          });
+          cachedAllServerXps = xps;
+        }
+
+        const myXp = Number(userStats.xp) || 0;
+        const pool = [...cachedAllServerXps, myXp];
+        const totalUsers = pool.length;
+
+        // Rank (1 = highest XP)
+        const strictlyHigherCount = cachedAllServerXps.filter(x => x > myXp).length;
+        const myRank = strictlyHigherCount + 1;
+
+        if (totalUsers > 100) {
+          // Over 100 users -> Show Percentile + Percentage Bar (No names, no raw scores)
+          const lowerOrEqualCount = pool.filter(x => x <= myXp).length;
+          let percentile = Math.round(((lowerOrEqualCount - 1) / (totalUsers - 1)) * 100);
+          percentile = Math.max(1, Math.min(99, percentile));
+          const topPct = Math.max(1, 100 - percentile);
+
+          headlineEl.textContent = `อยู่ในเปอร์เซ็นไทล์ที่ ${percentile} ของผู้ใช้งานทั้งหมด`;
+          badgeEl.classList.remove('hidden');
+          badgeEl.textContent = `Top ${topPct}%`;
+
+          barWrapEl.classList.remove('hidden');
+          barSubtextEl.textContent = `ผลงานของคุณเหนือกว่า ${percentile}% ของผู้ใช้งานบน Server`;
+          requestAnimationFrame(() => {
+            barFillEl.style.width = `${percentile}%`;
+          });
+        } else {
+          // 100 users or fewer -> Show only "อันดับที่ X ของ Server"
+          headlineEl.textContent = `อันดับที่ ${myRank} ของ Server`;
+          badgeEl.classList.add('hidden');
+          barWrapEl.classList.add('hidden');
+        }
+      } catch (err) {
+        headlineEl.textContent = `อันดับที่ 1 ของ Server`;
+        badgeEl.classList.add('hidden');
+        barWrapEl.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('btn-refresh-rank').addEventListener('click', () => {
+      refreshServerRanking(true);
+    });
 
     // ==========================================
     // 4. AUTHENTICATION, GUEST MODE & FIRESTORE
@@ -1073,6 +1196,7 @@
 
         isGuestMode = false;
         currentUser = user;
+        cachedAllServerXps = null;
         headerStats.classList.remove('hidden');
         document.getElementById('guest-mode-banner').classList.add('hidden');
         document.getElementById('guest-limit-modal').classList.add('hidden');
@@ -1374,7 +1498,7 @@
     });
 
     // ==========================================
-    // 5. DUOLINGO LEARNING PATH (GUEST: CHAPTER 1, LEVEL 1 ONLY)
+    // 5. DUOLINGO LEARNING PATH (COLOR STATES + GUEST RULES)
     // ==========================================
     document.getElementById('btn-toggle-all-sections').addEventListener('click', () => {
       const subQuestions = allQuestions.filter(q => q.subject === selectedLearnSubject);
@@ -1382,7 +1506,6 @@
       
       const hasExpanded = allSecKeys.some(k => !collapsedSections.has(k));
       allSecKeys.forEach((k, idx) => {
-        // In guest mode, prevent expanding chapters beyond chapter 1
         if (isGuestMode && !currentUser && idx > 0) return;
 
         if (hasExpanded) collapsedSections.add(k);
@@ -1450,7 +1573,6 @@
         const isSectionLockedForGuest = isGuestMode && !currentUser && !isChapter1;
         const secKey = `${selectedLearnSubject}||${sectionName}`;
 
-        // Default collapse chapters > 1 for guests
         if (isSectionLockedForGuest) {
           collapsedSections.add(secKey);
         }
@@ -1458,31 +1580,70 @@
 
         let completedLevels = 0;
         let totalStarsInSec = 0;
+        let totalRoundsDoneInSec = 0;
+        let allLevelsPerfect3Stars = lvlMap.size > 0;
+
         lvlMap.forEach((_, lvlName) => {
           const prog = userStats.levelProgress?.[`${secKey}||${lvlName}`];
-          if (prog) {
-            if ((prog.roundsCompleted || 0) >= 5) completedLevels++;
-            totalStarsInSec += (prog.stars || 0);
+          const rDone = prog?.roundsCompleted || 0;
+          const st = prog?.stars || 0;
+          totalRoundsDoneInSec += rDone;
+          if (rDone >= 5) completedLevels++;
+          totalStarsInSec += st;
+          if (rDone < 5 || st < 3) {
+            allLevelsPerfect3Stars = false;
           }
         });
+
+        // Chapter Color State Logic:
+        // 1) Never done (totalRoundsDoneInSec === 0) -> Gray
+        // 2) Started / Done (totalRoundsDoneInSec > 0 && !allLevelsPerfect3Stars) -> Blue
+        // 3) All levels completed with 3 stars (allLevelsPerfect3Stars) -> Glowing Gold
+        let chapterState = 'unstarted'; // 'unstarted' | 'started' | 'perfect'
+        if (allLevelsPerfect3Stars) {
+          chapterState = 'perfect';
+        } else if (totalRoundsDoneInSec > 0) {
+          chapterState = 'started';
+        }
+
+        let bannerClasses = "";
+        let tagClasses = "";
+        let statusPillHtml = "";
+
+        if (isSectionLockedForGuest) {
+          bannerClasses = "w-full text-left bg-slate-500/90 hover:bg-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700/90 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer opacity-85";
+          tagClasses = "text-slate-200";
+          statusPillHtml = `<span class="text-[11px] bg-amber-400/20 text-amber-200 border border-amber-300/30 px-2 py-0.5 rounded-md font-bold whitespace-nowrap">🔒 ลงชื่อเข้าใช้เพื่อปลดล็อก</span>`;
+        } else if (chapterState === 'perfect') {
+          bannerClasses = "w-full text-left bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500 hover:from-amber-400 hover:to-yellow-400 text-amber-950 border-2 border-yellow-200 dark:border-amber-300 rounded-2xl p-4 chapter-gold-glow flex items-center justify-between gap-3 transition cursor-pointer";
+          tagClasses = "text-amber-900";
+          statusPillHtml = `<span class="text-[11px] bg-white/45 text-amber-950 px-2.5 py-0.5 rounded-md font-extrabold whitespace-nowrap">👑 ถูกหมด 3 ดาวครบทุกด่าน!</span>`;
+        } else if (chapterState === 'started') {
+          bannerClasses = "w-full text-left bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 dark:from-sky-700 dark:to-blue-700 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer";
+          tagClasses = "text-sky-100";
+          statusPillHtml = `<span class="text-[11px] bg-white/20 px-2 py-0.5 rounded-md font-semibold whitespace-nowrap">📘 ทำแล้ว • พิชิต ${completedLevels}/${lvlMap.size} ด่าน • ★ ${totalStarsInSec}/${lvlMap.size * 3}</span>`;
+        } else {
+          // Gray for unstarted chapter
+          bannerClasses = "w-full text-left bg-slate-600 hover:bg-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer";
+          tagClasses = "text-slate-300";
+          statusPillHtml = `<span class="text-[11px] bg-white/15 px-2 py-0.5 rounded-md font-medium whitespace-nowrap">ยังไม่ทำ • 0/${lvlMap.size} ด่าน</span>`;
+        }
 
         const secWrapper = document.createElement('div');
         secWrapper.className = "";
 
         const bannerBtn = document.createElement('button');
         bannerBtn.type = "button";
-        bannerBtn.className = isSectionLockedForGuest
-          ? "w-full text-left bg-slate-600/90 hover:bg-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700/90 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer opacity-90"
-          : "w-full text-left bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer";
+        bannerBtn.className = bannerClasses;
+
+        const isGold = !isSectionLockedForGuest && chapterState === 'perfect';
+        const subBtnBg = isGold ? 'bg-amber-950/15 hover:bg-amber-950/25 text-amber-950' : 'bg-white/15 hover:bg-white/25 text-white';
 
         bannerBtn.innerHTML = `
           <div class="min-w-0">
             <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <span class="text-[11px] uppercase tracking-wider ${isSectionLockedForGuest ? 'text-slate-300' : 'text-indigo-200'} font-bold whitespace-nowrap">บทที่ ${secIdx}</span>
-              ${isSectionLockedForGuest
-                ? `<span class="text-[11px] bg-amber-400/20 text-amber-200 border border-amber-300/30 px-2 py-0.5 rounded-md font-bold whitespace-nowrap">🔒 ลงชื่อเข้าใช้เพื่อปลดล็อก</span>`
-                : `<span class="text-[11px] bg-white/15 px-2 py-0.5 rounded-md font-medium whitespace-nowrap">พิชิต ${completedLevels}/${lvlMap.size} ด่าน • ★ ${totalStarsInSec}/${lvlMap.size * 3}</span>`
-              }
+              <span class="text-[11px] uppercase tracking-wider ${tagClasses} font-bold whitespace-nowrap">บทที่ ${secIdx}</span>
+              ${statusPillHtml}
             </div>
             <h3 class="text-base sm:text-lg font-extrabold mt-0.5 break-words">${sectionName}</h3>
           </div>
@@ -1493,12 +1654,12 @@
                 <span>ล็อกอยู่</span>
               </span>
             ` : `
-              <span data-open-sec-lesson="${secKey}" class="whitespace-nowrap text-xs bg-amber-400 hover:bg-amber-300 text-amber-950 px-2.5 py-1.5 rounded-xl font-extrabold shadow-xs transition flex items-center gap-1">
+              <span data-open-sec-lesson="${secKey}" class="whitespace-nowrap text-xs ${isGold ? 'bg-white text-amber-900 hover:bg-amber-50' : 'bg-amber-400 hover:bg-amber-300 text-amber-950'} px-2.5 py-1.5 rounded-xl font-extrabold shadow-xs transition flex items-center gap-1">
                 <span>📖</span>
                 <span>สอนบทนี้</span>
               </span>
-              <span data-sec-label="${secKey}" class="whitespace-nowrap text-xs bg-white/15 px-2.5 py-1.5 rounded-xl font-semibold hidden md:inline">${isCollapsed ? 'คลิกเพื่อขยาย' : 'ย่อบทเรียน'}</span>
-              <span data-sec-arrow="${secKey}" class="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-sm font-bold transition-transform duration-300 ${isCollapsed ? '-rotate-90' : 'rotate-0'}">
+              <span data-sec-label="${secKey}" class="whitespace-nowrap text-xs ${subBtnBg} px-2.5 py-1.5 rounded-xl font-semibold hidden md:inline">${isCollapsed ? 'คลิกเพื่อขยาย' : 'ย่อบทเรียน'}</span>
+              <span data-sec-arrow="${secKey}" class="w-8 h-8 rounded-xl ${subBtnBg} flex items-center justify-center text-sm font-bold transition-transform duration-300 ${isCollapsed ? '-rotate-90' : 'rotate-0'}">
                 ▼
               </span>
             `}
@@ -1525,6 +1686,7 @@
           const roundsDone = Math.min(prog.roundsCompleted || 0, 5);
           const stars = prog.stars || 0;
           const isCompleted = roundsDone >= 5;
+          const isPerfectNode = isCompleted && stars >= 3;
 
           const offsets = ['translate-x-0', '-translate-x-10', 'translate-x-0', 'translate-x-10'];
           const offsetClass = offsets[nodeIndex % offsets.length];
@@ -1536,12 +1698,12 @@
           let circleBg = '';
           if (isNodeLockedForGuest) {
             circleBg = 'bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-4 border-slate-300 dark:border-slate-700';
-          } else if (isCompleted) {
-            circleBg = 'bg-amber-400 text-amber-950 border-4 border-amber-200 dark:border-amber-600';
+          } else if (isPerfectNode) {
+            circleBg = 'bg-amber-400 text-amber-950 border-4 border-yellow-200 dark:border-amber-500 chapter-gold-glow';
           } else if (roundsDone > 0) {
-            circleBg = 'bg-emerald-500 text-white border-4 border-emerald-200 dark:border-emerald-700';
+            circleBg = 'bg-sky-500 text-white border-4 border-sky-200 dark:border-sky-700';
           } else {
-            circleBg = 'bg-indigo-600 text-white border-4 border-indigo-200 dark:border-indigo-800';
+            circleBg = 'bg-slate-500 text-white border-4 border-slate-300 dark:border-slate-700';
           }
 
           nodeWrap.innerHTML = `
