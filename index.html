@@ -2,7 +2,8 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#4f46e5" />
   <title>เตรียมสอบ ก.พ. - OCSC Learning Path</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -19,7 +20,28 @@
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Prompt', sans-serif; }
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    html, body {
+      font-family: 'Prompt', sans-serif;
+      overflow-x: hidden;
+      width: 100%;
+    }
+    body {
+      padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+    }
+    @media (min-width: 768px) {
+      body {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
+    .safe-top {
+      padding-top: env(safe-area-inset-top);
+    }
+    .safe-bottom {
+      padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+    }
     .fade-in { animation: fadeIn 0.25s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .duo-btn { box-shadow: 0 4px 0 #4338ca; transition: all 0.1s; }
@@ -68,95 +90,96 @@
     .anim-spin-slow { animation: spinSlow 14s linear infinite; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col pb-20 sm:pb-0 bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
 
   <!-- Top Navbar -->
-  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 transition-colors">
-    <div class="max-w-5xl mx-auto px-3 sm:px-4 py-2 flex items-center justify-between gap-2">
+  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 transition-colors safe-top">
+    <div class="max-w-6xl mx-auto px-3 sm:px-4 py-2 flex items-center justify-between gap-2">
       <!-- Brand + Developer Credit -->
-      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" id="nav-logo">
-        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-extrabold text-base shadow-sm">
+      <div class="flex items-center gap-2 sm:gap-2.5 cursor-pointer shrink-0" id="nav-logo">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-extrabold text-sm sm:text-base shadow-sm shrink-0">
           ก.พ.
         </div>
-        <div>
-          <h1 class="font-bold text-slate-800 dark:text-white text-sm leading-tight">OCSC Learning</h1>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">ระบบติวสอบ ก.พ. ภาค ก.</p>
-          <p class="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium leading-tight mt-0.5">พัฒนาโดย ครูศตวรรษ แก้วก่า</p>
+        <div class="whitespace-nowrap">
+          <h1 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm leading-tight">OCSC Learning</h1>
+          <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 leading-tight hidden sm:block">ระบบติวสอบ ก.พ. ภาค ก.</p>
+          <p class="text-[9.5px] sm:text-[10px] text-indigo-600 dark:text-indigo-400 font-medium leading-tight mt-0.5">โดย ครูศตวรรษ แก้วก่า</p>
         </div>
       </div>
 
-      <!-- Desktop Navigation Tabs -->
-      <nav id="desktop-nav" class="hidden lg:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
-        <button data-tab="learn" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm">
+      <!-- Desktop & Tablet Landscape Navigation Tabs -->
+      <nav id="desktop-nav" class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl shrink-0">
+        <button data-tab="learn" class="nav-tab whitespace-nowrap px-3 lg:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm">
           เส้นทางเรียนรู้
         </button>
-        <button data-tab="practice" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer">
+        <button data-tab="practice" class="nav-tab whitespace-nowrap px-3 lg:px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer">
           ฝึกทำแยกวิชา
         </button>
-        <button data-tab="mock" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer">
+        <button data-tab="mock" class="nav-tab whitespace-nowrap px-3 lg:px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer">
           สอบเสมือนจริง
         </button>
-        <button data-tab="weakness" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer flex items-center gap-1">
-          วิเคราะห์จุดอ่อน
+        <button data-tab="weakness" class="nav-tab whitespace-nowrap px-3 lg:px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer flex items-center gap-1">
+          <span>วิเคราะห์จุดอ่อน</span>
           <span id="nav-weak-badge" class="hidden bg-rose-500 text-white text-[10px] px-1.5 rounded-full">0</span>
         </button>
       </nav>
 
-      <!-- Right Controls: Theme, Feedback, Stats (with subtle link under flame), Auth -->
-      <div class="flex items-center gap-1.5 sm:gap-2">
+      <!-- Right Controls: Theme, Feedback, Stats + Highlighted Support Button, Auth -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <!-- Theme Toggle -->
-        <button id="btn-theme-toggle" title="สลับโหมดมืด / สว่าง" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-sm transition cursor-pointer">
+        <button id="btn-theme-toggle" title="สลับโหมดมืด / สว่าง" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-sm transition cursor-pointer shrink-0">
           <span id="theme-icon">🌙</span>
         </button>
 
         <!-- Feedback Button -->
-        <button id="btn-open-feedback" title="ให้คะแนน / ข้อเสนอแนะ" class="px-2.5 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200/80 dark:border-amber-800/60 text-amber-700 dark:text-amber-300 text-xs font-semibold flex items-center gap-1 transition cursor-pointer">
+        <button id="btn-open-feedback" title="ให้คะแนน / ข้อเสนอแนะ" class="whitespace-nowrap px-2.5 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200/80 dark:border-amber-800/60 text-amber-700 dark:text-amber-300 text-xs font-semibold flex items-center gap-1 transition cursor-pointer shrink-0">
           <span>⭐</span>
           <span class="hidden sm:inline">แนะนำ/ติชม</span>
         </button>
 
-        <!-- Stats + Subtle Support Text Under Flame -->
-        <div id="header-stats" class="hidden flex flex-col items-end">
-          <div class="flex items-center gap-1.5 text-xs font-bold">
-            <span id="hdr-flame-box" class="flex items-center gap-1 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-lg border border-amber-200/60 dark:border-amber-800/50" title="วันต่อเนื่อง">
+        <!-- Stats + Highlighted Support Button -->
+        <div id="header-stats" class="hidden flex flex-col items-end shrink-0">
+          <div class="flex items-center gap-1 text-xs font-bold">
+            <span id="hdr-flame-box" class="whitespace-nowrap flex items-center gap-1 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-lg border border-amber-200/60 dark:border-amber-800/50" title="วันต่อเนื่อง">
               🔥 <span id="hdr-streak">0</span>
             </span>
-            <span class="hidden sm:flex items-center gap-1 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-lg border border-indigo-200/60 dark:border-indigo-800/50" title="คะแนน XP">
+            <span class="hidden lg:flex whitespace-nowrap items-center gap-1 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-lg border border-indigo-200/60 dark:border-indigo-800/50" title="คะแนน XP">
               ⚡ <span id="hdr-xp">0</span>
             </span>
           </div>
-          <!-- Subtle clickable encouragement text directly underneath the flame -->
-          <button type="button" id="btn-flame-support" class="text-[9.5px] sm:text-[10px] text-slate-400 hover:text-emerald-600 dark:text-slate-500 dark:hover:text-emerald-400 transition cursor-pointer mt-0.5 leading-none tracking-tight">
-            หากคุณชื่นชอบ สามารถให้กำลังใจเราได้
+          <!-- Highlighted Support Pill Button -->
+          <button type="button" id="btn-flame-support" class="whitespace-nowrap mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-[10px] font-bold shadow-xs hover:shadow-sm transition cursor-pointer leading-tight">
+            <span>☕</span>
+            <span>ให้กำลังใจเรา</span>
           </button>
         </div>
 
         <!-- Auth -->
-        <div id="auth-bar" class="flex items-center gap-1.5 pl-1">
-          <span class="text-xs text-slate-400">...</span>
+        <div id="auth-bar" class="flex items-center gap-1.5 shrink-0">
+          <span class="text-xs text-slate-400 whitespace-nowrap">...</span>
         </div>
       </div>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-6">
+  <main class="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-4 py-5 sm:py-6">
 
     <!-- Login / Guest Choice View -->
-    <section id="view-login" class="hidden py-8 text-center fade-in">
-      <div class="max-w-md mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 p-8">
+    <section id="view-login" class="hidden py-6 sm:py-8 text-center fade-in">
+      <div class="max-w-md mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
         <div class="w-16 h-16 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-5 text-2xl font-extrabold shadow-md">
           ก.พ.
         </div>
-        <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-1">พิชิตข้อสอบ ก.พ. ทีละด่าน</h2>
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white mb-1">พิชิตข้อสอบ ก.พ. ทีละด่าน</h2>
         <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium mb-3">พัฒนาโดย ครูศตวรรษ แก้วก่า</p>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mb-7 leading-relaxed">
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-7 leading-relaxed">
           เรียนรู้หลักการและตัวอย่างก่อนลงมือทำจริง ด่านละ 5 รอบ สะสมดาวและ XP วิเคราะห์จุดอ่อนอัตโนมัติ พร้อมสนามสอบเสมือนจริงจับเวลา 3 ชั่วโมง
         </p>
 
         <div class="space-y-3">
-          <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 px-4 rounded-2xl shadow-sm transition cursor-pointer">
-            <span class="bg-white p-1 rounded-full flex items-center justify-center">
+          <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 px-4 rounded-2xl shadow-sm transition cursor-pointer text-sm">
+            <span class="bg-white p-1 rounded-full flex items-center justify-center shrink-0">
               <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-4 h-4" />
             </span>
             <span>เข้าสู่ระบบด้วย Google (ปลดล็อกทั้งหมด)</span>
@@ -170,7 +193,7 @@
 
           <button id="btn-guest-mode" class="w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold py-3 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 transition cursor-pointer">
             <span class="text-sm">เข้าใช้งานแบบไม่ต้องลงชื่อเข้าใช้</span>
-            <span class="text-[11px] font-normal text-slate-500 dark:text-slate-400 mt-0.5">ทดลองทำข้อสอบได้ระดับละ 5 ขั้น (1/5 – 5/5)</span>
+            <span class="text-[11px] font-normal text-slate-500 dark:text-slate-400 mt-0.5">ทดลองใช้ได้บทที่ 1 ของแต่ละวิชา (ระดับ 1 ขั้น 1/5 – 5/5)</span>
           </button>
         </div>
       </div>
@@ -189,21 +212,21 @@
 
       <!-- Guest Trial Info Banner -->
       <div id="guest-mode-banner" class="hidden bg-indigo-50/90 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/70 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-        <div class="text-xs text-indigo-900 dark:text-indigo-200">
-          <span class="font-bold">โหมดทดลองใช้งาน (ไม่ลงชื่อเข้าใช้):</span> ทำข้อสอบได้ระดับละ 5 ขั้น (1/5 – 5/5) ลงชื่อเข้าใช้ฟรีเพื่อบันทึกสถิติและปลดล็อกทุกโหมด
+        <div class="text-xs text-indigo-900 dark:text-indigo-200 leading-relaxed">
+          <span class="font-bold">โหมดทดลองใช้งาน (ไม่ลงชื่อเข้าใช้):</span> ทดลองเรียนได้เฉพาะ <span class="font-bold underline">บทที่ 1</span> ของแต่ละวิชา สูงสุดไม่เกิน <span class="font-bold underline">ระดับ 1 (1/5 – 5/5)</span>
         </div>
-        <button id="btn-banner-login" class="shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition cursor-pointer">
+        <button id="btn-banner-login" class="whitespace-nowrap shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition cursor-pointer self-start sm:self-center">
           ลงชื่อเข้าใช้ด้วย Google
         </button>
       </div>
       
       <!-- Subject Selector Pills -->
       <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div class="flex items-center justify-between mb-2 px-1">
+        <div class="flex items-center justify-between mb-2 px-1 gap-2">
           <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">เลือกวิชาที่ต้องการเรียน</span>
-          <div class="flex items-center gap-3">
-            <button id="btn-toggle-all-sections" class="text-[11px] text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer">ย่อ/ขยายทั้งหมด</button>
-            <button id="btn-refresh-bank" class="text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer">อัปเดตคลังข้อสอบ</button>
+          <div class="flex items-center gap-3 shrink-0">
+            <button id="btn-toggle-all-sections" class="whitespace-nowrap text-[11px] text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer">ย่อ/ขยายทั้งหมด</button>
+            <button id="btn-refresh-bank" class="whitespace-nowrap text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer">อัปเดตคลังข้อสอบ</button>
           </div>
         </div>
         <div id="learn-subject-tabs" class="grid grid-cols-5 gap-1.5">
@@ -212,23 +235,23 @@
       </div>
 
       <!-- Review Wrong Banner -->
-      <div id="review-banner" class="hidden bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-200 dark:border-rose-800/70 rounded-2xl p-4 flex items-center justify-between gap-3">
+      <div id="review-banner" class="hidden bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-200 dark:border-rose-800/70 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h3 class="font-bold text-rose-900 dark:text-rose-200 text-sm">ทบทวนจุดอ่อน (<span id="review-count">0</span> ข้อ)</h3>
           <p class="text-xs text-rose-700 dark:text-rose-300">ต้องตอบถูกซ้ำ 2 ครั้งเพื่อปลดล็อกออกจากคลังจุดอ่อน</p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <button id="btn-goto-weakness" class="bg-white dark:bg-slate-800 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-700 text-xs font-bold px-3 py-2.5 rounded-xl transition cursor-pointer">
+          <button id="btn-goto-weakness" class="whitespace-nowrap bg-white dark:bg-slate-800 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-700 text-xs font-bold px-3 py-2.5 rounded-xl transition cursor-pointer">
             ดูวิเคราะห์
           </button>
-          <button id="btn-start-review" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition cursor-pointer">
+          <button id="btn-start-review" class="whitespace-nowrap bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition cursor-pointer">
             ทบทวนเลย
           </button>
         </div>
       </div>
 
       <!-- Path Container (Collapsible Sections & Levels) -->
-      <div id="learning-path-container" class="space-y-6 pb-6">
+      <div id="learning-path-container" class="space-y-5 pb-6">
         <!-- Sections & Nodes injected via JS -->
       </div>
     </section>
@@ -237,7 +260,7 @@
     <!-- TAB 2: PRACTICE BY SUBJECT (แยกวิชา)        -->
     <!-- ========================================== -->
     <section id="tab-practice" class="hidden space-y-5 fade-in">
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div class="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
         <h2 class="text-lg font-bold text-slate-800 dark:text-white">ฝึกทำข้อสอบแบบแยกวิชา</h2>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">เลือกวิชาและจำนวนข้อที่ต้องการฝึกทำ พร้อมเฉลยละเอียดทันทีหลังตอบแต่ละข้อ</p>
 
@@ -251,11 +274,11 @@
     <!-- TAB 3: MOCK EXAM (สอบเสมือนจริง)             -->
     <!-- ========================================== -->
     <section id="tab-mock" class="hidden space-y-5 fade-in">
-      <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div class="bg-white dark:bg-slate-900 p-5 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
           <div>
             <span class="text-xs font-bold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-3 py-1 rounded-full">สนามสอบจำลอง ก.พ. ภาค ก.</span>
-            <h2 class="text-xl font-bold text-slate-800 dark:text-white mt-2">ทำข้อสอบเสมือนจริง (จับเวลา 3 ชั่วโมง)</h2>
+            <h2 class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white mt-2">ทำข้อสอบเสมือนจริง (จับเวลา 3 ชั่วโมง)</h2>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">โครงสร้างจำนวนข้อและเกณฑ์ผ่าน 60% ตามมาตรฐานสำนักงาน ก.พ. (ระดับ ป.ตรี)</p>
           </div>
           <div class="bg-slate-50 dark:bg-slate-800 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-center shrink-0">
@@ -265,14 +288,14 @@
         </div>
 
         <!-- Exam Blueprint Table -->
-        <div class="my-6 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
-          <table class="w-full text-left text-xs">
+        <div class="my-6 overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700">
+          <table class="w-full text-left text-xs min-w-[440px]">
             <thead class="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-700">
               <tr>
                 <th class="p-3">หมวดวิชาสอบ</th>
-                <th class="p-3 text-center">สัดส่วนข้อสอบจริง</th>
-                <th class="p-3 text-center">คลังข้อสอบที่มี</th>
-                <th class="p-3 text-right">เกณฑ์ผ่าน</th>
+                <th class="p-3 text-center whitespace-nowrap">สัดส่วนข้อสอบจริง</th>
+                <th class="p-3 text-center whitespace-nowrap">คลังข้อสอบที่มี</th>
+                <th class="p-3 text-right whitespace-nowrap">เกณฑ์ผ่าน</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="mock-blueprint-body">
@@ -302,16 +325,16 @@
     <!-- TAB 4: WEAKNESS ANALYTICS (วิเคราะห์จุดอ่อน) -->
     <!-- ========================================== -->
     <section id="tab-weakness" class="hidden space-y-5 fade-in">
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div class="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
           <div>
             <span class="text-xs font-bold text-rose-600 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 px-3 py-1 rounded-full">ระบบวิเคราะห์จุดอ่อนอัจฉริยะ</span>
-            <h2 class="text-xl font-bold text-slate-800 dark:text-white mt-2">เจาะลึกข้อที่ผิดบ่อย & บทที่ต้องเสริม</h2>
+            <h2 class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white mt-2">เจาะลึกข้อที่ผิดบ่อย & บทที่ต้องเสริม</h2>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
               เงื่อนไขการพิชิตจุดอ่อน: ข้อที่ตอบผิดจะต้องฝึกตอบให้ <strong class="text-emerald-600 dark:text-emerald-400">ถูกซ้ำ 2 ครั้ง</strong> ระบบจึงจะตัดออกจากรายการจุดอ่อนอัตโนมัติ
             </p>
           </div>
-          <button id="btn-weakness-drill" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-5 py-3 rounded-2xl shadow-sm transition shrink-0 cursor-pointer">
+          <button id="btn-weakness-drill" class="whitespace-nowrap bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-5 py-3 rounded-2xl shadow-sm transition shrink-0 cursor-pointer">
             เริ่มซ่อมจุดอ่อน (สูงสุด 10 ข้อ)
           </button>
         </div>
@@ -336,7 +359,7 @@
         <div class="mt-6">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">รายการข้อสอบที่ยังติดค้าง (เรียงตามจำนวนครั้งที่ผิดบ่อยสุด)</h3>
-            <span id="weakness-total-label" class="text-xs font-bold text-rose-600 dark:text-rose-400">0 ข้อ</span>
+            <span id="weakness-total-label" class="text-xs font-bold text-rose-600 dark:text-rose-400 shrink-0">0 ข้อ</span>
           </div>
           <div id="weakness-questions-list" class="space-y-3">
             <!-- Detailed wrong questions injected via JS -->
@@ -352,16 +375,16 @@
       <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
         
         <!-- Top Progress Bar -->
-        <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-4">
-          <button id="btn-exit-quiz" class="text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold text-lg cursor-pointer">✕</button>
+        <div class="px-4 sm:px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3 sm:gap-4">
+          <button id="btn-exit-quiz" class="w-8 h-8 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold text-lg flex items-center justify-center cursor-pointer shrink-0">✕</button>
           <div class="flex-1 bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden">
             <div id="quiz-progress-bar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 0%"></div>
           </div>
-          <span class="text-xs font-bold text-slate-600 dark:text-slate-300"><span id="quiz-current">1</span>/<span id="quiz-total">5</span></span>
+          <span class="text-xs font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap"><span id="quiz-current">1</span>/<span id="quiz-total">5</span></span>
         </div>
 
         <!-- Meta Badges -->
-        <div class="px-6 pt-4 flex flex-wrap items-center gap-2">
+        <div class="px-5 sm:px-6 pt-4 flex flex-wrap items-center gap-2">
           <span id="quiz-badge-1" class="text-[11px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-2.5 py-1 rounded-lg">วิชา</span>
           <span id="quiz-badge-2" class="text-[11px] font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg">เนื้อหา</span>
           <span id="quiz-badge-3" class="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-2.5 py-1 rounded-lg">+10 XP</span>
@@ -369,8 +392,8 @@
         </div>
 
         <!-- Question & Choices -->
-        <div class="p-6">
-          <p id="quiz-question-text" class="text-base sm:text-lg font-semibold text-slate-800 dark:text-slate-100 leading-relaxed mb-6 whitespace-pre-line">
+        <div class="p-5 sm:p-6">
+          <p id="quiz-question-text" class="text-base sm:text-lg font-semibold text-slate-800 dark:text-slate-100 leading-relaxed mb-6 whitespace-pre-line break-words">
             คำถาม...
           </p>
 
@@ -383,11 +406,11 @@
         <div id="quiz-footer" class="p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 transition-colors">
           <div id="quiz-explanation" class="hidden mb-4">
             <div class="flex items-center gap-2 mb-1">
-              <span id="quiz-result-icon" class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"></span>
+              <span id="quiz-result-icon" class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"></span>
               <p id="quiz-result-label" class="font-bold text-base"></p>
             </div>
             <p id="quiz-mastery-note" class="hidden text-xs font-semibold text-indigo-600 dark:text-indigo-400 pl-8 mb-1"></p>
-            <p id="quiz-explanation-text" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line pl-8"></p>
+            <p id="quiz-explanation-text" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line pl-8 break-words"></p>
           </div>
 
           <div class="flex justify-end">
@@ -404,53 +427,53 @@
     <!-- ========================================== -->
     <section id="view-mock-runner" class="hidden fade-in space-y-4">
       <!-- Sticky Exam Header -->
-      <div class="bg-slate-900 text-white px-5 py-3.5 rounded-2xl flex items-center justify-between shadow-md sticky top-18 z-30 border border-slate-800">
-        <div class="flex items-center gap-3">
-          <span class="text-xs bg-indigo-500/30 border border-indigo-400/40 px-2.5 py-1 rounded-lg font-semibold" id="mock-q-subject">วิชา</span>
-          <span class="text-sm font-bold">ข้อที่ <span id="mock-q-num">1</span> / <span id="mock-q-total">100</span></span>
+      <div class="bg-slate-900 text-white px-4 sm:px-5 py-3.5 rounded-2xl flex items-center justify-between gap-2 shadow-md sticky top-16 z-30 border border-slate-800">
+        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+          <span class="text-xs bg-indigo-500/30 border border-indigo-400/40 px-2.5 py-1 rounded-lg font-semibold whitespace-nowrap" id="mock-q-subject">วิชา</span>
+          <span class="text-xs sm:text-sm font-bold whitespace-nowrap">ข้อที่ <span id="mock-q-num">1</span> / <span id="mock-q-total">100</span></span>
         </div>
-        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
+        <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+          <div class="flex items-center gap-1.5 bg-slate-800 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-700">
             <span class="text-xs">⏱️</span>
-            <span id="mock-timer" class="font-mono font-bold text-amber-400 text-sm">03:00:00</span>
+            <span id="mock-timer" class="font-mono font-bold text-amber-400 text-xs sm:text-sm">03:00:00</span>
           </div>
-          <button id="btn-submit-mock" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl transition cursor-pointer">
+          <button id="btn-submit-mock" class="whitespace-nowrap bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs px-3.5 sm:px-4 py-2 rounded-xl transition cursor-pointer">
             ส่งข้อสอบ
           </button>
         </div>
       </div>
 
       <!-- Question Card -->
-      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-3">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-sm">
+        <div class="flex items-center justify-between gap-2 mb-3">
           <span id="mock-q-section" class="text-xs text-slate-500 dark:text-slate-400 font-medium">หมวดย่อย</span>
-          <button id="btn-flag-mock" class="text-xs text-amber-600 dark:text-amber-400 hover:underline cursor-pointer">🚩 ทำเครื่องหมายทบทวน</button>
+          <button id="btn-flag-mock" class="whitespace-nowrap text-xs text-amber-600 dark:text-amber-400 hover:underline cursor-pointer shrink-0">🚩 ทำเครื่องหมายทบทวน</button>
         </div>
-        <p id="mock-q-text" class="text-base font-medium text-slate-800 dark:text-slate-100 leading-relaxed mb-6 whitespace-pre-line"></p>
+        <p id="mock-q-text" class="text-base font-medium text-slate-800 dark:text-slate-100 leading-relaxed mb-6 whitespace-pre-line break-words"></p>
         <div id="mock-q-choices" class="space-y-3"></div>
 
         <!-- Prev / Next Navigation -->
-        <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-          <button id="btn-mock-prev" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+        <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+          <button id="btn-mock-prev" class="whitespace-nowrap px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
             ← ข้อก่อนหน้า
           </button>
-          <button id="btn-mock-next" class="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 cursor-pointer">
+          <button id="btn-mock-next" class="whitespace-nowrap px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 cursor-pointer">
             ข้อถัดไป →
           </button>
         </div>
       </div>
 
       <!-- Question Palette Grid -->
-      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
-        <div class="flex items-center justify-between mb-3">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
           <p class="text-xs font-bold text-slate-700 dark:text-slate-200">กระดาษคำตอบ (คลิกเพื่อข้ามข้อ)</p>
           <div class="flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
-            <span class="flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-sm bg-indigo-600 inline-block"></i> ตอบแล้ว</span>
-            <span class="flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-sm bg-amber-400 inline-block"></i> ติดธง</span>
-            <span class="flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-sm bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 inline-block"></i> ยังไม่ตอบ</span>
+            <span class="flex items-center gap-1 whitespace-nowrap"><i class="w-2.5 h-2.5 rounded-sm bg-indigo-600 inline-block"></i> ตอบแล้ว</span>
+            <span class="flex items-center gap-1 whitespace-nowrap"><i class="w-2.5 h-2.5 rounded-sm bg-amber-400 inline-block"></i> ติดธง</span>
+            <span class="flex items-center gap-1 whitespace-nowrap"><i class="w-2.5 h-2.5 rounded-sm bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 inline-block"></i> ยังไม่ตอบ</span>
           </div>
         </div>
-        <div id="mock-palette" class="grid grid-cols-10 sm:grid-cols-15 gap-1.5"></div>
+        <div id="mock-palette" class="grid grid-cols-5 sm:grid-cols-10 md:grid-cols-15 gap-1.5"></div>
       </div>
     </section>
 
@@ -458,7 +481,7 @@
     <!-- SUMMARY VIEW (LESSON / PRACTICE / MOCK)    -->
     <!-- ========================================== -->
     <section id="view-summary" class="hidden fade-in">
-      <div class="max-w-xl mx-auto bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 text-center">
+      <div class="max-w-xl mx-auto bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8 text-center">
         
         <!-- Stars Display (For Duolingo Level Mode) -->
         <div id="summary-stars-box" class="hidden flex justify-center gap-3 mb-4 text-4xl">
@@ -467,31 +490,31 @@
           <span id="star-3" class="text-slate-200 dark:text-slate-700">★</span>
         </div>
 
-        <h2 id="summary-title" class="text-2xl font-extrabold text-slate-800 dark:text-white mb-1">ยอดเยี่ยมมาก!</h2>
-        <p id="summary-subtitle" class="text-sm text-slate-500 dark:text-slate-400 mb-6">สรุปผลการทำแบบทดสอบ</p>
+        <h2 id="summary-title" class="text-xl sm:text-2xl font-extrabold text-slate-800 dark:text-white mb-1">ยอดเยี่ยมมาก!</h2>
+        <p id="summary-subtitle" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-6">สรุปผลการทำแบบทดสอบ</p>
 
         <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 mb-6 grid grid-cols-3 gap-2 border border-slate-100 dark:border-slate-700">
           <div>
             <p class="text-xs text-slate-500 dark:text-slate-400">คะแนนที่ได้</p>
-            <p class="text-xl font-extrabold text-indigo-600 dark:text-indigo-400"><span id="summary-score">0</span>/<span id="summary-total">0</span></p>
+            <p class="text-lg sm:text-xl font-extrabold text-indigo-600 dark:text-indigo-400"><span id="summary-score">0</span>/<span id="summary-total">0</span></p>
           </div>
           <div class="border-x border-slate-200 dark:border-slate-700">
             <p class="text-xs text-slate-500 dark:text-slate-400">ความแม่นยำ</p>
-            <p class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400"><span id="summary-percent">0</span>%</p>
+            <p class="text-lg sm:text-xl font-extrabold text-emerald-600 dark:text-emerald-400"><span id="summary-percent">0</span>%</p>
           </div>
           <div>
             <p class="text-xs text-slate-500 dark:text-slate-400">ได้รับ XP</p>
-            <p class="text-xl font-extrabold text-amber-500">+<span id="summary-xp">0</span></p>
+            <p class="text-lg sm:text-xl font-extrabold text-amber-500">+<span id="summary-xp">0</span></p>
           </div>
         </div>
 
         <!-- Guest Login Prompt Box on Summary (Shown when guest finishes 5/5) -->
         <div id="summary-guest-cta" class="hidden mb-6 p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 text-left">
-          <p class="text-xs font-extrabold text-indigo-800 dark:text-indigo-200 mb-1">🎉 คุณทำครบ 5 ขั้น (5/5) ของระดับนี้แล้ว!</p>
+          <p class="text-xs font-extrabold text-indigo-800 dark:text-indigo-200 mb-1">🎉 คุณทดลองครบ 5/5 ขั้นของบทที่ 1 ระดับ 1 แล้ว!</p>
           <p class="text-xs text-indigo-700 dark:text-indigo-300 leading-relaxed mb-3">
-            ลงชื่อเข้าใช้ด้วย Google ฟรี เพื่อบันทึกความคืบหน้า ปลดล็อกด่านถัดไป รวมถึงโหมดสอบเสมือนจริงและระบบวิเคราะห์จุดอ่อน
+            ลงชื่อเข้าใช้ด้วย Google ฟรี เพื่อบันทึกความคืบหน้า ปลดล็อกระดับ 2 และบทเรียนถัดไปทั้งหมด รวมถึงโหมดสอบเสมือนจริงและระบบวิเคราะห์จุดอ่อน
           </p>
-          <button id="btn-summary-google-login" class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl transition cursor-pointer">
+          <button id="btn-summary-google-login" class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-3 px-4 rounded-xl transition cursor-pointer">
             <span>ลงชื่อเข้าใช้ด้วย Google ทันที</span>
           </button>
         </div>
@@ -499,7 +522,7 @@
         <!-- Mock Exam Breakdown -->
         <div id="mock-result-breakdown" class="hidden text-left mb-6 space-y-3">
           <div id="mock-pass-badge" class="p-3 rounded-xl text-center font-bold text-sm"></div>
-          <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden text-xs">
+          <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-x-auto text-xs">
             <table class="w-full">
               <thead class="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
                 <tr>
@@ -514,10 +537,10 @@
         </div>
 
         <div class="flex flex-col sm:flex-row gap-3">
-          <button id="btn-summary-next-round" class="hidden flex-1 duo-btn-green bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl cursor-pointer">
+          <button id="btn-summary-next-round" class="hidden flex-1 duo-btn-green bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl cursor-pointer text-sm">
             เล่นรอบถัดไป →
           </button>
-          <button id="btn-back-home" class="flex-1 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl cursor-pointer">
+          <button id="btn-back-home" class="flex-1 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl cursor-pointer text-sm">
             กลับหน้าหลัก
           </button>
         </div>
@@ -526,31 +549,34 @@
 
   </main>
 
-  <!-- Subtle Footer with Developer & Support Link -->
+  <!-- Subtle Footer with Developer & Highlighted Support Button -->
   <footer class="max-w-4xl w-full mx-auto px-4 py-6 text-center text-xs text-slate-400 dark:text-slate-500 border-t border-slate-200/70 dark:border-slate-800/70 mt-4">
     <p>ระบบติวสอบ ก.พ. ภาค ก. • พัฒนาโดย <span class="font-semibold text-slate-600 dark:text-slate-300">ครูศตวรรษ แก้วก่า</span></p>
-    <div class="flex items-center justify-center gap-4 mt-2">
-      <button id="footer-btn-feedback" class="hover:text-indigo-600 dark:hover:text-indigo-400 underline cursor-pointer">ส่งข้อเสนอแนะ / ให้ดาว</button>
-      <span>•</span>
-      <button id="footer-btn-donate" class="hover:text-emerald-600 dark:hover:text-emerald-400 underline cursor-pointer">ร่วมสนับสนุนค่ากาแฟผู้พัฒนา ☕</button>
+    <div class="flex flex-wrap items-center justify-center gap-3 mt-3">
+      <button id="footer-btn-feedback" class="px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-semibold transition cursor-pointer">
+        ⭐ ส่งข้อเสนอแนะ / ให้ดาว
+      </button>
+      <button id="footer-btn-donate" class="px-4 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold shadow-xs transition cursor-pointer">
+        ☕ ร่วมสนับสนุนค่ากาแฟผู้พัฒนา
+      </button>
     </div>
   </footer>
 
-  <!-- Mobile Bottom Navigation -->
-  <nav id="mobile-nav" class="lg:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around py-2 z-40">
-    <button data-tab="learn" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer">
+  <!-- Mobile Portrait Bottom Navigation -->
+  <nav id="mobile-nav" class="md:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around pt-2 safe-bottom z-40">
+    <button data-tab="learn" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer whitespace-nowrap px-2">
       <span class="text-base">🗺️</span>
       <span>เส้นทางเรียน</span>
     </button>
-    <button data-tab="practice" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer">
+    <button data-tab="practice" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer whitespace-nowrap px-2">
       <span class="text-base">📝</span>
       <span>ฝึกแยกวิชา</span>
     </button>
-    <button data-tab="mock" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer">
+    <button data-tab="mock" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer whitespace-nowrap px-2">
       <span class="text-base">⏱️</span>
       <span>สอบเสมือนจริง</span>
     </button>
-    <button data-tab="weakness" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer relative">
+    <button data-tab="weakness" class="nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer relative whitespace-nowrap px-2">
       <span class="text-base">🎯</span>
       <span>จุดอ่อน</span>
       <span id="mob-weak-badge" class="hidden absolute -top-0.5 right-1 bg-rose-500 text-white text-[9px] px-1 rounded-full">0</span>
@@ -561,11 +587,11 @@
   <!-- MODAL 1: LEVEL NODE MODAL (LEARN + PLAY)   -->
   <!-- ========================================== -->
   <div id="node-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 fade-in">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-xl max-h-[90vh] flex flex-col">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-xl max-h-[88dvh] flex flex-col">
       <!-- Header -->
       <div class="flex items-start justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
-        <div class="text-left">
-          <span id="modal-section-name" class="text-[11px] font-bold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-2.5 py-0.5 rounded-full">Section</span>
+        <div class="text-left min-w-0">
+          <span id="modal-section-name" class="inline-block text-[11px] font-bold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-2.5 py-0.5 rounded-full">Section</span>
           <h3 id="modal-level-title" class="text-lg sm:text-xl font-extrabold text-slate-800 dark:text-white mt-1.5">ระดับที่ 1</h3>
         </div>
         <button id="btn-close-modal-x" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white font-bold text-sm flex items-center justify-center cursor-pointer shrink-0">✕</button>
@@ -573,11 +599,11 @@
 
       <!-- Modal Mode Switcher Tabs -->
       <div class="grid grid-cols-2 gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl my-3 shrink-0">
-        <button type="button" id="modal-tab-lesson" class="py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs flex items-center justify-center gap-1.5">
+        <button type="button" id="modal-tab-lesson" class="py-2 px-2.5 rounded-xl text-xs font-bold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap">
           <span>📖</span>
           <span>เรียนหลักการ & ตัวอย่าง</span>
         </button>
-        <button type="button" id="modal-tab-play" class="py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5">
+        <button type="button" id="modal-tab-play" class="py-2 px-2.5 rounded-xl text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5 whitespace-nowrap">
           <span>🎯</span>
           <span>ด่านฝึกหัด (<span id="modal-tab-round-badge">0/5</span>)</span>
         </button>
@@ -594,12 +620,12 @@
         </div>
 
         <div class="bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 rounded-2xl p-4">
-          <div class="flex items-center justify-between mb-1.5">
+          <div class="flex items-center justify-between gap-2 mb-1.5">
             <span class="text-xs font-extrabold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
               <span>✍️</span>
               <span>ตัวอย่างโจทย์ & วิธีคิดทีละขั้น</span>
             </span>
-            <span id="lesson-example-tag" class="text-[10px] font-bold bg-amber-200/70 dark:bg-amber-900/70 text-amber-900 dark:text-amber-200 px-2 py-0.5 rounded-md">ตัวอย่างแนวข้อสอบ</span>
+            <span id="lesson-example-tag" class="whitespace-nowrap text-[10px] font-bold bg-amber-200/70 dark:bg-amber-900/70 text-amber-900 dark:text-amber-200 px-2 py-0.5 rounded-md">ตัวอย่างแนวข้อสอบ</span>
           </div>
           <p id="lesson-example-q" class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 bg-white/80 dark:bg-slate-900/70 p-3 rounded-xl border border-amber-200/60 dark:border-amber-800/40 mb-2.5 whitespace-pre-line"></p>
           <div class="space-y-1">
@@ -618,7 +644,7 @@
       </div>
 
       <!-- TAB B: PLAY & PROGRESS PANE -->
-      <div id="modal-pane-play" class="hidden py-4 text-center flex-1 flex flex-col justify-center">
+      <div id="modal-pane-play" class="hidden py-4 text-center flex-1 flex flex-col justify-center overflow-y-auto">
         <p id="modal-round-info" class="text-xs text-slate-500 dark:text-slate-400">ความคืบหน้า: รอบที่ 1 / 5 (รอบละ 5 ข้อ)</p>
 
         <!-- Stars Earned in this Level -->
@@ -638,7 +664,7 @@
 
       <!-- Footer Action Buttons -->
       <div class="flex gap-2 pt-4 mt-3 border-t border-slate-100 dark:border-slate-800 shrink-0">
-        <button id="btn-close-modal" class="py-3 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+        <button id="btn-close-modal" class="whitespace-nowrap py-3 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
           ปิด
         </button>
         <button id="btn-start-node-round" class="flex-1 duo-btn-green bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold py-3 px-4 rounded-2xl cursor-pointer">
@@ -652,10 +678,10 @@
   <!-- MODAL 2: FEEDBACK & RATING MODAL           -->
   <!-- ========================================== -->
   <div id="feedback-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-xl">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-xl max-h-[90dvh] overflow-y-auto">
       <div class="flex items-center justify-between mb-3">
         <h3 class="text-lg font-extrabold text-slate-800 dark:text-white">ให้คะแนน & ข้อเสนอแนะ</h3>
-        <button id="btn-close-feedback" class="text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold cursor-pointer">✕</button>
+        <button id="btn-close-feedback" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold cursor-pointer flex items-center justify-center">✕</button>
       </div>
       <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
         เลือกกดให้ดาวอย่างเดียว หรือพิมพ์ข้อเสนอแนะเพิ่มเติมเพื่อส่งตรงถึงผู้พัฒนาได้เลยครับ
@@ -683,7 +709,7 @@
         <button id="btn-submit-feedback-db" class="flex-1 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-3 px-4 rounded-2xl cursor-pointer">
           ส่งคะแนนทันที (ไม่ต้องเปิดเมล)
         </button>
-        <button id="btn-submit-feedback-email" class="py-3 px-4 rounded-2xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer flex items-center justify-center gap-1">
+        <button id="btn-submit-feedback-email" class="whitespace-nowrap py-3 px-4 rounded-2xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer flex items-center justify-center gap-1">
           <span>✉️ ส่งเข้าอีเมลโดยตรง</span>
         </button>
       </div>
@@ -694,10 +720,10 @@
   <!-- MODAL 3: DONATE / SUPPORT QR MODAL         -->
   <!-- ========================================== -->
   <div id="donate-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 text-center shadow-xl relative overflow-hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 text-center shadow-xl relative overflow-hidden max-h-[90dvh] overflow-y-auto">
       <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-500 via-emerald-500 to-amber-400"></div>
 
-      <button id="btn-close-donate" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold cursor-pointer">✕</button>
+      <button id="btn-close-donate" class="absolute top-4 right-4 w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold cursor-pointer flex items-center justify-center">✕</button>
 
       <div class="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold px-3 py-1 rounded-full mb-2">
         <span>☕</span>
@@ -714,7 +740,7 @@
           <img
             src="https://s.imgz.io/2026/11/26/-2026-11-26-002015aec6fd411456fde3.png"
             alt="QR Code ร่วมสนับสนุนผู้พัฒนา"
-            class="w-52 h-52 object-contain mx-auto rounded-lg"
+            class="w-48 h-48 sm:w-52 sm:h-52 object-contain mx-auto rounded-lg"
           />
         </div>
         <p class="text-[11px] font-bold text-indigo-700 dark:text-indigo-300 mt-2">สแกนผ่านแอปธนาคารได้ทุกธนาคาร</p>
@@ -734,41 +760,41 @@
   <!-- MODAL 4: GUEST LIMIT REACHED (LOGIN GATE)  -->
   <!-- ========================================== -->
   <div id="guest-limit-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-7 text-center shadow-2xl relative overflow-hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-7 text-center shadow-2xl relative overflow-hidden max-h-[90dvh] overflow-y-auto">
       <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
 
-      <div class="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mx-auto mb-4 text-3xl shadow-xs">
+      <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mx-auto mb-4 text-3xl shadow-xs">
         🔒
       </div>
 
       <span id="guest-limit-badge" class="inline-block text-[11px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 px-3 py-1 rounded-full mb-2">
-        ครบโควตาทดลองเรียน 5/5 ขั้นแล้ว
+        จำกัดสิทธิ์โหมดทดลองใช้
       </span>
 
-      <h3 id="guest-limit-title" class="text-xl font-extrabold text-slate-800 dark:text-white">
+      <h3 id="guest-limit-title" class="text-lg sm:text-xl font-extrabold text-slate-800 dark:text-white">
         ลงชื่อเข้าใช้เพื่อลุยต่อแบบไม่จำกัด!
       </h3>
 
       <p id="guest-limit-desc" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
-        คุณได้ฝึกทำครบ 5 ขั้น (1/5 – 5/5) ในระดับนี้แล้ว ลงชื่อเข้าใช้ด้วย Google ฟรีเพื่อบันทึกดาว สะสมไฟรายวัน และปลดล็อกทุกด่านทันที
+        โหมดทดลองใช้เปิดให้ทำเฉพาะบทที่ 1 ระดับ 1 (ขั้น 1/5 – 5/5) ลงชื่อเข้าใช้ด้วย Google ฟรีเพื่อปลดล็อกทุกบทเรียนและทุกระดับทันทีครับ
       </p>
 
       <div class="bg-slate-50 dark:bg-slate-800/70 rounded-2xl p-3.5 my-5 text-left text-xs text-slate-600 dark:text-slate-300 space-y-1.5 border border-slate-200/70 dark:border-slate-700">
         <p class="font-bold text-slate-800 dark:text-white">สิทธิประโยชน์เมื่อลงชื่อเข้าใช้ (ฟรี 100%):</p>
         <p>✓ โอนความคืบหน้า 5/5 ที่ทำไว้เข้าบัญชีให้อัตโนมัติ</p>
-        <p>✓ ปลดล็อกข้อสอบทุกด่าน ฝึกแยกวิชา และสอบเสมือนจริง 3 ชม.</p>
+        <p>✓ ปลดล็อกข้อสอบทุกบทเรียน ทุกระดับ ฝึกแยกวิชา และสอบเสมือนจริง 3 ชม.</p>
         <p>✓ ระบบวิเคราะห์จุดอ่อน & สะสมไฟต่อเนื่องพร้อมเอฟเฟกต์พิเศษ</p>
       </div>
 
       <div class="space-y-2.5">
         <button id="btn-modal-google-login" class="w-full flex items-center justify-center gap-2.5 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-2xl text-sm cursor-pointer">
-          <span class="bg-white p-1 rounded-full flex items-center justify-center">
+          <span class="bg-white p-1 rounded-full flex items-center justify-center shrink-0">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-4 h-4" />
           </span>
           <span>ลงชื่อเข้าใช้ด้วย Google เลย</span>
         </button>
         <button id="btn-close-guest-limit" class="w-full py-2.5 rounded-2xl text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white cursor-pointer">
-          ไว้ทีหลัง (กลับไปเลือกระดับอื่น)
+          ไว้ทีหลัง (กลับไปทดลองบทที่ 1 ระดับ 1)
         </button>
       </div>
     </div>
@@ -974,12 +1000,12 @@
         const isMatch = btn.dataset.tab === tabName;
         if (btn.closest('#desktop-nav')) {
           btn.className = isMatch
-            ? "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm flex items-center gap-1"
-            : "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer flex items-center gap-1";
+            ? "nav-tab whitespace-nowrap px-3 lg:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm flex items-center gap-1"
+            : "nav-tab whitespace-nowrap px-3 lg:px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer flex items-center gap-1";
         } else {
           btn.className = isMatch
-            ? "nav-tab flex flex-col items-center gap-0.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer relative"
-            : "nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer relative";
+            ? "nav-tab flex flex-col items-center gap-0.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer relative whitespace-nowrap px-2"
+            : "nav-tab flex flex-col items-center gap-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400 cursor-pointer relative whitespace-nowrap px-2";
         }
       });
 
@@ -1023,7 +1049,7 @@
       document.getElementById('guest-mode-banner').classList.remove('hidden');
 
       authBar.innerHTML = `
-        <button id="btn-header-login" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition cursor-pointer">
+        <button id="btn-header-login" class="whitespace-nowrap bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition cursor-pointer">
           เข้าสู่ระบบ
         </button>
       `;
@@ -1052,8 +1078,8 @@
         document.getElementById('guest-limit-modal').classList.add('hidden');
 
         authBar.innerHTML = `
-          <img src="${user.photoURL || ''}" class="w-7 h-7 rounded-full border border-slate-200 dark:border-slate-700" />
-          <button id="btn-logout" class="text-xs text-rose-600 dark:text-rose-400 hover:underline cursor-pointer">ออก</button>
+          <img src="${user.photoURL || ''}" class="w-7 h-7 rounded-full border border-slate-200 dark:border-slate-700 shrink-0" />
+          <button id="btn-logout" class="whitespace-nowrap text-xs text-rose-600 dark:text-rose-400 hover:underline cursor-pointer">ออก</button>
         `;
         document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
 
@@ -1067,7 +1093,7 @@
         if (!isGuestMode) {
           headerStats.classList.add('hidden');
           document.getElementById('guest-mode-banner').classList.add('hidden');
-          authBar.innerHTML = `<span class="text-xs text-slate-400">ยังไม่เข้าสู่ระบบ</span>`;
+          authBar.innerHTML = `<span class="text-xs text-slate-400 whitespace-nowrap">ยังไม่เข้าสู่ระบบ</span>`;
           hideAllMainSections();
           document.getElementById('view-login').classList.remove('hidden');
         }
@@ -1198,12 +1224,11 @@
       dayNumberEl.textContent = `${days} วัน`;
       titleEl.textContent = `เติมไฟต่อเนื่องครบ ${days} วัน!`;
 
-      // Configure 3 Visual Tiers
-      let tier = 'normal'; // 2 - 7
+      let tier = 'normal';
       if (days >= 300) {
-        tier = 'legendary'; // 300, 500, 1000
+        tier = 'legendary';
       } else if (days >= 10) {
-        tier = 'epic'; // 10, 50, 100, 150, 200
+        tier = 'epic';
       }
 
       card.classList.remove('anim-epic-card', 'border-amber-400', 'border-fuchsia-400', 'border-orange-400');
@@ -1270,10 +1295,8 @@
         }
       }
 
-      // Initial center burst
       spawnBurst(canvas.width / 2, canvas.height / 2, initialCount, tier === 'legendary' ? 1.5 : 1.15);
 
-      // Extra firework bursts for Epic & Legendary
       let frameCount = 0;
       function animate() {
         frameCount++;
@@ -1351,14 +1374,17 @@
     });
 
     // ==========================================
-    // 5. DUOLINGO LEARNING PATH (SMOOTH ACCORDION)
+    // 5. DUOLINGO LEARNING PATH (GUEST: CHAPTER 1, LEVEL 1 ONLY)
     // ==========================================
     document.getElementById('btn-toggle-all-sections').addEventListener('click', () => {
       const subQuestions = allQuestions.filter(q => q.subject === selectedLearnSubject);
       const allSecKeys = [...new Set(subQuestions.map(q => `${selectedLearnSubject}||${q.section || "เนื้อหาทั่วไป"}`))];
       
       const hasExpanded = allSecKeys.some(k => !collapsedSections.has(k));
-      allSecKeys.forEach(k => {
+      allSecKeys.forEach((k, idx) => {
+        // In guest mode, prevent expanding chapters beyond chapter 1
+        if (isGuestMode && !currentUser && idx > 0) return;
+
         if (hasExpanded) collapsedSections.add(k);
         else collapsedSections.delete(k);
 
@@ -1387,7 +1413,7 @@
         btn.className = active
           ? "py-2 px-1 rounded-xl bg-indigo-600 text-white font-bold text-xs flex flex-col items-center gap-0.5 shadow-sm cursor-pointer"
           : "py-2 px-1 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium text-xs flex flex-col items-center gap-0.5 cursor-pointer";
-        btn.innerHTML = `<span class="text-base">${sub.icon}</span><span>${sub.short}</span>`;
+        btn.innerHTML = `<span class="text-base">${sub.icon}</span><span class="whitespace-nowrap">${sub.short}</span>`;
         btn.addEventListener('click', () => {
           selectedLearnSubject = sub.key;
           renderLearningPath();
@@ -1420,7 +1446,14 @@
       let secIdx = 0;
       sectionsMap.forEach((lvlMap, sectionName) => {
         secIdx++;
+        const isChapter1 = secIdx === 1;
+        const isSectionLockedForGuest = isGuestMode && !currentUser && !isChapter1;
         const secKey = `${selectedLearnSubject}||${sectionName}`;
+
+        // Default collapse chapters > 1 for guests
+        if (isSectionLockedForGuest) {
+          collapsedSections.add(secKey);
+        }
         const isCollapsed = collapsedSections.has(secKey);
 
         let completedLevels = 0;
@@ -1438,24 +1471,37 @@
 
         const bannerBtn = document.createElement('button');
         bannerBtn.type = "button";
-        bannerBtn.className = "w-full text-left bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer";
+        bannerBtn.className = isSectionLockedForGuest
+          ? "w-full text-left bg-slate-600/90 hover:bg-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700/90 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer opacity-90"
+          : "w-full text-left bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer";
+
         bannerBtn.innerHTML = `
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-[11px] uppercase tracking-wider text-indigo-200 font-bold">บทที่ ${secIdx}</span>
-              <span class="text-[11px] bg-white/15 px-2 py-0.5 rounded-md font-medium">พิชิต ${completedLevels}/${lvlMap.size} ด่าน • ★ ${totalStarsInSec}/${lvlMap.size * 3}</span>
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <span class="text-[11px] uppercase tracking-wider ${isSectionLockedForGuest ? 'text-slate-300' : 'text-indigo-200'} font-bold whitespace-nowrap">บทที่ ${secIdx}</span>
+              ${isSectionLockedForGuest
+                ? `<span class="text-[11px] bg-amber-400/20 text-amber-200 border border-amber-300/30 px-2 py-0.5 rounded-md font-bold whitespace-nowrap">🔒 ลงชื่อเข้าใช้เพื่อปลดล็อก</span>`
+                : `<span class="text-[11px] bg-white/15 px-2 py-0.5 rounded-md font-medium whitespace-nowrap">พิชิต ${completedLevels}/${lvlMap.size} ด่าน • ★ ${totalStarsInSec}/${lvlMap.size * 3}</span>`
+              }
             </div>
-            <h3 class="text-base sm:text-lg font-extrabold mt-0.5">${sectionName}</h3>
+            <h3 class="text-base sm:text-lg font-extrabold mt-0.5 break-words">${sectionName}</h3>
           </div>
           <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            <span data-open-sec-lesson="${secKey}" class="text-xs bg-amber-400 hover:bg-amber-300 text-amber-950 px-2.5 py-1.5 rounded-xl font-extrabold shadow-xs transition flex items-center gap-1">
-              <span>📖</span>
-              <span>สอนบทนี้</span>
-            </span>
-            <span data-sec-label="${secKey}" class="text-xs bg-white/15 px-2.5 py-1.5 rounded-xl font-semibold hidden md:inline">${isCollapsed ? 'คลิกเพื่อขยาย' : 'ย่อบทเรียน'}</span>
-            <span data-sec-arrow="${secKey}" class="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-sm font-bold transition-transform duration-300 ${isCollapsed ? '-rotate-90' : 'rotate-0'}">
-              ▼
-            </span>
+            ${isSectionLockedForGuest ? `
+              <span class="whitespace-nowrap text-xs bg-white/15 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1">
+                <span>🔒</span>
+                <span>ล็อกอยู่</span>
+              </span>
+            ` : `
+              <span data-open-sec-lesson="${secKey}" class="whitespace-nowrap text-xs bg-amber-400 hover:bg-amber-300 text-amber-950 px-2.5 py-1.5 rounded-xl font-extrabold shadow-xs transition flex items-center gap-1">
+                <span>📖</span>
+                <span>สอนบทนี้</span>
+              </span>
+              <span data-sec-label="${secKey}" class="whitespace-nowrap text-xs bg-white/15 px-2.5 py-1.5 rounded-xl font-semibold hidden md:inline">${isCollapsed ? 'คลิกเพื่อขยาย' : 'ย่อบทเรียน'}</span>
+              <span data-sec-arrow="${secKey}" class="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-sm font-bold transition-transform duration-300 ${isCollapsed ? '-rotate-90' : 'rotate-0'}">
+                ▼
+              </span>
+            `}
           </div>
         `;
 
@@ -1471,6 +1517,9 @@
 
         let nodeIndex = 0;
         lvlMap.forEach((qs, levelName) => {
+          const isLevel1 = nodeIndex === 0;
+          const isNodeLockedForGuest = isGuestMode && !currentUser && (!isChapter1 || !isLevel1);
+
           const levelKey = `${secKey}||${levelName}`;
           const prog = userStats.levelProgress?.[levelKey] || { roundsCompleted: 0, stars: 0 };
           const roundsDone = Math.min(prog.roundsCompleted || 0, 5);
@@ -1484,9 +1533,16 @@
           const nodeWrap = document.createElement('div');
           nodeWrap.className = `flex flex-col items-center ${offsetClass}`;
 
-          const circleBg = isCompleted
-            ? 'bg-amber-400 text-amber-950 border-4 border-amber-200 dark:border-amber-600'
-            : (roundsDone > 0 ? 'bg-emerald-500 text-white border-4 border-emerald-200 dark:border-emerald-700' : 'bg-indigo-600 text-white border-4 border-indigo-200 dark:border-indigo-800');
+          let circleBg = '';
+          if (isNodeLockedForGuest) {
+            circleBg = 'bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-4 border-slate-300 dark:border-slate-700';
+          } else if (isCompleted) {
+            circleBg = 'bg-amber-400 text-amber-950 border-4 border-amber-200 dark:border-amber-600';
+          } else if (roundsDone > 0) {
+            circleBg = 'bg-emerald-500 text-white border-4 border-emerald-200 dark:border-emerald-700';
+          } else {
+            circleBg = 'bg-indigo-600 text-white border-4 border-indigo-200 dark:border-indigo-800';
+          }
 
           nodeWrap.innerHTML = `
             <div class="flex gap-0.5 text-sm mb-1">
@@ -1495,15 +1551,27 @@
               <span class="${stars >= 3 ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'}">★</span>
             </div>
             <button class="w-[72px] h-[72px] rounded-full ${circleBg} node-shadow flex flex-col items-center justify-center cursor-pointer transition">
-              <span class="text-lg font-extrabold leading-none">${isCompleted ? (isGuestMode && !currentUser ? '🔒' : '👑') : `${roundsDone}/5`}</span>
-              <span class="text-[10px] font-bold mt-1 opacity-90">${isCompleted && isGuestMode && !currentUser ? '5/5 ครบ' : 'ขั้น'}</span>
+              <span class="text-lg font-extrabold leading-none">
+                ${isNodeLockedForGuest ? '🔒' : (isCompleted ? (isGuestMode && !currentUser ? '5/5' : '👑') : `${roundsDone}/5`)}
+              </span>
+              <span class="text-[10px] font-bold mt-1 opacity-90 whitespace-nowrap">
+                ${isNodeLockedForGuest ? 'สมาชิก' : (isCompleted && isGuestMode && !currentUser ? 'ครบโควตา' : 'ขั้น')}
+              </span>
             </button>
-            <span class="mt-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700 shadow-xs">
+            <span class="mt-2 text-xs font-bold ${isNodeLockedForGuest ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-200'} bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700 shadow-xs whitespace-nowrap">
               ${levelName} (${qs.length} ข้อ)
             </span>
           `;
 
           nodeWrap.querySelector('button').addEventListener('click', () => {
+            if (isNodeLockedForGuest) {
+              openGuestLimitModal(
+                "จำกัดสิทธิ์โหมดทดลองใช้",
+                "ลงชื่อเข้าใช้เพื่อปลดล็อกระดับนี้",
+                `โหมดทดลองใช้เปิดให้ทำเฉพาะ "บทที่ 1 • ระดับ 1" (สูงสุด 5 ขั้น 1/5 – 5/5) ลงชื่อเข้าใช้ด้วย Google ฟรีเพื่อปลดล็อก "${levelName}" และบทเรียนทั้งหมดครับ`
+              );
+              return;
+            }
             openNodeModal(sectionName, levelName, levelKey, qs);
           });
 
@@ -1514,6 +1582,15 @@
         accordionOuter.appendChild(accordionInner);
 
         bannerBtn.addEventListener('click', (e) => {
+          if (isSectionLockedForGuest) {
+            openGuestLimitModal(
+              "จำกัดสิทธิ์โหมดทดลองใช้",
+              `ลงชื่อเข้าใช้เพื่อปลดล็อกบทที่ ${secIdx}`,
+              `โหมดทดลองใช้เปิดให้เรียนเฉพาะ "บทที่ 1" ของแต่ละวิชา (สูงสุดไม่เกินระดับ 1 ขั้น 1/5 – 5/5) ลงชื่อเข้าใช้ด้วย Google ฟรีเพื่อปลดล็อกบทที่ ${secIdx} (${sectionName}) ครับ`
+            );
+            return;
+          }
+
           if (e.target.closest('[data-open-sec-lesson]')) {
             e.stopPropagation();
             const firstEntry = lvlMap.entries().next().value;
@@ -1739,13 +1816,13 @@
       const panePlay = document.getElementById('modal-pane-play');
 
       if (tabName === 'lesson') {
-        btnLesson.className = "py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs flex items-center justify-center gap-1.5";
-        btnPlay.className = "py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5";
+        btnLesson.className = "py-2 px-2.5 rounded-xl text-xs font-bold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap";
+        btnPlay.className = "py-2 px-2.5 rounded-xl text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5 whitespace-nowrap";
         paneLesson.classList.remove('hidden');
         panePlay.classList.add('hidden');
       } else {
-        btnPlay.className = "py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs flex items-center justify-center gap-1.5";
-        btnLesson.className = "py-2 px-3 rounded-xl text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5";
+        btnPlay.className = "py-2 px-2.5 rounded-xl text-xs font-bold transition cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap";
+        btnLesson.className = "py-2 px-2.5 rounded-xl text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5 whitespace-nowrap";
         panePlay.classList.remove('hidden');
         paneLesson.classList.add('hidden');
       }
@@ -1754,7 +1831,7 @@
     document.getElementById('modal-tab-lesson').addEventListener('click', () => setNodeModalTab('lesson'));
     document.getElementById('modal-tab-play').addEventListener('click', () => setNodeModalTab('play'));
 
-    // Modal for Level Node (Supports 5-step Guest Trial Limit)
+    // Modal for Level Node (Supports 5-step Guest Trial Limit on Chapter 1 Level 1)
     function openNodeModal(sectionName, levelName, levelKey, qs, forceLessonTab = false) {
       currentLevelKey = levelKey;
       currentLevelQuestions = qs;
@@ -1831,7 +1908,7 @@
         openGuestLimitModal(
           "ครบโควตาทดลองเรียน 5/5 ขั้นแล้ว",
           "ลงชื่อเข้าใช้เพื่อลุยต่อแบบไม่จำกัด!",
-          "คุณได้ทดลองทำข้อสอบครบ 5 ขั้น (1/5 – 5/5) ในระดับนี้แล้ว ลงชื่อเข้าใช้ด้วย Google ฟรีเพื่อปลดล็อกด่านทั้งหมดและบันทึกสถิติครับ"
+          "คุณได้ทดลองทำข้อสอบครบ 5 ขั้น (1/5 – 5/5) ในบทที่ 1 ระดับ 1 แล้ว ลงชื่อเข้าใช้ด้วย Google ฟรีเพื่อปลดล็อกด่านทั้งหมดและบันทึกสถิติครับ"
         );
         return;
       }
@@ -1870,7 +1947,7 @@
               <option value="30">30 ข้อ</option>
               <option value="all">ทั้งหมด (${qs.length} ข้อ)</option>
             </select>
-            <button class="btn-run-practice bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer ${qs.length === 0 ? 'opacity-50 pointer-events-none' : ''}">
+            <button class="whitespace-nowrap btn-run-practice bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer ${qs.length === 0 ? 'opacity-50 pointer-events-none' : ''}">
               เริ่มฝึกทำ
             </button>
           </div>
@@ -1916,7 +1993,7 @@
         div.innerHTML = `
           <div class="flex items-center justify-between text-xs font-bold mb-1.5">
             <span class="text-slate-700 dark:text-slate-200">${sub.icon} ${sub.title}</span>
-            <span class="${count > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}">${count} ข้อ (${pct}%)</span>
+            <span class="${count > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'} whitespace-nowrap">${count} ข้อ (${pct}%)</span>
           </div>
           <div class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
             <div class="h-full bg-rose-500 rounded-full transition-all" style="width: ${pct}%"></div>
@@ -1939,10 +2016,10 @@
       } else {
         sortedSecs.forEach(([secLabel, errTotal], idx) => {
           const row = document.createElement('div');
-          row.className = "flex items-center justify-between p-3 rounded-xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200/70 dark:border-rose-900/50 text-xs";
+          row.className = "flex items-center justify-between gap-2 p-3 rounded-xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200/70 dark:border-rose-900/50 text-xs";
           row.innerHTML = `
             <span class="font-bold text-slate-800 dark:text-slate-200">#${idx + 1} ${secLabel}</span>
-            <span class="font-bold text-rose-600 dark:text-rose-400">ผิดสะสม ${errTotal} ครั้ง</span>
+            <span class="font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap shrink-0">ผิดสะสม ${errTotal} ครั้ง</span>
           `;
           secListEl.appendChild(row);
         });
@@ -1974,7 +2051,7 @@
             </div>
             <p class="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 line-clamp-2">${item.q.question}</p>
           </div>
-          <button class="btn-practice-single shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl cursor-pointer">
+          <button class="whitespace-nowrap btn-practice-single shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl cursor-pointer self-start sm:self-center">
             ซ่อมข้อนี้
           </button>
         `;
@@ -2056,7 +2133,7 @@
         btn.dataset.correct = opt.isCorrect ? "1" : "0";
         btn.innerHTML = `
           <span class="w-7 h-7 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs flex items-center justify-center shrink-0">${labels[idx] || (idx + 1)}</span>
-          <span class="pt-0.5">${opt.text}</span>
+          <span class="pt-0.5 break-words">${opt.text}</span>
         `;
         btn.addEventListener('click', () => handleQuizAnswer(opt.isCorrect, btn, choicesEl, q));
         choicesEl.appendChild(btn);
@@ -2085,7 +2162,7 @@
         sessionScore++;
         sessionXp += earnedXp;
         footer.className = "p-5 border-t border-emerald-200 dark:border-emerald-800 bg-emerald-50/80 dark:bg-emerald-950/40 transition-colors";
-        icon.className = "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white bg-emerald-600";
+        icon.className = "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white bg-emerald-600 shrink-0";
         icon.textContent = "✓";
         label.className = "font-extrabold text-base text-emerald-800 dark:text-emerald-300";
         label.textContent = `ถูกต้อง! (+${earnedXp} XP)`;
@@ -2102,7 +2179,7 @@
       } else {
         clickedBtn.className = "w-full text-left p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 dark:bg-rose-950/60 text-sm text-rose-950 dark:text-rose-200 font-bold flex items-start gap-3";
         footer.className = "p-5 border-t border-rose-200 dark:border-rose-800 bg-rose-50/80 dark:bg-rose-950/40 transition-colors";
-        icon.className = "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white bg-rose-600";
+        icon.className = "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white bg-rose-600 shrink-0";
         icon.textContent = "✕";
         label.className = "font-extrabold text-base text-rose-800 dark:text-rose-300";
         label.textContent = `ยังไม่ถูก (คำตอบคือ: ${q.correctChoice})`;
@@ -2239,7 +2316,6 @@
           nextRoundBtn.textContent = `ทำขั้นที่ ${newRounds + 1} / 5 ต่อเลย →`;
         } else {
           nextRoundBtn.classList.add('hidden');
-          // Show Guest Login Recommendation when Guest finishes 5/5!
           if (isGuestMode && !currentUser) {
             document.getElementById('summary-guest-cta').classList.remove('hidden');
           }
@@ -2284,9 +2360,9 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td class="p-3 font-medium text-slate-800 dark:text-slate-200">${row.name}</td>
-          <td class="p-3 text-center font-bold text-indigo-600 dark:text-indigo-400">${row.target} ข้อ</td>
-          <td class="p-3 text-center ${available < row.target ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-emerald-600 dark:text-emerald-400'}">${available} ข้อ</td>
-          <td class="p-3 text-right text-slate-500 dark:text-slate-400">${row.pass}</td>
+          <td class="p-3 text-center font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">${row.target} ข้อ</td>
+          <td class="p-3 text-center whitespace-nowrap ${available < row.target ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-emerald-600 dark:text-emerald-400'}">${available} ข้อ</td>
+          <td class="p-3 text-right text-slate-500 dark:text-slate-400 whitespace-nowrap">${row.pass}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -2382,7 +2458,7 @@
           : "w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-200 flex items-start gap-3 cursor-pointer";
         btn.innerHTML = `
           <span class="w-6 h-6 rounded-lg ${isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'} font-bold text-xs flex items-center justify-center shrink-0">${labels[idx] || (idx + 1)}</span>
-          <span>${opt.text}</span>
+          <span class="break-words">${opt.text}</span>
         `;
         btn.addEventListener('click', () => {
           mockAnswers[mockCurrentIdx] = opt.text;
@@ -2507,8 +2583,8 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td class="p-2.5 font-semibold text-slate-700 dark:text-slate-200">${sub}</td>
-          <td class="p-2.5 text-center">${s.correct} / ${s.total} (${subPct}%)</td>
-          <td class="p-2.5 text-right font-bold ${subPct >= 60 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${subPct >= 60 ? 'ผ่าน' : 'ไม่ผ่าน'}</td>
+          <td class="p-2.5 text-center whitespace-nowrap">${s.correct} / ${s.total} (${subPct}%)</td>
+          <td class="p-2.5 text-right font-bold whitespace-nowrap ${subPct >= 60 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${subPct >= 60 ? 'ผ่าน' : 'ไม่ผ่าน'}</td>
         `;
         rowsEl.appendChild(tr);
       });
@@ -2607,4 +2683,3 @@
   </script>
 </body>
 </html>
-```[cite: 6]
