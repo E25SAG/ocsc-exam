@@ -55,7 +55,7 @@
     .accordion-content {
       display: grid;
       grid-template-rows: 1fr;
-      transition: grid-template-rows 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease;
+      transition: grid-template-rows 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
       opacity: 1;
     }
     .accordion-content.collapsed {
@@ -104,6 +104,30 @@
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
+
+  <!-- LINE In-App Browser Warning Banner -->
+  <div id="line-browser-banner" class="hidden bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 text-white px-3 py-2.5 shadow-md z-50 safe-top">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <div class="flex items-start sm:items-center gap-2.5 text-xs leading-relaxed">
+        <span class="bg-white/20 p-1.5 rounded-xl text-base shrink-0">🧭</span>
+        <div>
+          <p class="font-extrabold">คุณกำลังเปิดผ่านเบราว์เซอร์ในแอป LINE</p>
+          <p class="text-emerald-50 text-[11px]">แนะนำให้เปิดด้วย <span class="underline font-bold">เบราว์เซอร์เริ่มต้นของระบบ (Safari / Chrome)</span> เพื่อให้ล็อกอิน Google และบันทึกสถิติได้สมบูรณ์</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+        <button id="btn-line-open-default" type="button" class="whitespace-nowrap bg-white text-emerald-800 hover:bg-emerald-50 text-xs font-extrabold px-3 py-1.5 rounded-xl shadow-xs transition cursor-pointer">
+          เปิดในเบราว์เซอร์
+        </button>
+        <button id="btn-line-guide-modal" type="button" class="whitespace-nowrap bg-emerald-800/60 hover:bg-emerald-800 text-white border border-white/25 text-xs font-semibold px-2.5 py-1.5 rounded-xl transition cursor-pointer">
+          วิธีเปิด
+        </button>
+        <button id="btn-dismiss-line-banner" type="button" title="ปิดแถบแจ้งเตือน" class="w-7 h-7 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs font-bold flex items-center justify-center cursor-pointer">
+          ✕
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Top Navbar -->
   <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 transition-colors safe-top">
@@ -189,6 +213,20 @@
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-7 leading-relaxed">
           เรียนรู้หลักการและตัวอย่างก่อนลงมือทำจริง ด่านละ 5 รอบ สะสมดาวและ XP วิเคราะห์จุดอ่อนอัตโนมัติ พร้อมสนามสอบเสมือนจริงจับเวลา 3 ชั่วโมง
         </p>
+
+        <!-- Extra Notice inside Login Card if opened in LINE -->
+        <div id="login-line-notice" class="hidden mb-5 p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-left text-xs text-emerald-900 dark:text-emerald-200 space-y-2">
+          <p class="font-bold flex items-center gap-1.5">
+            <span>⚠️</span>
+            <span>ตรวจพบการเปิดลิงก์ผ่านแอป LINE</span>
+          </p>
+          <p class="leading-relaxed">
+            ปุ่มเข้าสู่ระบบด้วย Google อาจไม่ทำงานในแอป LINE กรุณากดเปิดใน <span class="font-bold underline">เบราว์เซอร์เริ่มต้นของระบบ (Safari / Chrome)</span> ก่อนนะครับ
+          </p>
+          <button type="button" id="btn-login-card-open-browser" class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition cursor-pointer">
+            เปิดในเบราว์เซอร์เริ่มต้นของระบบ
+          </button>
+        </div>
 
         <div class="space-y-3">
           <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 px-4 rounded-2xl shadow-sm transition cursor-pointer text-sm">
@@ -639,6 +677,51 @@
   </nav>
 
   <!-- ========================================== -->
+  <!-- MODAL 0: LINE BROWSER OPEN GUIDE MODAL     -->
+  <!-- ========================================== -->
+  <div id="line-guide-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative overflow-hidden max-h-[90dvh] overflow-y-auto">
+      <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-500"></div>
+
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🧭</span>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-800 dark:text-white">วิธีเปิดในเบราว์เซอร์เริ่มต้น</h3>
+        </div>
+        <button id="btn-close-line-guide" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold cursor-pointer flex items-center justify-center">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+        เบราว์เซอร์ภายในแอป LINE จำกัดการเข้าสู่ระบบด้วย Google แนะนำให้เปิดผ่าน <strong class="text-slate-700 dark:text-slate-200">Safari</strong> (iPhone/iPad) หรือ <strong class="text-slate-700 dark:text-slate-200">Chrome</strong> (Android) ตามขั้นตอนด้านล่างครับ:
+      </p>
+
+      <div class="space-y-3 text-left text-xs mb-5">
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700 space-y-1.5">
+          <p class="font-extrabold text-indigo-600 dark:text-indigo-400">📱 สำหรับ iPhone / iPad (iOS)</p>
+          <p class="text-slate-700 dark:text-slate-300">1. แตะไอคอน <span class="font-bold bg-white dark:bg-slate-700 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-600">แชร์ (สี่เหลี่ยมมีลูกศรชี้ขึ้น)</span> หรือปุ่ม <span class="font-bold bg-white dark:bg-slate-700 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-600">⋮</span> ที่มุมล่างขวา</p>
+          <p class="text-slate-700 dark:text-slate-300">2. เลือก <span class="font-bold text-emerald-700 dark:text-emerald-400">"เปิดในเบราว์เซอร์เริ่มต้น (Open in Default Browser)"</span> หรือ <span class="font-bold text-emerald-700 dark:text-emerald-400">"เปิดใน Safari"</span></p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700 space-y-1.5">
+          <p class="font-extrabold text-emerald-600 dark:text-emerald-400">🤖 สำหรับ Android</p>
+          <p class="text-slate-700 dark:text-slate-300">1. แตะปุ่มเมนู <span class="font-bold bg-white dark:bg-slate-700 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-600">⋮</span> ที่มุมบนขวา หรือมุมล่างขวา</p>
+          <p class="text-slate-700 dark:text-slate-300">2. เลือก <span class="font-bold text-emerald-700 dark:text-emerald-400">"เปิดในเบราว์เซอร์อื่น"</span> หรือ <span class="font-bold text-emerald-700 dark:text-emerald-400">"เปิดด้วย Chrome"</span></p>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <button id="btn-copy-url-for-browser" type="button" class="w-full duo-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-2xl text-xs cursor-pointer flex items-center justify-center gap-2">
+          <span>📋</span>
+          <span id="copy-url-btn-label">คัดลอกลิงก์เพื่อนำไปวางใน Chrome / Safari</span>
+        </button>
+        <button id="btn-done-line-guide" type="button" class="w-full py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer">
+          เข้าใจแล้ว
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
   <!-- MODAL 1: LEVEL NODE MODAL (LEARN + PLAY)   -->
   <!-- ========================================== -->
   <div id="node-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 fade-in">
@@ -904,6 +987,88 @@
     import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, getDocs, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // ==========================================
+    // 0. LINE IN-APP BROWSER DETECTION & HELPERS
+    // ==========================================
+    function isLineInAppBrowser() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera || "";
+      return /Line\//i.test(ua);
+    }
+
+    function openInSystemDefaultBrowser() {
+      const currentUrl = window.location.href;
+      const isAndroid = /Android/i.test(navigator.userAgent || "");
+
+      // Append openExternalBrowser=1 which LINE officially recognizes on many versions
+      try {
+        const urlObj = new URL(currentUrl);
+        urlObj.searchParams.set("openExternalBrowser", "1");
+        const externalUrl = urlObj.toString();
+
+        if (isAndroid) {
+          // Try Android Intent to launch default browser directly, fallback to openExternalBrowser=1
+          const noProtocol = externalUrl.replace(/^https?:\/\//i, "");
+          const scheme = urlObj.protocol.replace(":", "");
+          window.location.href = `intent://${noProtocol}#Intent;scheme=${scheme};action=android.intent.action.VIEW;end`;
+          setTimeout(() => {
+            window.location.href = externalUrl;
+          }, 600);
+          return;
+        }
+
+        window.location.href = externalUrl;
+      } catch {
+        // Fallback: open instruction modal if redirect is blocked inside LINE WebView
+      }
+
+      // Also show clear step-by-step modal after short delay in case LINE WebView stays open
+      setTimeout(() => {
+        document.getElementById('line-guide-modal').classList.remove('hidden');
+      }, 900);
+    }
+
+    if (isLineInAppBrowser()) {
+      document.getElementById('line-browser-banner').classList.remove('hidden');
+      document.getElementById('login-line-notice').classList.remove('hidden');
+    }
+
+    document.getElementById('btn-line-open-default').addEventListener('click', openInSystemDefaultBrowser);
+    document.getElementById('btn-login-card-open-browser').addEventListener('click', openInSystemDefaultBrowser);
+    document.getElementById('btn-line-guide-modal').addEventListener('click', () => {
+      document.getElementById('line-guide-modal').classList.remove('hidden');
+    });
+    document.getElementById('btn-close-line-guide').addEventListener('click', () => {
+      document.getElementById('line-guide-modal').classList.add('hidden');
+    });
+    document.getElementById('btn-done-line-guide').addEventListener('click', () => {
+      document.getElementById('line-guide-modal').classList.add('hidden');
+    });
+    document.getElementById('btn-dismiss-line-banner').addEventListener('click', () => {
+      document.getElementById('line-browser-banner').classList.add('hidden');
+    });
+    document.getElementById('btn-copy-url-for-browser').addEventListener('click', async () => {
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete("openExternalBrowser");
+      const textToCopy = cleanUrl.toString();
+      const labelEl = document.getElementById('copy-url-btn-label');
+
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        labelEl.textContent = "✓ คัดลอกลิงก์แล้ว! นำไปวางใน Safari / Chrome ได้เลย";
+      } catch {
+        const tempInput = document.createElement('input');
+        tempInput.value = textToCopy;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        labelEl.textContent = "✓ คัดลอกลิงก์แล้ว! นำไปวางใน Safari / Chrome ได้เลย";
+      }
+      setTimeout(() => {
+        labelEl.textContent = "คัดลอกลิงก์เพื่อนำไปวางใน Chrome / Safari";
+      }, 3500);
+    });
+
+    // ==========================================
     // 1. CONFIGURATION
     // ==========================================
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyK349w7TJJ6fd9sVxcHwS9vC4xOnCSkA6cs9PnhRAH5KCfMUKetg3GJq56pVfbMIu2fg/exec";
@@ -970,6 +1135,7 @@
         correctCount: 0,
         streakDays: 0,
         lastStudyDate: "",
+        lastActiveLevelKey: "",
         wrongQuestions: [],
         weaknessMap: {},
         levelProgress: {}
@@ -982,6 +1148,10 @@
     let selectedLearnSubject = 'Math';
     let currentTab = 'learn';
     let collapsedSections = new Set();
+
+    // Auto-collapse on initial entry, then auto-expand target chapter after delay
+    let isInitialLearnEntry = true;
+    let autoExpandTimerId = null;
 
     // Quiz Session State
     let quizMode = 'learn';
@@ -1109,12 +1279,10 @@
         const pool = [...cachedAllServerXps, myXp];
         const totalUsers = pool.length;
 
-        // Rank (1 = highest XP)
         const strictlyHigherCount = cachedAllServerXps.filter(x => x > myXp).length;
         const myRank = strictlyHigherCount + 1;
 
         if (totalUsers > 100) {
-          // Over 100 users -> Show Percentile + Percentage Bar (No names, no raw scores)
           const lowerOrEqualCount = pool.filter(x => x <= myXp).length;
           let percentile = Math.round(((lowerOrEqualCount - 1) / (totalUsers - 1)) * 100);
           percentile = Math.max(1, Math.min(99, percentile));
@@ -1130,7 +1298,6 @@
             barFillEl.style.width = `${percentile}%`;
           });
         } else {
-          // 100 users or fewer -> Show only "อันดับที่ X ของ Server"
           headlineEl.textContent = `อันดับที่ ${myRank} ของ Server`;
           badgeEl.classList.add('hidden');
           barWrapEl.classList.add('hidden');
@@ -1150,6 +1317,10 @@
     // 4. AUTHENTICATION, GUEST MODE & FIRESTORE
     // ==========================================
     function triggerGoogleLogin() {
+      if (isLineInAppBrowser()) {
+        document.getElementById('line-guide-modal').classList.remove('hidden');
+        return;
+      }
       signInWithPopup(auth, provider).catch(err => alert("เข้าสู่ระบบไม่สำเร็จ: " + err.message));
     }
 
@@ -1164,6 +1335,7 @@
     async function enterGuestMode() {
       isGuestMode = true;
       currentUser = null;
+      isInitialLearnEntry = true;
       loadGuestStatsFromLocal();
 
       const authBar = document.getElementById('auth-bar');
@@ -1197,6 +1369,7 @@
         isGuestMode = false;
         currentUser = user;
         cachedAllServerXps = null;
+        isInitialLearnEntry = true;
         headerStats.classList.remove('hidden');
         document.getElementById('guest-mode-banner').classList.add('hidden');
         document.getElementById('guest-limit-modal').classList.add('hidden');
@@ -1247,9 +1420,13 @@
           });
           if (merged) {
             userStats.xp = (userStats.xp || 0) + (guestSnapshot.xp || 0);
+            if (guestSnapshot.lastActiveLevelKey) {
+              userStats.lastActiveLevelKey = guestSnapshot.lastActiveLevelKey;
+            }
             await updateDoc(userRef, {
               levelProgress: userStats.levelProgress,
-              xp: userStats.xp
+              xp: userStats.xp,
+              lastActiveLevelKey: userStats.lastActiveLevelKey || ""
             }).catch(() => {});
           }
           localStorage.removeItem(GUEST_STORAGE_KEY);
@@ -1498,8 +1675,85 @@
     });
 
     // ==========================================
-    // 5. DUOLINGO LEARNING PATH (COLOR STATES + GUEST RULES)
+    // 5. DUOLINGO LEARNING PATH (AUTO-COLLAPSE & DELAYED EXPAND)
     // ==========================================
+    function expandSingleSectionByKey(secKey, shouldScroll = true) {
+      if (!secKey) return;
+      collapsedSections.delete(secKey);
+
+      const contentEl = document.querySelector(`[data-sec-content="${CSS.escape(secKey)}"]`);
+      const arrowEl = document.querySelector(`[data-sec-arrow="${CSS.escape(secKey)}"]`);
+      const labelEl = document.querySelector(`[data-sec-label="${CSS.escape(secKey)}"]`);
+
+      if (contentEl) {
+        contentEl.classList.remove('collapsed');
+      }
+      if (arrowEl) {
+        arrowEl.classList.remove('-rotate-90');
+        arrowEl.classList.add('rotate-0');
+      }
+      if (labelEl) {
+        labelEl.textContent = 'ย่อบทเรียน';
+      }
+
+      if (shouldScroll && contentEl) {
+        const wrapperEl = contentEl.parentElement;
+        if (wrapperEl) {
+          setTimeout(() => {
+            wrapperEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 120);
+        }
+      }
+    }
+
+    function determineInitialExpandTarget() {
+      // 1) Check if user has a recorded lastActiveLevelKey (e.g., "Math||อนุกรม||ระดับ 1")
+      const lastKey = userStats.lastActiveLevelKey || "";
+      if (lastKey && lastKey.includes("||")) {
+        const parts = lastKey.split("||");
+        if (parts.length >= 2) {
+          const targetSub = parts[0];
+          const targetSecKey = `${parts[0]}||${parts[1]}`;
+          const hasSub = allQuestions.some(q => q.subject === targetSub);
+          if (hasSub) {
+            return {
+              hasPriorProgress: true,
+              subject: targetSub,
+              secKey: targetSecKey
+            };
+          }
+        }
+      }
+
+      // 2) Fallback: check levelProgress entries if any round has been completed
+      const progressEntries = Object.entries(userStats.levelProgress || {}).filter(
+        ([, val]) => val && (val.roundsCompleted || 0) > 0
+      );
+      if (progressEntries.length > 0) {
+        const [firstProgKey] = progressEntries[progressEntries.length - 1];
+        const parts = firstProgKey.split("||");
+        if (parts.length >= 2) {
+          const targetSub = parts[0];
+          const targetSecKey = `${parts[0]}||${parts[1]}`;
+          const hasSub = allQuestions.some(q => q.subject === targetSub);
+          if (hasSub) {
+            return {
+              hasPriorProgress: true,
+              subject: targetSub,
+              secKey: targetSecKey
+            };
+          }
+        }
+      }
+
+      // 3) Never done before -> default to top chapter (Chapter 1) of current subject
+      return {
+        hasPriorProgress: false,
+        subject: selectedLearnSubject,
+        secKey: null // Will pick first section in renderLearningPath
+      };
+    }
+
     document.getElementById('btn-toggle-all-sections').addEventListener('click', () => {
       const subQuestions = allQuestions.filter(q => q.subject === selectedLearnSubject);
       const allSecKeys = [...new Set(subQuestions.map(q => `${selectedLearnSubject}||${q.section || "เนื้อหาทั่วไป"}`))];
@@ -1528,6 +1782,20 @@
     });
 
     function renderLearningPath() {
+      let initialExpandPlan = null;
+
+      // On first entry into Learning Path: collapse all chapters initially, then auto-expand after delay
+      if (isInitialLearnEntry && allQuestions.length > 0) {
+        isInitialLearnEntry = false;
+        if (autoExpandTimerId) clearTimeout(autoExpandTimerId);
+
+        const plan = determineInitialExpandTarget();
+        if (plan.hasPriorProgress && !(isGuestMode && !currentUser)) {
+          selectedLearnSubject = plan.subject;
+        }
+        initialExpandPlan = plan;
+      }
+
       const subTabsEl = document.getElementById('learn-subject-tabs');
       subTabsEl.innerHTML = "";
       SUBJECTS.forEach(sub => {
@@ -1566,12 +1834,22 @@
         lvlMap.get(lvl).push(q);
       });
 
+      // If this is the initial entry render, collapse every section in this subject first
+      if (initialExpandPlan) {
+        sectionsMap.forEach((_, sectionName) => {
+          collapsedSections.add(`${selectedLearnSubject}||${sectionName}`);
+        });
+      }
+
       let secIdx = 0;
+      let firstSecKeyInSubject = null;
+
       sectionsMap.forEach((lvlMap, sectionName) => {
         secIdx++;
         const isChapter1 = secIdx === 1;
         const isSectionLockedForGuest = isGuestMode && !currentUser && !isChapter1;
         const secKey = `${selectedLearnSubject}||${sectionName}`;
+        if (!firstSecKeyInSubject) firstSecKeyInSubject = secKey;
 
         if (isSectionLockedForGuest) {
           collapsedSections.add(secKey);
@@ -1595,11 +1873,7 @@
           }
         });
 
-        // Chapter Color State Logic:
-        // 1) Never done (totalRoundsDoneInSec === 0) -> Gray
-        // 2) Started / Done (totalRoundsDoneInSec > 0 && !allLevelsPerfect3Stars) -> Blue
-        // 3) All levels completed with 3 stars (allLevelsPerfect3Stars) -> Glowing Gold
-        let chapterState = 'unstarted'; // 'unstarted' | 'started' | 'perfect'
+        let chapterState = 'unstarted';
         if (allLevelsPerfect3Stars) {
           chapterState = 'perfect';
         } else if (totalRoundsDoneInSec > 0) {
@@ -1623,7 +1897,6 @@
           tagClasses = "text-sky-100";
           statusPillHtml = `<span class="text-[11px] bg-white/20 px-2 py-0.5 rounded-md font-semibold whitespace-nowrap">📘 ทำแล้ว • พิชิต ${completedLevels}/${lvlMap.size} ด่าน • ★ ${totalStarsInSec}/${lvlMap.size * 3}</span>`;
         } else {
-          // Gray for unstarted chapter
           bannerClasses = "w-full text-left bg-slate-600 hover:bg-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer";
           tagClasses = "text-slate-300";
           statusPillHtml = `<span class="text-[11px] bg-white/15 px-2 py-0.5 rounded-md font-medium whitespace-nowrap">ยังไม่ทำ • 0/${lvlMap.size} ด่าน</span>`;
@@ -1783,6 +2056,21 @@
 
         container.appendChild(secWrapper);
       });
+
+      // Execute delayed auto-expansion on initial entry
+      if (initialExpandPlan) {
+        if (initialExpandPlan.hasPriorProgress && initialExpandPlan.secKey && !(isGuestMode && !currentUser)) {
+          // Has prior progress -> wait 1.5s (1-2s) then expand last practiced chapter
+          autoExpandTimerId = setTimeout(() => {
+            expandSingleSectionByKey(initialExpandPlan.secKey, true);
+          }, 1500);
+        } else if (firstSecKeyInSubject) {
+          // Never done before -> wait 2.5s (2-3s) then expand top chapter (Chapter 1)
+          autoExpandTimerId = setTimeout(() => {
+            expandSingleSectionByKey(firstSecKeyInSubject, false);
+          }, 2500);
+        }
+      }
     }
 
     // ==========================================
@@ -1820,7 +2108,7 @@
         subject: 'Math',
         keywords: ['ร้อยละ', 'เปอร์เซ็นต์', 'กำไร', 'ขาดทุน', 'อัตราส่วน', 'สมการ', 'คณิตศาสตร์ทั่วไป'],
         conceptTitle: 'สูตรลัดร้อยละ กำไร-ขาดทุน และสมการ',
-        conceptBody: '• เทียบบัญญติไตรยางศ์ 100 เสมอ: ทุน = 100%\n  - กำไร X% → ราคาขาย = (100 + X)% ของทุน\n  - ขาดทุน X% → ราคาขาย = (100 - X)% ของทุน\n• สูตรหาเปอร์เซ็นต์เปลี่ยนแปลง = [(ค่าใหม่ - ค่าเดิม) ÷ ค่าเดิม] × 100\n• การตั้งสมการ: ให้สิ่งที่โจทย์ถาม (หรือตัวแปรที่เล็กที่สุด) เป็น X',
+        conceptBody: '• เทียบบัญญัติไตรยางศ์ 100 เสมอ: ทุน = 100%\n  - กำไร X% → ราคาขาย = (100 + X)% ของทุน\n  - ขาดทุน X% → ราคาขาย = (100 - X)% ของทุน\n• สูตรหาเปอร์เซ็นต์เปลี่ยนแปลง = [(ค่าใหม่ - ค่าเดิม) ÷ ค่าเดิม] × 100\n• การตั้งสมการ: ให้สิ่งที่โจทย์ถาม (หรือตัวแปรที่เล็กที่สุด) เป็น X',
         exampleQ: 'ขายเสื้อตัวหนึ่งราคา 480 บาท ได้กำไร 20% จงหาต้นทุนของเสื้อตัวนี้',
         exampleSteps: '• ขั้นที่ 1: กำไร 20% แปลว่า ถ้าทุน 100 บาท จะขาย 120 บาท\n• ขั้นที่ 2: ตั้งสัดส่วนหาทุน\n  ขาย 120 บาท มาจากทุน 100 บาท\n  ขาย 480 บาท มาจากทุน = (480 × 100) ÷ 120\n• ขั้นที่ 3: ตัดทอน 480 ÷ 120 = 4 แล้วคูณ 100 = 400\n• คำตอบ: ต้นทุน 400 บาท',
         tipText: 'ระวัง! ห้ามนำ 480 × 20% แล้วเอาไปลบออกเด็ดขาด เพราะกำไร 20% คิดจาก "ต้นทุน" ไม่ใช่คิดจากราคาขาย'
@@ -2356,10 +2644,10 @@
       document.getElementById('quiz-explanation-text').textContent = q.explanation || "ไม่มีคำอธิบายเพิ่มเติม";
       document.getElementById('btn-next-question').classList.remove('hidden');
 
-      await recordQuestionStat(q.id, isCorrect, earnedXp);
+      await recordQuestionStat(q.id, isCorrect, earnedXp, q);
     }
 
-    async function recordQuestionStat(rawId, isCorrect, earnedXp) {
+    async function recordQuestionStat(rawId, isCorrect, earnedXp, questionObj = null) {
       const today = new Date().toISOString().split('T')[0];
       const prevStreak = userStats.streakDays || 0;
       const isFirstStudyToday = userStats.lastStudyDate !== today;
@@ -2394,11 +2682,20 @@
         };
       }
 
+      // Track last practiced chapter/level key so next visit expands directly to it
+      let latestLevelKey = userStats.lastActiveLevelKey || "";
+      if (currentLevelKey) {
+        latestLevelKey = currentLevelKey;
+      } else if (questionObj && questionObj.subject && questionObj.section) {
+        latestLevelKey = `${questionObj.subject}||${questionObj.section}||${questionObj.level || "ระดับ 1"}`;
+      }
+
       userStats.xp = (userStats.xp || 0) + earnedXp;
       userStats.totalAnswered = (userStats.totalAnswered || 0) + 1;
       if (isCorrect) userStats.correctCount = (userStats.correctCount || 0) + 1;
       userStats.streakDays = newStreak;
       userStats.lastStudyDate = today;
+      userStats.lastActiveLevelKey = latestLevelKey;
       userStats.wrongQuestions = getActiveWeakIds();
 
       updateHeaderStats();
@@ -2416,6 +2713,7 @@
           correctCount: increment(isCorrect ? 1 : 0),
           streakDays: newStreak,
           lastStudyDate: today,
+          lastActiveLevelKey: latestLevelKey,
           weaknessMap: userStats.weaknessMap,
           wrongQuestions: userStats.wrongQuestions
         }).catch(console.error);
@@ -2469,6 +2767,7 @@
         const bestStars = Math.max(prev.stars || 0, earnedStars);
 
         userStats.levelProgress[currentLevelKey] = { roundsCompleted: newRounds, stars: bestStars };
+        userStats.lastActiveLevelKey = currentLevelKey;
 
         document.getElementById('summary-title').textContent = newRounds >= 5 ? "พิชิตครบ 5/5 ขั้นแล้ว!" : `ผ่านขั้นที่ ${newRounds} / 5!`;
         document.getElementById('summary-subtitle').textContent = `คุณได้รับ ${earnedStars} ดาว ในขั้นนี้`;
@@ -2486,7 +2785,8 @@
         if (currentUser) {
           const userRef = doc(db, "users", currentUser.uid);
           await updateDoc(userRef, {
-            [`levelProgress.${currentLevelKey}`]: { roundsCompleted: newRounds, stars: bestStars }
+            [`levelProgress.${currentLevelKey}`]: { roundsCompleted: newRounds, stars: bestStars },
+            lastActiveLevelKey: currentLevelKey
           }).catch(console.error);
         } else if (isGuestMode) {
           saveGuestStatsToLocal();
@@ -2707,7 +3007,7 @@
         }
 
         if (chosen !== undefined) {
-          await recordQuestionStat(q.id, isCorrect, isCorrect ? (Number(q.xp) || 10) : 0);
+          await recordQuestionStat(q.id, isCorrect, isCorrect ? (Number(q.xp) || 10) : 0, q);
         }
       }
 
