@@ -43,13 +43,36 @@
     .accordion-inner {
       overflow: hidden;
     }
+
+    /* Streak Celebration Animations */
+    @keyframes flamePulse {
+      0%, 100% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.7)); }
+      50% { transform: scale(1.15) rotate(3deg); filter: drop-shadow(0 0 28px rgba(239, 68, 68, 0.95)); }
+    }
+    @keyframes epicGlow {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(251, 191, 36, 0.6), 0 0 60px rgba(249, 115, 22, 0.4); }
+      50% { transform: scale(1.04); box-shadow: 0 0 55px rgba(251, 191, 36, 0.95), 0 0 100px rgba(236, 72, 153, 0.6); }
+    }
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes popBounce {
+      0% { opacity: 0; transform: scale(0.5) translateY(30px); }
+      70% { opacity: 1; transform: scale(1.06) translateY(-4px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .anim-flame { animation: flamePulse 1.4s infinite ease-in-out; }
+    .anim-epic-card { animation: epicGlow 2s infinite ease-in-out, popBounce 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+    .anim-pop { animation: popBounce 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+    .anim-spin-slow { animation: spinSlow 14s linear infinite; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col pb-20 sm:pb-0 bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
 
   <!-- Top Navbar -->
   <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 transition-colors">
-    <div class="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between gap-2">
+    <div class="max-w-5xl mx-auto px-3 sm:px-4 py-2 flex items-center justify-between gap-2">
       <!-- Brand + Developer Credit -->
       <div class="flex items-center gap-2.5 cursor-pointer shrink-0" id="nav-logo">
         <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-extrabold text-base shadow-sm">
@@ -79,7 +102,7 @@
         </button>
       </nav>
 
-      <!-- Right Controls: Theme, Support, Feedback, Stats, Auth -->
+      <!-- Right Controls: Theme, Feedback, Stats (with subtle link under flame), Auth -->
       <div class="flex items-center gap-1.5 sm:gap-2">
         <!-- Theme Toggle -->
         <button id="btn-theme-toggle" title="สลับโหมดมืด / สว่าง" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-sm transition cursor-pointer">
@@ -92,20 +115,20 @@
           <span class="hidden sm:inline">แนะนำ/ติชม</span>
         </button>
 
-        <!-- Support / Donate Button (Subtle & Warm) -->
-        <button id="btn-open-donate" title="สนับสนุนค่ากาแฟผู้พัฒนา" class="px-2.5 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200/80 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 text-xs font-semibold flex items-center gap-1 transition cursor-pointer">
-          <span>☕</span>
-          <span class="hidden sm:inline">กำลังใจ</span>
-        </button>
-
-        <!-- Stats -->
-        <div id="header-stats" class="hidden sm:flex items-center gap-1.5 text-xs font-bold">
-          <span class="flex items-center gap-1 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-1 rounded-lg border border-amber-200/60 dark:border-amber-800/50" title="วันต่อเนื่อง">
-            🔥 <span id="hdr-streak">0</span>
-          </span>
-          <span class="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-1 rounded-lg border border-indigo-200/60 dark:border-indigo-800/50" title="คะแนน XP">
-            ⚡ <span id="hdr-xp">0</span>
-          </span>
+        <!-- Stats + Subtle Support Text Under Flame -->
+        <div id="header-stats" class="hidden flex flex-col items-end">
+          <div class="flex items-center gap-1.5 text-xs font-bold">
+            <span id="hdr-flame-box" class="flex items-center gap-1 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-lg border border-amber-200/60 dark:border-amber-800/50" title="วันต่อเนื่อง">
+              🔥 <span id="hdr-streak">0</span>
+            </span>
+            <span class="hidden sm:flex items-center gap-1 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded-lg border border-indigo-200/60 dark:border-indigo-800/50" title="คะแนน XP">
+              ⚡ <span id="hdr-xp">0</span>
+            </span>
+          </div>
+          <!-- Subtle clickable encouragement text directly underneath the flame -->
+          <button type="button" id="btn-flame-support" class="text-[9.5px] sm:text-[10px] text-slate-400 hover:text-emerald-600 dark:text-slate-500 dark:hover:text-emerald-400 transition cursor-pointer mt-0.5 leading-none tracking-tight">
+            หากคุณชื่นชอบ สามารถให้กำลังใจเราได้
+          </button>
         </div>
 
         <!-- Auth -->
@@ -119,21 +142,37 @@
   <!-- Main Content -->
   <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-6">
 
-    <!-- Login View -->
-    <section id="view-login" class="hidden py-10 text-center fade-in">
+    <!-- Login / Guest Choice View -->
+    <section id="view-login" class="hidden py-8 text-center fade-in">
       <div class="max-w-md mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 p-8">
         <div class="w-16 h-16 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-5 text-2xl font-extrabold shadow-md">
           ก.พ.
         </div>
         <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-1">พิชิตข้อสอบ ก.พ. ทีละด่าน</h2>
         <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium mb-3">พัฒนาโดย ครูศตวรรษ แก้วก่า</p>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-7 leading-relaxed">
           เรียนรู้หลักการและตัวอย่างก่อนลงมือทำจริง ด่านละ 5 รอบ สะสมดาวและ XP วิเคราะห์จุดอ่อนอัตโนมัติ พร้อมสนามสอบเสมือนจริงจับเวลา 3 ชั่วโมง
         </p>
-        <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-100 font-semibold py-3.5 px-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm transition cursor-pointer">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5" />
-          <span>เข้าสู่ระบบด้วย Google</span>
-        </button>
+
+        <div class="space-y-3">
+          <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 px-4 rounded-2xl shadow-sm transition cursor-pointer">
+            <span class="bg-white p-1 rounded-full flex items-center justify-center">
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-4 h-4" />
+            </span>
+            <span>เข้าสู่ระบบด้วย Google (ปลดล็อกทั้งหมด)</span>
+          </button>
+
+          <div class="relative flex py-1 items-center">
+            <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+            <span class="flex-shrink mx-3 text-[11px] text-slate-400">หรือ</span>
+            <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+          </div>
+
+          <button id="btn-guest-mode" class="w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold py-3 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 transition cursor-pointer">
+            <span class="text-sm">เข้าใช้งานแบบไม่ต้องลงชื่อเข้าใช้</span>
+            <span class="text-[11px] font-normal text-slate-500 dark:text-slate-400 mt-0.5">ทดลองทำข้อสอบได้ระดับละ 5 ขั้น (1/5 – 5/5)</span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -147,6 +186,16 @@
     <!-- TAB 1: DUOLINGO LEARNING PATH              -->
     <!-- ========================================== -->
     <section id="tab-learn" class="hidden space-y-5 fade-in">
+
+      <!-- Guest Trial Info Banner -->
+      <div id="guest-mode-banner" class="hidden bg-indigo-50/90 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/70 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div class="text-xs text-indigo-900 dark:text-indigo-200">
+          <span class="font-bold">โหมดทดลองใช้งาน (ไม่ลงชื่อเข้าใช้):</span> ทำข้อสอบได้ระดับละ 5 ขั้น (1/5 – 5/5) ลงชื่อเข้าใช้ฟรีเพื่อบันทึกสถิติและปลดล็อกทุกโหมด
+        </div>
+        <button id="btn-banner-login" class="shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition cursor-pointer">
+          ลงชื่อเข้าใช้ด้วย Google
+        </button>
+      </div>
       
       <!-- Subject Selector Pills -->
       <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -436,6 +485,17 @@
           </div>
         </div>
 
+        <!-- Guest Login Prompt Box on Summary (Shown when guest finishes 5/5) -->
+        <div id="summary-guest-cta" class="hidden mb-6 p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 text-left">
+          <p class="text-xs font-extrabold text-indigo-800 dark:text-indigo-200 mb-1">🎉 คุณทำครบ 5 ขั้น (5/5) ของระดับนี้แล้ว!</p>
+          <p class="text-xs text-indigo-700 dark:text-indigo-300 leading-relaxed mb-3">
+            ลงชื่อเข้าใช้ด้วย Google ฟรี เพื่อบันทึกความคืบหน้า ปลดล็อกด่านถัดไป รวมถึงโหมดสอบเสมือนจริงและระบบวิเคราะห์จุดอ่อน
+          </p>
+          <button id="btn-summary-google-login" class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl transition cursor-pointer">
+            <span>ลงชื่อเข้าใช้ด้วย Google ทันที</span>
+          </button>
+        </div>
+
         <!-- Mock Exam Breakdown -->
         <div id="mock-result-breakdown" class="hidden text-left mb-6 space-y-3">
           <div id="mock-pass-badge" class="p-3 rounded-xl text-center font-bold text-sm"></div>
@@ -525,7 +585,6 @@
 
       <!-- TAB A: LESSON & WORKED EXAMPLE (Scrollable) -->
       <div id="modal-pane-lesson" class="overflow-y-auto pr-1 space-y-3 text-left flex-1">
-        <!-- Core Concept / Formula Card -->
         <div class="bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 rounded-2xl p-4">
           <div class="flex items-center gap-1.5 text-xs font-extrabold text-indigo-800 dark:text-indigo-300 mb-1.5">
             <span>💡</span>
@@ -534,7 +593,6 @@
           <div id="lesson-concept-body" class="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed whitespace-pre-line"></div>
         </div>
 
-        <!-- Worked Example Card -->
         <div class="bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 rounded-2xl p-4">
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs font-extrabold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
@@ -550,7 +608,6 @@
           </div>
         </div>
 
-        <!-- Exam Tip / Trap Warning -->
         <div id="lesson-tip-box" class="bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-800/50 rounded-2xl p-3.5 flex items-start gap-2.5">
           <span class="text-base shrink-0">⚡</span>
           <div class="text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed">
@@ -638,7 +695,6 @@
   <!-- ========================================== -->
   <div id="donate-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 text-center shadow-xl relative overflow-hidden">
-      <!-- Subtle decorative top gradient -->
       <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-500 via-emerald-500 to-amber-400"></div>
 
       <button id="btn-close-donate" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-white font-bold cursor-pointer">✕</button>
@@ -653,7 +709,6 @@
         เว็บนี้เปิดให้ใช้งานฟรีเพื่อช่วยน้อง ๆ เตรียมสอบ ก.พ.<br/>หากเห็นว่ามีประโยชน์ สามารถร่วมสนับสนุนค่าดูแลระบบได้ตามกำลังศรัทธาครับ
       </p>
 
-      <!-- Eye-catching framed QR Code -->
       <div class="my-5 p-3 bg-gradient-to-br from-indigo-50 via-white to-emerald-50 dark:from-slate-800 dark:via-slate-800 dark:to-slate-800 rounded-2xl border-2 border-indigo-200/80 dark:border-indigo-700/60 shadow-inner inline-block">
         <div class="bg-white p-2 rounded-xl shadow-xs">
           <img
@@ -675,6 +730,92 @@
     </div>
   </div>
 
+  <!-- ========================================== -->
+  <!-- MODAL 4: GUEST LIMIT REACHED (LOGIN GATE)  -->
+  <!-- ========================================== -->
+  <div id="guest-limit-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-7 text-center shadow-2xl relative overflow-hidden">
+      <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+
+      <div class="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mx-auto mb-4 text-3xl shadow-xs">
+        🔒
+      </div>
+
+      <span id="guest-limit-badge" class="inline-block text-[11px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 px-3 py-1 rounded-full mb-2">
+        ครบโควตาทดลองเรียน 5/5 ขั้นแล้ว
+      </span>
+
+      <h3 id="guest-limit-title" class="text-xl font-extrabold text-slate-800 dark:text-white">
+        ลงชื่อเข้าใช้เพื่อลุยต่อแบบไม่จำกัด!
+      </h3>
+
+      <p id="guest-limit-desc" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+        คุณได้ฝึกทำครบ 5 ขั้น (1/5 – 5/5) ในระดับนี้แล้ว ลงชื่อเข้าใช้ด้วย Google ฟรีเพื่อบันทึกดาว สะสมไฟรายวัน และปลดล็อกทุกด่านทันที
+      </p>
+
+      <div class="bg-slate-50 dark:bg-slate-800/70 rounded-2xl p-3.5 my-5 text-left text-xs text-slate-600 dark:text-slate-300 space-y-1.5 border border-slate-200/70 dark:border-slate-700">
+        <p class="font-bold text-slate-800 dark:text-white">สิทธิประโยชน์เมื่อลงชื่อเข้าใช้ (ฟรี 100%):</p>
+        <p>✓ โอนความคืบหน้า 5/5 ที่ทำไว้เข้าบัญชีให้อัตโนมัติ</p>
+        <p>✓ ปลดล็อกข้อสอบทุกด่าน ฝึกแยกวิชา และสอบเสมือนจริง 3 ชม.</p>
+        <p>✓ ระบบวิเคราะห์จุดอ่อน & สะสมไฟต่อเนื่องพร้อมเอฟเฟกต์พิเศษ</p>
+      </div>
+
+      <div class="space-y-2.5">
+        <button id="btn-modal-google-login" class="w-full flex items-center justify-center gap-2.5 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-2xl text-sm cursor-pointer">
+          <span class="bg-white p-1 rounded-full flex items-center justify-center">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-4 h-4" />
+          </span>
+          <span>ลงชื่อเข้าใช้ด้วย Google เลย</span>
+        </button>
+        <button id="btn-close-guest-limit" class="w-full py-2.5 rounded-2xl text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white cursor-pointer">
+          ไว้ทีหลัง (กลับไปเลือกระดับอื่น)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 5: STREAK MILESTONE CELEBRATION      -->
+  <!-- ========================================== -->
+  <div id="streak-celebration-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden">
+    <!-- Backdrop -->
+    <div id="streak-backdrop" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Canvas for Fireworks / Particles -->
+    <canvas id="streak-fx-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+
+    <!-- Rotating Sunburst Rays (Shown for 100+ and 300+ tiers) -->
+    <div id="streak-sunburst" class="hidden absolute w-[560px] h-[560px] pointer-events-none opacity-35 anim-spin-slow">
+      <div class="w-full h-full rounded-full" style="background: repeating-conic-gradient(from 0deg, rgba(251,191,36,0.45) 0deg 15deg, transparent 15deg 30deg);"></div>
+    </div>
+
+    <!-- Celebration Card -->
+    <div id="streak-card" class="relative z-10 bg-white dark:bg-slate-900 border-2 border-amber-400 rounded-3xl max-w-sm w-full p-7 text-center shadow-2xl anim-pop">
+      <div id="streak-tier-pill" class="inline-block text-[11px] font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full bg-amber-100 text-amber-800 mb-3">
+        STREAK MILESTONE!
+      </div>
+
+      <!-- Big Animated Flame + Number -->
+      <div class="relative inline-flex flex-col items-center justify-center my-2">
+        <div id="streak-flame-emoji" class="text-7xl sm:text-8xl select-none anim-flame">🔥</div>
+        <div id="streak-day-number" class="mt-1 text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent">
+          7 วัน
+        </div>
+      </div>
+
+      <h3 id="streak-celeb-title" class="text-xl font-extrabold text-slate-800 dark:text-white mt-2">
+        เติมไฟต่อเนื่องครบ 7 วัน!
+      </h3>
+      <p id="streak-celeb-desc" class="text-xs sm:text-sm text-slate-500 dark:text-slate-300 mt-2 leading-relaxed">
+        วินัยของคุณยอดเยี่ยมมาก! ทำข้อสอบสะสมความรู้ทุกวันแบบนี้ สอบผ่าน ก.พ. แน่นอน
+      </p>
+
+      <button id="btn-close-streak-celeb" class="mt-6 w-full duo-btn-amber bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold py-3.5 px-6 rounded-2xl text-sm cursor-pointer">
+        ลุยต่อเลย! 🔥
+      </button>
+    </div>
+  </div>
+
   <!-- Firebase & App Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -686,6 +827,8 @@
     // ==========================================
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyK349w7TJJ6fd9sVxcHwS9vC4xOnCSkA6cs9PnhRAH5KCfMUKetg3GJq56pVfbMIu2fg/exec";
     const DEVELOPER_EMAIL = "e25sag@gmail.com";
+    const STREAK_MILESTONES = [2, 7, 10, 50, 100, 150, 200, 300, 500, 1000];
+    const GUEST_STORAGE_KEY = "ocsc_guest_stats_v1";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDerdir4rHDiAoWLDwvjkuZra_XM684cS4",
@@ -734,19 +877,25 @@
     });
 
     // ==========================================
-    // 3. STATE MANAGEMENT
+    // 3. STATE MANAGEMENT (AUTH + GUEST MODE)
     // ==========================================
     let currentUser = null;
-    let userStats = {
-      xp: 0,
-      totalAnswered: 0,
-      correctCount: 0,
-      streakDays: 0,
-      lastStudyDate: "",
-      wrongQuestions: [],
-      weaknessMap: {},
-      levelProgress: {}
-    };
+    let isGuestMode = false;
+
+    function getDefaultStats() {
+      return {
+        xp: 0,
+        totalAnswered: 0,
+        correctCount: 0,
+        streakDays: 0,
+        lastStudyDate: "",
+        wrongQuestions: [],
+        weaknessMap: {},
+        levelProgress: {}
+      };
+    }
+
+    let userStats = getDefaultStats();
 
     let allQuestions = [];
     let selectedLearnSubject = 'Math';
@@ -770,6 +919,25 @@
     let mockTimerInterval = null;
     let mockSecondsLeft = 10800;
 
+    function loadGuestStatsFromLocal() {
+      try {
+        const raw = localStorage.getItem(GUEST_STORAGE_KEY);
+        if (raw) {
+          userStats = { ...getDefaultStats(), ...JSON.parse(raw) };
+        } else {
+          userStats = getDefaultStats();
+        }
+      } catch {
+        userStats = getDefaultStats();
+      }
+    }
+
+    function saveGuestStatsToLocal() {
+      try {
+        localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify(userStats));
+      } catch {}
+    }
+
     function shuffleArray(arr) {
       const copy = [...arr];
       for (let i = copy.length - 1; i > 0; i--) {
@@ -786,7 +954,18 @@
     }
 
     function switchTab(tabName) {
-      if (!currentUser) return;
+      if (!currentUser && !isGuestMode) return;
+
+      // Guest restriction: non-learn tabs prompt to login
+      if (isGuestMode && !currentUser && tabName !== 'learn') {
+        openGuestLimitModal(
+          "ฟีเจอร์สำหรับสมาชิก",
+          "ลงชื่อเข้าใช้เพื่อปลดล็อกโหมดนี้",
+          "โหมดฝึกแยกวิชา สอบเสมือนจริง 3 ชั่วโมง และระบบวิเคราะห์จุดอ่อน เปิดให้ใช้งานฟรีสำหรับสมาชิกที่ลงชื่อเข้าใช้ด้วย Google ครับ"
+        );
+        return;
+      }
+
       currentTab = tabName;
       hideAllMainSections();
       document.getElementById(`tab-${tabName}`).classList.remove('hidden');
@@ -813,49 +992,118 @@
     document.querySelectorAll('.nav-tab').forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });
-    document.getElementById('nav-logo').addEventListener('click', () => switchTab('learn'));
+    document.getElementById('nav-logo').addEventListener('click', () => {
+      if (currentUser || isGuestMode) switchTab('learn');
+    });
     document.getElementById('btn-goto-weakness').addEventListener('click', () => switchTab('weakness'));
 
     // ==========================================
-    // 4. AUTHENTICATION & FIRESTORE
+    // 4. AUTHENTICATION, GUEST MODE & FIRESTORE
     // ==========================================
-    document.getElementById('btn-google-login').addEventListener('click', () => {
+    function triggerGoogleLogin() {
       signInWithPopup(auth, provider).catch(err => alert("เข้าสู่ระบบไม่สำเร็จ: " + err.message));
+    }
+
+    document.getElementById('btn-google-login').addEventListener('click', triggerGoogleLogin);
+    document.getElementById('btn-banner-login').addEventListener('click', triggerGoogleLogin);
+    document.getElementById('btn-summary-google-login').addEventListener('click', triggerGoogleLogin);
+    document.getElementById('btn-modal-google-login').addEventListener('click', () => {
+      document.getElementById('guest-limit-modal').classList.add('hidden');
+      triggerGoogleLogin();
     });
+
+    async function enterGuestMode() {
+      isGuestMode = true;
+      currentUser = null;
+      loadGuestStatsFromLocal();
+
+      const authBar = document.getElementById('auth-bar');
+      const headerStats = document.getElementById('header-stats');
+      headerStats.classList.remove('hidden');
+      document.getElementById('guest-mode-banner').classList.remove('hidden');
+
+      authBar.innerHTML = `
+        <button id="btn-header-login" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition cursor-pointer">
+          เข้าสู่ระบบ
+        </button>
+      `;
+      document.getElementById('btn-header-login').addEventListener('click', triggerGoogleLogin);
+
+      updateHeaderStats();
+      if (allQuestions.length === 0) {
+        await fetchQuestions();
+      }
+      switchTab('learn');
+    }
+
+    document.getElementById('btn-guest-mode').addEventListener('click', enterGuestMode);
 
     onAuthStateChanged(auth, async (user) => {
       const authBar = document.getElementById('auth-bar');
       const headerStats = document.getElementById('header-stats');
       if (user) {
+        const wasGuest = isGuestMode;
+        const guestSnapshot = wasGuest ? { ...userStats } : null;
+
+        isGuestMode = false;
         currentUser = user;
         headerStats.classList.remove('hidden');
+        document.getElementById('guest-mode-banner').classList.add('hidden');
+        document.getElementById('guest-limit-modal').classList.add('hidden');
+
         authBar.innerHTML = `
           <img src="${user.photoURL || ''}" class="w-7 h-7 rounded-full border border-slate-200 dark:border-slate-700" />
           <button id="btn-logout" class="text-xs text-rose-600 dark:text-rose-400 hover:underline cursor-pointer">ออก</button>
         `;
         document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
 
-        await loadUserStats(user.uid);
+        await loadUserStats(user.uid, guestSnapshot);
         if (allQuestions.length === 0) {
           await fetchQuestions();
         }
         switchTab('learn');
       } else {
         currentUser = null;
-        headerStats.classList.add('hidden');
-        authBar.innerHTML = `<span class="text-xs text-slate-400">ยังไม่เข้าสู่ระบบ</span>`;
-        hideAllMainSections();
-        document.getElementById('view-login').classList.remove('hidden');
+        if (!isGuestMode) {
+          headerStats.classList.add('hidden');
+          document.getElementById('guest-mode-banner').classList.add('hidden');
+          authBar.innerHTML = `<span class="text-xs text-slate-400">ยังไม่เข้าสู่ระบบ</span>`;
+          hideAllMainSections();
+          document.getElementById('view-login').classList.remove('hidden');
+        }
       }
     });
 
-    async function loadUserStats(uid) {
+    async function loadUserStats(uid, guestSnapshot = null) {
       const userRef = doc(db, "users", uid);
       const snap = await getDoc(userRef);
       if (snap.exists()) {
-        userStats = { ...userStats, ...snap.data() };
+        userStats = { ...getDefaultStats(), ...snap.data() };
         if (!userStats.levelProgress) userStats.levelProgress = {};
         if (!userStats.weaknessMap) userStats.weaknessMap = {};
+
+        // Merge any guest progress completed before logging in
+        if (guestSnapshot && guestSnapshot.levelProgress) {
+          let merged = false;
+          Object.entries(guestSnapshot.levelProgress).forEach(([lvlKey, gProg]) => {
+            const existing = userStats.levelProgress[lvlKey] || { roundsCompleted: 0, stars: 0 };
+            if ((gProg.roundsCompleted || 0) > (existing.roundsCompleted || 0)) {
+              userStats.levelProgress[lvlKey] = {
+                roundsCompleted: Math.max(existing.roundsCompleted || 0, gProg.roundsCompleted || 0),
+                stars: Math.max(existing.stars || 0, gProg.stars || 0)
+              };
+              merged = true;
+            }
+          });
+          if (merged) {
+            userStats.xp = (userStats.xp || 0) + (guestSnapshot.xp || 0);
+            await updateDoc(userRef, {
+              levelProgress: userStats.levelProgress,
+              xp: userStats.xp
+            }).catch(() => {});
+          }
+          localStorage.removeItem(GUEST_STORAGE_KEY);
+        }
 
         let migrated = false;
         (userStats.wrongQuestions || []).forEach(qId => {
@@ -868,6 +1116,8 @@
           await updateDoc(userRef, { weaknessMap: userStats.weaknessMap }).catch(() => {});
         }
       } else {
+        userStats = guestSnapshot ? { ...getDefaultStats(), ...guestSnapshot } : getDefaultStats();
+        localStorage.removeItem(GUEST_STORAGE_KEY);
         await setDoc(userRef, userStats);
       }
       updateHeaderStats();
@@ -889,7 +1139,7 @@
 
       const navBadge = document.getElementById('nav-weak-badge');
       const mobBadge = document.getElementById('mob-weak-badge');
-      if (weakCount > 0) {
+      if (weakCount > 0 && currentUser) {
         navBadge.classList.remove('hidden');
         navBadge.textContent = weakCount;
         mobBadge.classList.remove('hidden');
@@ -900,7 +1150,7 @@
       }
 
       const banner = document.getElementById('review-banner');
-      if (weakCount > 0 && allQuestions.length > 0) {
+      if (weakCount > 0 && allQuestions.length > 0 && currentUser) {
         banner.classList.remove('hidden');
         document.getElementById('review-count').textContent = weakCount;
       } else {
@@ -926,6 +1176,178 @@
     document.getElementById('btn-refresh-bank').addEventListener('click', async () => {
       await fetchQuestions();
       renderLearningPath();
+    });
+
+    // ==========================================
+    // STREAK CELEBRATION ENGINE (2-7, 10-200, 300+)
+    // ==========================================
+    let streakFxAnimId = null;
+
+    function triggerStreakCelebration(days) {
+      if (!STREAK_MILESTONES.includes(days)) return;
+
+      const modal = document.getElementById('streak-celebration-modal');
+      const card = document.getElementById('streak-card');
+      const sunburst = document.getElementById('streak-sunburst');
+      const tierPill = document.getElementById('streak-tier-pill');
+      const dayNumberEl = document.getElementById('streak-day-number');
+      const titleEl = document.getElementById('streak-celeb-title');
+      const descEl = document.getElementById('streak-celeb-desc');
+      const flameEmoji = document.getElementById('streak-flame-emoji');
+
+      dayNumberEl.textContent = `${days} วัน`;
+      titleEl.textContent = `เติมไฟต่อเนื่องครบ ${days} วัน!`;
+
+      // Configure 3 Visual Tiers
+      let tier = 'normal'; // 2 - 7
+      if (days >= 300) {
+        tier = 'legendary'; // 300, 500, 1000
+      } else if (days >= 10) {
+        tier = 'epic'; // 10, 50, 100, 150, 200
+      }
+
+      card.classList.remove('anim-epic-card', 'border-amber-400', 'border-fuchsia-400', 'border-orange-400');
+      sunburst.classList.add('hidden');
+
+      if (tier === 'normal') {
+        flameEmoji.textContent = '🔥';
+        tierPill.className = 'inline-block text-[11px] font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full bg-amber-100 text-amber-800 mb-3';
+        tierPill.textContent = '✨ เริ่มต้นสร้างวินัย';
+        card.classList.add('border-orange-400');
+        descEl.textContent = `สุดยอด! คุณเข้ามาฝึกทำข้อสอบติดต่อกัน ${days} วันแล้ว รักษาไฟดวงนี้ไว้ให้ต่อเนื่องนะครับ`;
+      } else if (tier === 'epic') {
+        flameEmoji.textContent = days >= 100 ? '🔥👑' : '🔥✨';
+        tierPill.className = 'inline-block text-[11px] font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm mb-3';
+        tierPill.textContent = days >= 100 ? '🏆 ระดับปรมาจารย์ 100+ วัน' : '⚡ ความมุ่งมั่นระดับสูง';
+        card.classList.add('border-amber-400', 'anim-epic-card');
+        sunburst.classList.remove('hidden');
+        descEl.textContent = `น่าทึ่งมาก! เติมไฟครบ ${days} วันติดต่อกัน ความสม่ำเสมอระดับนี้พิชิตสนามสอบ ก.พ. ได้แน่นอน!`;
+      } else {
+        flameEmoji.textContent = '👑🔥💎';
+        tierPill.className = 'inline-block text-[11px] font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 text-white shadow-md mb-3';
+        tierPill.textContent = '💎 ระดับตำนานแห่งความเพียร 300+ วัน';
+        card.classList.add('border-fuchsia-400', 'anim-epic-card');
+        sunburst.classList.remove('hidden');
+        descEl.textContent = `ระดับตำนาน! คุณรักษาเปลวไฟแห่งความพยายามได้ถึง ${days} วันเต็ม ความสำเร็จอันยิ่งใหญ่รอคุณอยู่ข้างหน้าแล้ว!`;
+      }
+
+      modal.classList.remove('hidden');
+      startStreakParticles(tier);
+    }
+
+    function startStreakParticles(tier) {
+      const canvas = document.getElementById('streak-fx-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      if (streakFxAnimId) cancelAnimationFrame(streakFxAnimId);
+
+      const particles = [];
+      const colorsNormal = ['#f59e0b', '#fb923c', '#facc15', '#ef4444'];
+      const colorsEpic = ['#fbbf24', '#f97316', '#ec4899', '#38bdf8', '#a855f7', '#34d399'];
+      const colorsLegendary = ['#fde047', '#fb7185', '#c084fc', '#38bdf8', '#4ade80', '#ffffff', '#f97316'];
+
+      const palette = tier === 'legendary' ? colorsLegendary : (tier === 'epic' ? colorsEpic : colorsNormal);
+      const initialCount = tier === 'legendary' ? 220 : (tier === 'epic' ? 120 : 45);
+
+      function spawnBurst(cx, cy, count, speedMult = 1) {
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = (Math.random() * 6 + 2) * speedMult;
+          particles.push({
+            x: cx,
+            y: cy,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - (tier === 'normal' ? 2 : 1),
+            size: Math.random() * (tier === 'legendary' ? 7 : 5) + 2.5,
+            color: palette[Math.floor(Math.random() * palette.length)],
+            alpha: 1,
+            decay: Math.random() * 0.015 + 0.008,
+            gravity: 0.08,
+            shape: Math.random() > 0.4 ? 'circle' : 'star'
+          });
+        }
+      }
+
+      // Initial center burst
+      spawnBurst(canvas.width / 2, canvas.height / 2, initialCount, tier === 'legendary' ? 1.5 : 1.15);
+
+      // Extra firework bursts for Epic & Legendary
+      let frameCount = 0;
+      function animate() {
+        frameCount++;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (tier === 'epic' && frameCount % 35 === 0 && frameCount < 180) {
+          spawnBurst(
+            canvas.width * (0.2 + Math.random() * 0.6),
+            canvas.height * (0.2 + Math.random() * 0.4),
+            55,
+            1.1
+          );
+        }
+
+        if (tier === 'legendary' && frameCount % 20 === 0 && frameCount < 300) {
+          spawnBurst(
+            canvas.width * (0.15 + Math.random() * 0.7),
+            canvas.height * (0.15 + Math.random() * 0.5),
+            85,
+            1.35
+          );
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.vx *= 0.985;
+          p.alpha -= p.decay;
+
+          if (p.alpha <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          if (p.shape === 'circle') {
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          } else {
+            ctx.rect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+          }
+          ctx.fill();
+          ctx.restore();
+        }
+
+        if (particles.length > 0 || (tier !== 'normal' && frameCount < 180)) {
+          streakFxAnimId = requestAnimationFrame(animate);
+        }
+      }
+
+      animate();
+    }
+
+    document.getElementById('btn-close-streak-celeb').addEventListener('click', () => {
+      document.getElementById('streak-celebration-modal').classList.add('hidden');
+      if (streakFxAnimId) cancelAnimationFrame(streakFxAnimId);
+    });
+
+    // ==========================================
+    // GUEST LIMIT MODAL HELPER
+    // ==========================================
+    function openGuestLimitModal(badgeText, titleText, descText) {
+      document.getElementById('guest-limit-badge').textContent = badgeText;
+      document.getElementById('guest-limit-title').textContent = titleText;
+      document.getElementById('guest-limit-desc').textContent = descText;
+      document.getElementById('guest-limit-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('btn-close-guest-limit').addEventListener('click', () => {
+      document.getElementById('guest-limit-modal').classList.add('hidden');
     });
 
     // ==========================================
@@ -1014,7 +1436,6 @@
         const secWrapper = document.createElement('div');
         secWrapper.className = "";
 
-        // Collapsible Section Banner + Direct Lesson Button
         const bannerBtn = document.createElement('button');
         bannerBtn.type = "button";
         bannerBtn.className = "w-full text-left bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 transition cursor-pointer";
@@ -1038,7 +1459,6 @@
           </div>
         `;
 
-        // Smooth Accordion Wrapper
         const accordionOuter = document.createElement('div');
         accordionOuter.dataset.secContent = secKey;
         accordionOuter.className = `accordion-content ${isCollapsed ? 'collapsed' : ''}`;
@@ -1075,8 +1495,8 @@
               <span class="${stars >= 3 ? 'text-amber-400' : 'text-slate-300 dark:text-slate-700'}">★</span>
             </div>
             <button class="w-[72px] h-[72px] rounded-full ${circleBg} node-shadow flex flex-col items-center justify-center cursor-pointer transition">
-              <span class="text-lg font-extrabold leading-none">${isCompleted ? '👑' : `${roundsDone}/5`}</span>
-              <span class="text-[10px] font-bold mt-1 opacity-90">รอบ</span>
+              <span class="text-lg font-extrabold leading-none">${isCompleted ? (isGuestMode && !currentUser ? '🔒' : '👑') : `${roundsDone}/5`}</span>
+              <span class="text-[10px] font-bold mt-1 opacity-90">${isCompleted && isGuestMode && !currentUser ? '5/5 ครบ' : 'ขั้น'}</span>
             </button>
             <span class="mt-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700 shadow-xs">
               ${levelName} (${qs.length} ข้อ)
@@ -1130,7 +1550,6 @@
     // BUILT-IN LESSON & WORKED EXAMPLE LIBRARY
     // ==========================================
     const LESSON_KNOWLEDGE_BASE = [
-      // MATH
       {
         subject: 'Math',
         keywords: ['อนุกรม', 'series', 'ลำดับ'],
@@ -1162,7 +1581,7 @@
         subject: 'Math',
         keywords: ['ร้อยละ', 'เปอร์เซ็นต์', 'กำไร', 'ขาดทุน', 'อัตราส่วน', 'สมการ', 'คณิตศาสตร์ทั่วไป'],
         conceptTitle: 'สูตรลัดร้อยละ กำไร-ขาดทุน และสมการ',
-        conceptBody: '• เทียบบัญญัติไตรยางศ์ 100 เสมอ: ทุน = 100%\n  - กำไร X% → ราคาขาย = (100 + X)% ของทุน\n  - ขาดทุน X% → ราคาขาย = (100 - X)% ของทุน\n• สูตรหาเปอร์เซ็นต์เปลี่ยนแปลง = [(ค่าใหม่ - ค่าเดิม) ÷ ค่าเดิม] × 100\n• การตั้งสมการ: ให้สิ่งที่โจทย์ถาม (หรือตัวแปรที่เล็กที่สุด) เป็น X',
+        conceptBody: '• เทียบบัญญติไตรยางศ์ 100 เสมอ: ทุน = 100%\n  - กำไร X% → ราคาขาย = (100 + X)% ของทุน\n  - ขาดทุน X% → ราคาขาย = (100 - X)% ของทุน\n• สูตรหาเปอร์เซ็นต์เปลี่ยนแปลง = [(ค่าใหม่ - ค่าเดิม) ÷ ค่าเดิม] × 100\n• การตั้งสมการ: ให้สิ่งที่โจทย์ถาม (หรือตัวแปรที่เล็กที่สุด) เป็น X',
         exampleQ: 'ขายเสื้อตัวหนึ่งราคา 480 บาท ได้กำไร 20% จงหาต้นทุนของเสื้อตัวนี้',
         exampleSteps: '• ขั้นที่ 1: กำไร 20% แปลว่า ถ้าทุน 100 บาท จะขาย 120 บาท\n• ขั้นที่ 2: ตั้งสัดส่วนหาทุน\n  ขาย 120 บาท มาจากทุน 100 บาท\n  ขาย 480 บาท มาจากทุน = (480 × 100) ÷ 120\n• ขั้นที่ 3: ตัดทอน 480 ÷ 120 = 4 แล้วคูณ 100 = 400\n• คำตอบ: ต้นทุน 400 บาท',
         tipText: 'ระวัง! ห้ามนำ 480 × 20% แล้วเอาไปลบออกเด็ดขาด เพราะกำไร 20% คิดจาก "ต้นทุน" ไม่ใช่คิดจากราคาขาย'
@@ -1176,7 +1595,6 @@
         exampleSteps: '• ขั้นที่ 1: หาส่วนต่างที่เพิ่มขึ้น = 300 - 250 = 50 ล้านบาท\n• ขั้นที่ 2: เทียบกับปีฐาน (ปี 2568 = 250)\n  ร้อยละที่เพิ่ม = (50 ÷ 250) × 100\n• ขั้นที่ 3: 50/250 = 1/5 = 0.2 → คูณ 100 = 20%\n• คำตอบ: เพิ่มขึ้นร้อยละ 20',
         tipText: 'คำว่า "เพิ่มขึ้น/ลดลงร้อยละเท่าใด" ตัวหารด้านล่างต้องเป็น "ค่าเดิม (ปีก่อนหน้า)" เสมอ'
       },
-      // THAI
       {
         subject: 'Thai',
         keywords: ['เรียงประโยค', 'ลำดับข้อความ'],
@@ -1204,7 +1622,6 @@
         exampleSteps: '• ข้อ ก. ผิด เพราะ "เสวย" เป็นคำราชาศัพท์อยู่แล้ว ห้ามเติม "ทรง" ข้างหน้า\n• ข้อ ข. ถูกต้อง เพราะ "ทรงพระดำเนิน" เป็นคำราชาศัพท์ที่ใช้ได้ถูกต้องตามแบบแผน',
         tipText: 'จำแม่น ๆ: ห้ามใช้ "ทรง" นำหน้าคำกริยาราชาศัพท์ (เสวย, บรรทม, ตรัส, โปรด, เสด็จ) ยกเว้นคำว่า "ทรงผนวช"'
       },
-      // ENGLISH
       {
         subject: 'English',
         keywords: ['Grammar', 'Tense', 'โครงสร้าง', 'ไวยากรณ์'],
@@ -1232,7 +1649,6 @@
         exampleSteps: '• ขั้นที่ 1: สังเกตส่วนขยายหลังเครื่องหมาย ; บอกว่า "พนักงานทุกคนต้องปฏิบัติตามโดยไม่มีข้อยกเว้น"\n• ขั้นที่ 2: ดังนั้น mandatory ต้องแปลว่า "ที่เป็นข้อบังคับ / จำเป็นต้องทำ"\n• คำตอบ: compulsory (ที่เป็นข้อบังคับ) ส่วน optional แปลว่า ตามสมัครใจ',
         tipText: 'จำ Prefix ช่วยเดาศัพท์: un-, in-, im-, dis-, non- แปลว่า "ไม่" / re- แปลว่า "อีกครั้ง" / pre- แปลว่า "ก่อน"'
       },
-      // LAW
       {
         subject: 'Law',
         keywords: ['ระเบียบบริหารราชการแผ่นดิน', 'บริหารราชการ'],
@@ -1284,7 +1700,6 @@
       const sampleQ = qs[0] || {};
       const subject = sampleQ.subject || selectedLearnSubject;
 
-      // 1. Check if Google Sheet provides custom lesson fields
       if (sampleQ.lesson) {
         return {
           conceptTitle: `หลักการสำคัญ: ${sectionName} (${levelName})`,
@@ -1295,7 +1710,6 @@
         };
       }
 
-      // 2. Match against Built-in Thai OCSC Knowledge Base by subject + keywords
       const searchTarget = `${sectionName} ${levelName}`.toLowerCase();
       const matched = LESSON_KNOWLEDGE_BASE.find(item =>
         item.subject === subject &&
@@ -1306,7 +1720,6 @@
         return matched;
       }
 
-      // 3. Smart Fallback: Build a guided walkthrough directly from a sample question in this level
       const fallbackQ = qs[0];
       return {
         conceptTitle: `แนวทางการทำข้อสอบหมวด "${sectionName}" (${levelName})`,
@@ -1341,7 +1754,7 @@
     document.getElementById('modal-tab-lesson').addEventListener('click', () => setNodeModalTab('lesson'));
     document.getElementById('modal-tab-play').addEventListener('click', () => setNodeModalTab('play'));
 
-    // Modal for Level Node (Shows Lesson & Worked Example before playing!)
+    // Modal for Level Node (Supports 5-step Guest Trial Limit)
     function openNodeModal(sectionName, levelName, levelKey, qs, forceLessonTab = false) {
       currentLevelKey = levelKey;
       currentLevelQuestions = qs;
@@ -1349,12 +1762,12 @@
       const roundsDone = Math.min(prog.roundsCompleted || 0, 5);
       const nextRound = roundsDone < 5 ? roundsDone + 1 : 5;
       const stars = prog.stars || 0;
+      const isGuestLocked = isGuestMode && !currentUser && roundsDone >= 5;
 
       document.getElementById('modal-section-name').textContent = sectionName;
       document.getElementById('modal-level-title').textContent = levelName;
       document.getElementById('modal-tab-round-badge').textContent = `${roundsDone}/5`;
 
-      // Populate Lesson & Worked Example content
       const lesson = getLessonContentForLevel(sectionName, levelName, qs);
       document.getElementById('lesson-concept-title').textContent = lesson.conceptTitle;
       document.getElementById('lesson-concept-body').textContent = lesson.conceptBody;
@@ -1362,10 +1775,13 @@
       document.getElementById('lesson-example-steps').textContent = lesson.exampleSteps;
       document.getElementById('lesson-tip-text').textContent = lesson.tipText;
 
-      // Populate Progress & Stars
-      document.getElementById('modal-round-info').textContent = roundsDone >= 5
-        ? `พิชิตครบ 5 รอบแล้ว! (เล่นซ้ำเพื่อเก็บ 3 ดาวได้)`
-        : `ความคืบหน้า: รอบที่ ${nextRound} จาก 5 (รอบละ 5 ข้อ)`;
+      if (isGuestLocked) {
+        document.getElementById('modal-round-info').textContent = `ทดลองทำครบ 5/5 ขั้นของระดับนี้แล้ว (ลงชื่อเข้าใช้เพื่อฝึกต่อ)`;
+      } else {
+        document.getElementById('modal-round-info').textContent = roundsDone >= 5
+          ? `พิชิตครบ 5 ขั้นแล้ว! (เล่นซ้ำเพื่อเก็บ 3 ดาวได้)`
+          : `ความคืบหน้า: ขั้นที่ ${nextRound} จาก 5 (ขั้นละ 5 ข้อ)`;
+      }
 
       [1, 2, 3].forEach(s => {
         document.getElementById(`modal-star-${s}`).className = stars >= s ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700';
@@ -1381,11 +1797,17 @@
         dotsEl.appendChild(dot);
       }
 
-      document.getElementById('btn-start-node-round').textContent = roundsDone >= 5
-        ? `ฝึกซ้ำระดับนี้ (5 ข้อ) →`
-        : `เข้าใจแล้ว! เริ่มทำรอบที่ ${nextRound} / 5 →`;
+      const startBtn = document.getElementById('btn-start-node-round');
+      if (isGuestLocked) {
+        startBtn.className = "flex-1 duo-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold py-3 px-4 rounded-2xl cursor-pointer";
+        startBtn.textContent = `🔒 ครบ 5/5 ขั้นแล้ว — ลงชื่อเข้าใช้เพื่อลุยต่อ`;
+      } else {
+        startBtn.className = "flex-1 duo-btn-green bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold py-3 px-4 rounded-2xl cursor-pointer";
+        startBtn.textContent = roundsDone >= 5
+          ? `ฝึกซ้ำระดับนี้ (5 ข้อ) →`
+          : `เข้าใจแล้ว! เริ่มทำขั้นที่ ${nextRound} / 5 →`;
+      }
 
-      // Default to "Lesson & Worked Example" first if new to this level (roundsDone === 0) or explicitly clicked "📖 สอนบทนี้"
       if (forceLessonTab || roundsDone === 0) {
         setNodeModalTab('lesson');
       } else {
@@ -1404,6 +1826,15 @@
 
     document.getElementById('btn-start-node-round').addEventListener('click', () => {
       document.getElementById('node-modal').classList.add('hidden');
+      const prog = userStats.levelProgress?.[currentLevelKey] || { roundsCompleted: 0 };
+      if (isGuestMode && !currentUser && (prog.roundsCompleted || 0) >= 5) {
+        openGuestLimitModal(
+          "ครบโควตาทดลองเรียน 5/5 ขั้นแล้ว",
+          "ลงชื่อเข้าใช้เพื่อลุยต่อแบบไม่จำกัด!",
+          "คุณได้ทดลองทำข้อสอบครบ 5 ขั้น (1/5 – 5/5) ในระดับนี้แล้ว ลงชื่อเข้าใช้ด้วย Google ฟรีเพื่อปลดล็อกด่านทั้งหมดและบันทึกสถิติครับ"
+        );
+        return;
+      }
       startLevelRound();
     });
 
@@ -1567,7 +1998,7 @@
     document.getElementById('btn-weakness-drill').addEventListener('click', launchWeaknessDrill);
 
     // ==========================================
-    // 8. QUIZ RUNNER & 2x STREAK LOGIC
+    // 8. QUIZ RUNNER & STREAK MILESTONE TRIGGER
     // ==========================================
     function startQuizSession(questions, mode) {
       quizMode = mode;
@@ -1594,7 +2025,7 @@
 
       const weakEntry = userStats.weaknessMap?.[String(q.id)];
       const streakBadge = document.getElementById('quiz-badge-streak');
-      if (weakEntry && weakEntry.wrongCount > 0 && (weakEntry.correctStreak || 0) < 2) {
+      if (weakEntry && weakEntry.wrongCount > 0 && (weakEntry.correctStreak || 0) < 2 && currentUser) {
         streakBadge.classList.remove('hidden');
         streakBadge.textContent = `🎯 จุดอ่อน (ถูกซ้ำ ${weakEntry.correctStreak || 0}/2 ครั้ง)`;
       } else {
@@ -1659,7 +2090,7 @@
         label.className = "font-extrabold text-base text-emerald-800 dark:text-emerald-300";
         label.textContent = `ถูกต้อง! (+${earnedXp} XP)`;
 
-        if (prevWeak && prevWeak.wrongCount > 0) {
+        if (currentUser && prevWeak && prevWeak.wrongCount > 0) {
           const nextStreak = (prevWeak.correctStreak || 0) + 1;
           masteryNote.classList.remove('hidden');
           if (nextStreak >= 2) {
@@ -1676,27 +2107,28 @@
         label.className = "font-extrabold text-base text-rose-800 dark:text-rose-300";
         label.textContent = `ยังไม่ถูก (คำตอบคือ: ${q.correctChoice})`;
 
-        masteryNote.classList.remove('hidden');
-        masteryNote.textContent = "📌 บันทึกลงคลังจุดอ่อนแล้ว (ต้องฝึกตอบให้ถูกซ้ำ 2 ครั้งเพื่อปลดล็อก)";
+        if (currentUser) {
+          masteryNote.classList.remove('hidden');
+          masteryNote.textContent = "📌 บันทึกลงคลังจุดอ่อนแล้ว (ต้องฝึกตอบให้ถูกซ้ำ 2 ครั้งเพื่อปลดล็อก)";
+        }
       }
 
       document.getElementById('quiz-explanation').classList.remove('hidden');
       document.getElementById('quiz-explanation-text').textContent = q.explanation || "ไม่มีคำอธิบายเพิ่มเติม";
       document.getElementById('btn-next-question').classList.remove('hidden');
 
-      if (currentUser) {
-        await recordQuestionStat(q.id, isCorrect, earnedXp);
-      }
+      await recordQuestionStat(q.id, isCorrect, earnedXp);
     }
 
     async function recordQuestionStat(rawId, isCorrect, earnedXp) {
-      const userRef = doc(db, "users", currentUser.uid);
       const today = new Date().toISOString().split('T')[0];
-      let newStreak = userStats.streakDays || 0;
+      const prevStreak = userStats.streakDays || 0;
+      const isFirstStudyToday = userStats.lastStudyDate !== today;
+      let newStreak = prevStreak;
 
-      if (userStats.lastStudyDate !== today) {
+      if (isFirstStudyToday) {
         const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-        newStreak = (userStats.lastStudyDate === yesterday) ? newStreak + 1 : 1;
+        newStreak = (userStats.lastStudyDate === yesterday) ? prevStreak + 1 : 1;
       }
 
       const qId = String(rawId);
@@ -1732,15 +2164,25 @@
 
       updateHeaderStats();
 
-      await updateDoc(userRef, {
-        xp: increment(earnedXp),
-        totalAnswered: increment(1),
-        correctCount: increment(isCorrect ? 1 : 0),
-        streakDays: newStreak,
-        lastStudyDate: today,
-        weaknessMap: userStats.weaknessMap,
-        wrongQuestions: userStats.wrongQuestions
-      }).catch(console.error);
+      // Trigger Streak Milestone Celebration if streak increased today and hit a milestone
+      if (isFirstStudyToday && newStreak !== prevStreak && STREAK_MILESTONES.includes(newStreak)) {
+        triggerStreakCelebration(newStreak);
+      }
+
+      if (currentUser) {
+        const userRef = doc(db, "users", currentUser.uid);
+        await updateDoc(userRef, {
+          xp: increment(earnedXp),
+          totalAnswered: increment(1),
+          correctCount: increment(isCorrect ? 1 : 0),
+          streakDays: newStreak,
+          lastStudyDate: today,
+          weaknessMap: userStats.weaknessMap,
+          wrongQuestions: userStats.wrongQuestions
+        }).catch(console.error);
+      } else if (isGuestMode) {
+        saveGuestStatsToLocal();
+      }
     }
 
     document.getElementById('btn-next-question').addEventListener('click', () => {
@@ -1760,6 +2202,7 @@
       hideAllMainSections();
       document.getElementById('view-summary').classList.remove('hidden');
       document.getElementById('mock-result-breakdown').classList.add('hidden');
+      document.getElementById('summary-guest-cta').classList.add('hidden');
 
       const total = activeQuiz.length;
       const pct = total > 0 ? Math.round((sessionScore / total) * 100) : 0;
@@ -1788,14 +2231,18 @@
 
         userStats.levelProgress[currentLevelKey] = { roundsCompleted: newRounds, stars: bestStars };
 
-        document.getElementById('summary-title').textContent = newRounds >= 5 ? "พิชิตระดับนี้สำเร็จ!" : `ผ่านรอบที่ ${newRounds} / 5!`;
-        document.getElementById('summary-subtitle').textContent = `คุณได้รับ ${earnedStars} ดาว ในรอบนี้`;
+        document.getElementById('summary-title').textContent = newRounds >= 5 ? "พิชิตครบ 5/5 ขั้นแล้ว!" : `ผ่านขั้นที่ ${newRounds} / 5!`;
+        document.getElementById('summary-subtitle').textContent = `คุณได้รับ ${earnedStars} ดาว ในขั้นนี้`;
 
         if (newRounds < 5) {
           nextRoundBtn.classList.remove('hidden');
-          nextRoundBtn.textContent = `เล่นรอบที่ ${newRounds + 1} ต่อเลย →`;
+          nextRoundBtn.textContent = `ทำขั้นที่ ${newRounds + 1} / 5 ต่อเลย →`;
         } else {
           nextRoundBtn.classList.add('hidden');
+          // Show Guest Login Recommendation when Guest finishes 5/5!
+          if (isGuestMode && !currentUser) {
+            document.getElementById('summary-guest-cta').classList.remove('hidden');
+          }
         }
 
         if (currentUser) {
@@ -1803,6 +2250,8 @@
           await updateDoc(userRef, {
             [`levelProgress.${currentLevelKey}`]: { roundsCompleted: newRounds, stars: bestStars }
           }).catch(console.error);
+        } else if (isGuestMode) {
+          saveGuestStatsToLocal();
         }
       } else {
         starsBox.classList.add('hidden');
@@ -2019,7 +2468,7 @@
           earnedTotalXp += (Number(q.xp) || 10);
         }
 
-        if (currentUser && chosen !== undefined) {
+        if (chosen !== undefined) {
           await recordQuestionStat(q.id, isCorrect, isCorrect ? (Number(q.xp) || 10) : 0);
         }
       }
@@ -2028,6 +2477,7 @@
       document.getElementById('view-summary').classList.remove('hidden');
       document.getElementById('summary-stars-box').classList.add('hidden');
       document.getElementById('btn-summary-next-round').classList.add('hidden');
+      document.getElementById('summary-guest-cta').classList.add('hidden');
 
       const total = mockQuestions.length;
       const pct = total > 0 ? Math.round((totalCorrect / total) * 100) : 0;
@@ -2140,13 +2590,13 @@
     });
 
     // ==========================================
-    // 11. DONATE / SUPPORT MODAL LOGIC
+    // 11. DONATE / SUPPORT MODAL LOGIC (QR CODE)
     // ==========================================
     function openDonateModal() {
       document.getElementById('donate-modal').classList.remove('hidden');
     }
 
-    document.getElementById('btn-open-donate').addEventListener('click', openDonateModal);
+    document.getElementById('btn-flame-support').addEventListener('click', openDonateModal);
     document.getElementById('footer-btn-donate').addEventListener('click', openDonateModal);
     document.getElementById('btn-close-donate').addEventListener('click', () => {
       document.getElementById('donate-modal').classList.add('hidden');
@@ -2157,3 +2607,4 @@
   </script>
 </body>
 </html>
+```[cite: 6]
